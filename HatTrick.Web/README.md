@@ -1,28 +1,33 @@
 # hat-trick.web
 
-## Project setup
+## Project Setup
+
 ```bash
 npm install
 
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and Hot-Reloads for Development
+
 ```bash
 npm run serve
 
 ```
 
-### Compiles and minifies for production
+### Compiles and Minifies for Production
+
 ```bash
 npm run build
 
 ```
 
-### Lints and fixes files
+### Lints and Fixes Files
+
 ```bash
 npm run lint
 
 ```
 
-### Customize configuration
+### Customize Configuration
+
 See [Configuration Reference](http://cli.vuejs.org/config/).
