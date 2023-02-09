@@ -5,6 +5,8 @@ Online betting shop simulator.
 **Author:** Davor Penzar <br/>
 **Date:** February, 2023
 
+## Licence
+
 **This repository is licensed under the [GNU General Public License v3.0](http://gnu.org/licenses/gpl-3.0.html).** Its dependencies might be licensed under different licences: before using the code for purposes other than playing with the simulator in private, see which dependencies are used and under what licences they are issued.
 
 ## Info
