@@ -28,7 +28,7 @@ Since [Entity Framework](http://learn.microsoft.com/en-gb/ef/) is used for acces
 
 ## Running the App
 
-The app **must be run in development mode**&mdash;this refers to the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects. It cannot run in production mode without setting a proper [connection string](http://en.wikipedia.org/wiki/Connection_string) in the [production `AppSettings`](HatTrick.API/appsettings.json), because the [connection string](http://en.wikipedia.org/wiki/Connection_string) is currently set only in the [development `AppSettings`](HatTrick.API/appsettings.Development.json) and the Vue.js [proxy server](http://en.wikipedia.org/wiki/Proxy_server) is set only for [`devServer.proxy`](http://cli.vuejs.org/config/#devserver-proxy) in [`vue.config`](HatTrick.Web/vue.config.js). See below how to achieve running in development mode.
+The app **must be run in development mode**&mdash;this refers to the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects. It cannot run in production mode because the [connection string](http://en.wikipedia.org/wiki/Connection_string) is currently set only in the [development `AppSettings`](HatTrick.API/appsettings.Development.json), and the Vue.js [proxy server](http://en.wikipedia.org/wiki/Proxy_server) is set only for [`devServer.proxy`](http://cli.vuejs.org/config/#devserver-proxy) in [`vue.config`](HatTrick.Web/vue.config.js). See below how to achieve running in development mode.
 
 ### Through [Visual Studio](http://visualstudio.microsoft.com/)
 
