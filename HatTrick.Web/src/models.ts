@@ -96,7 +96,8 @@ class Outcome {
   value: string | null = null;
   odds: number | null = null;
   availableFrom: string = '';
-  availableUntil: string = ''
+  availableUntil: string = '';
+  isWinning: boolean | null = null
 }
 
 class Ticket {

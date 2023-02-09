@@ -31,6 +31,9 @@ namespace HatTrick.Models
         [DataMember]
         public DateTime AvailableUntil { get; set; }
 
+        [DataMember]
+        public bool? IsWinning { get; set; }
+
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }
 }
