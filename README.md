@@ -36,4 +36,4 @@ The application is implemented as a [Visual Studio Solution](http://learn.micros
 
 ### Manually
 
-TO DO: explain
+Again, the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects must be run in parallel. To run the former in the development mode, see [here](http://learn.microsoft.com/en-gb/aspnet/core/fundamentals/environments/#development-and-launchsettingsjson) and [here](http://learn.microsoft.com/en-gb/aspnet/core/fundamentals/environments/#set-environment-on-the-command-line); note that the `Development` environment is already defined in the [`launchSettings`](HatTrick.API/Properties/launchSettings.json). To run the latter in development mode, see [here](http://cli.vuejs.org/guide/mode-and-env.html); more about running the [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) is available in its own [`README`](HatTrick.Web/README.md).
