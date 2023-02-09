@@ -7,7 +7,7 @@ Online betting shop simulator.
 
 ## Info
 
-This repository implements a simple online betting shop simulator. The shop is implemented through all three:
+**This repository implements a simple online betting shop simulator.** The shop is implemented through all three:
 
 1. **Database** &ndash; the simulator generates and maintains its own database. There is no need to connect it to an existing one or creating it manually.
 2. **Web API** &ndash; apart from the database and the front-end application, there is an API layer in the middle that connects the two, simultaneously enforcing the betting shop's rules, ensuring proper data is put into the database, and delivering the data in the correct scale (e. g. serving only the relevant events) and format ([*JSON*](http://en.wikipedia.org/wiki/JSON)) to the front-end.
