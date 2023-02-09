@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "localhost (Chrome)",
+      "url": "https://localhost:5002",
+      "webRoot": "${workspaceFolder}"
+    },
+	{
+      "type": "firefox",
+      "request": "launch",
+      "name": "localhost (Firefox)",
+      "url": "https://localhost:5002",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "localhost (Edge)",
+      "url": "https://localhost:5002",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "opera",
+      "request": "launch",
+      "name": "localhost (Opera)",
+      "url": "https://localhost:5002",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}
