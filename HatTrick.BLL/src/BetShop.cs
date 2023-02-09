@@ -320,11 +320,6 @@ namespace HatTrick.BLL
                     s =>
                         s.AvailableFrom <= selectedAt &&
                             s.AvailableUntil > selectedAt &&
-                            s.Market.AvailableFrom <= selectedAt &&
-                            s.Market.AvailableUntil > selectedAt &&
-                            s.Market.Fixture.AvailableFrom <= selectedAt &&
-                            s.Market.Fixture.AvailableUntil > selectedAt &&
-                            s.Market.Fixture.Event.EndsAt >= selectedAt &&
                             selectionIds.Contains(s.Id) &&
                             s.Odds != null
                 )
@@ -408,11 +403,6 @@ namespace HatTrick.BLL
                     s =>
                         s.AvailableFrom <= selectedAt &&
                             s.AvailableUntil > selectedAt &&
-                            s.Market.AvailableFrom <= selectedAt &&
-                            s.Market.AvailableUntil > selectedAt &&
-                            s.Market.Fixture.AvailableFrom <= selectedAt &&
-                            s.Market.Fixture.AvailableUntil > selectedAt &&
-                            s.Market.Fixture.Event.EndsAt > selectedAt &&
                             selectionIds.Contains(s.Id)
                 )
                 .Select(s => s.Market.Fixture.Event.Id)
@@ -455,6 +445,7 @@ namespace HatTrick.BLL
                     .ConfigureAwait(false);
                 await using (dbTxn.ConfigureAwait(false))
                 {
+                    // Download user.
                     User user;
                     try
                     {
@@ -472,6 +463,9 @@ namespace HatTrick.BLL
                         );
                     }
 
+                    // Ensure valid pay-in amount. It must be in the allowed
+                    // range of [`MinBetAmount`, `MaxBetAmount`], and it may
+                    // not exceed the current user's balance.
                     amount = EnsureValidPayInAmount(user.Balance, amount);
 
                     var selections = await MapSelectionIdsAsync(

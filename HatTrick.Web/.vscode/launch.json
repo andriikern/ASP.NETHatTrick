@@ -8,24 +8,10 @@
       "url": "https://localhost:5002",
       "webRoot": "${workspaceFolder}"
     },
-	{
-      "type": "firefox",
-      "request": "launch",
-      "name": "localhost (Firefox)",
-      "url": "https://localhost:5002",
-      "webRoot": "${workspaceFolder}"
-    },
     {
-      "type": "msedge",
+      "type": "edge",
       "request": "launch",
       "name": "localhost (Edge)",
-      "url": "https://localhost:5002",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "type": "opera",
-      "request": "launch",
-      "name": "localhost (Opera)",
       "url": "https://localhost:5002",
       "webRoot": "${workspaceFolder}"
     }

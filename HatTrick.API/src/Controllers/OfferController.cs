@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for accessing the information about the betting offer.</summary>
-    [Route("API/[controller]")]
+    [Route("[controller]")]
     public class OfferController : InternalBaseController
     {
         protected readonly Offer _offer;
@@ -71,7 +71,7 @@ namespace HatTrick.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            return await CallFuncAsync(
+            return await InvokeFuncAsync(
                 () => _offer.GetEventsAsync(
                     availableAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)

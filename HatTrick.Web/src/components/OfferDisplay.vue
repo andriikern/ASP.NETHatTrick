@@ -1,30 +1,33 @@
 <template>
-  <section id="offer" class="my-3">
-    <div v-if="loading" class="card bg-warning text-white">
-      <div class="card-header font-weight-bold">Warning</div>
-      <div class="card-body text-white">
-        Please refresh once the <a class="link" target="_blank" href="http://dotnet.microsoft.com/apps/aspnet"><em>ASP.NET</em></a> backend has started. See <a class="link link-info" target="_blank" href="http://learn.microsoft.com/en-gb/visualstudio/javascript/tutorial-asp-net-core-with-vue">here</a> for more details.
-      </div>
+  <div v-if="loading" class="card bg-warning text-white">
+    <div class="card-header font-weight-bold">Warning</div>
+    <div class="card-body text-white">
+      Please refresh once the <a class="link" target="_blank" href="http://dotnet.microsoft.com/apps/aspnet"><em>ASP.NET</em></a> backend has started. See <a class="link link-info" target="_blank" href="http://learn.microsoft.com/en-gb/visualstudio/javascript/tutorial-asp-net-core-with-vue">here</a> for more details.
     </div>
+  </div>
 
-    <form id="ticket" action="BetShop" method="post" @submit="submit">
-      <OfferCategoryDisplay :now="now"
-                            :promoted="true"
-                            @onDataFetched="onDataFetched" 
-                            @checkOutcome="checkOutcome" />
-      <OfferCategoryDisplay :now="now"
-                            :promoted="false"
-                            @onDataFetched="onDataFetched"
-                            @checkOutcome="checkOutcome" />
-      <BetAmountInputDisplay :loading="loading"
-                             @setAmount="setAmount" />
-    </form>
-  </section>
+  <SimpleUserDisplay :now="now" :userId="userId" />
+
+  <form id="ticket" action="BetShop" method="post" @submit="submit">
+    <OfferCategoryDisplay :now="now"
+                          :promoted="true"
+                          @onDataFetched="onDataFetched" 
+                          @checkOutcome="checkOutcome" />
+    <OfferCategoryDisplay :now="now"
+                          :promoted="false"
+                          @onDataFetched="onDataFetched"
+                          @checkOutcome="checkOutcome" />
+    <BetAmountInputDisplay :loading="loading"
+                           @setAmount="setAmount" />
+  </form>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
 
+  import { dateToISOStringWithOffset } from '../auxiliaryFunctions'
+
+  import SimpleUserDisplay from './SimpleUserDisplay.vue'
   import OfferCategoryDisplay from './OfferCategoryDisplay.vue'
   import BetAmountInputDisplay from './BetAmountInputDisplay.vue'
 
@@ -37,11 +40,13 @@
 
   export default defineComponent({
     components: {
+      SimpleUserDisplay,
       OfferCategoryDisplay,
       BetAmountInputDisplay
     },
     props: {
-      now: Date
+      now: Date,
+      userId: Number
     },
     data(): Data {
       return {
@@ -79,7 +84,6 @@
         this.promoLoading.set(promoted, loading)
 
         this.loading = Array.from(this.promoLoading.values()).some(l => l)
-        console.log({ promoted: promoted, loading: loading, thisLoading: this.loading })
       },
       checkOutcome(event: Event): void {
         const element = event.target as HTMLInputElement
@@ -103,13 +107,17 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: 1,
+            userId: this.userId,
             selectionIds: Array.from(this.selection),
-            betAmount: this.betAmount
+            amount: this.betAmount
           })
-        };
+        }
 
-        fetch("BetShop", requestOptions)
+        const searchQuery = new URLSearchParams({
+          placedAt: dateToISOStringWithOffset(this.now) || ''
+        })
+
+        fetch("BetShop?" + searchQuery, requestOptions)
           .then(() => location.reload())
           .catch(error => alert(error))
       }

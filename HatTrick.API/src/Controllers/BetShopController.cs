@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for placing bets.</summary>
-    [Route("API/[controller]")]
+    [Route("[controller]")]
     public class BetShopController : InternalBaseController
     {
         protected readonly BetShop _betShop;
@@ -34,9 +34,9 @@ namespace HatTrick.API.Controllers
         /// <param name="placedAt">The date-time at which to place the bet. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The response.</returns>
-        /// <response code="200">The bet was placed successfully.</response>
+        /// <response code="200">The id number of the ticket.</response>
         /// <response code="400">Request failed.</response>
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<IActionResult> PostAsync(
@@ -44,7 +44,7 @@ namespace HatTrick.API.Controllers
             [FromQuery] DateTime? placedAt = null,
             CancellationToken cancellationToken = default
         ) =>
-            await DoActionAsync(
+            await InvokeFuncAsync(
                 () => _betShop.PlaceBetAsync(
                     placedAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)

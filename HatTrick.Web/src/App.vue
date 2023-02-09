@@ -1,6 +1,6 @@
 <template>
   <h1>HatTrick</h1>
-  <OfferDisplay :now="fixedNow" />
+  <OfferDisplay :now="fixedNow" :userId="userId" />
 </template>
 
 <script lang="ts">
@@ -14,9 +14,16 @@
   // offer.
   const _now: Date | null = new Date('2023-02-01T12:00:00.000000+00:00')
 
+  // Change this variable to use another user. If the user by the provided id
+  // does not exist in the database, errors will arise while using the app.
+  // However, the user is hard-coded into the app using this variable, and no
+  // authentication functionality is implemented otherwise.
+  const _userId: number = 1
+
   interface Data {
     now: Date | null,
-    fixedNow: Date | null
+    fixedNow: Date,
+    userId: number
   }
 
   export default defineComponent({
@@ -27,11 +34,13 @@
     data(): Data {
       return {
         now: null,
-        fixedNow: null
+        fixedNow: new Date(),
+        userId: 0
       }
     },
     created() {
       this.now = _now
+      this.userId = _userId
 
       this.resetData()
     },
@@ -40,7 +49,7 @@
       '$route': 'resetData'
     },
     methods: {
-        resetData(): void {
+      resetData(): void {
         this.fixedNow = new Date(this.now === null ? Date.now() : this.now)
       }
     }

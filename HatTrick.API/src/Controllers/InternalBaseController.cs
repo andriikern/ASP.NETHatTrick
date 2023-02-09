@@ -12,7 +12,7 @@ using HatTrick.API.Features;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides fields, properties and methods common to all application's controllers.</summary>
-    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("API"), ApiController]
+    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("null"), ApiController]
     public class InternalBaseController : ControllerBase, IDisposable, IAsyncDisposable
     {
         private static string GetAdequateContentType(
@@ -73,76 +73,48 @@ namespace HatTrick.API.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected IActionResult DoAction(
+        protected IActionResult InvokeAction(
             Action action,
-            string? message = "OK",
+            object? okObject = null,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
             object? errorObject = null
-        )
-        {
-            try
-            {
-                action();
-            }
-            catch (InternalException exception)
-            {
-                return string.IsNullOrEmpty(exception.Message) ?
-                    StatusCode((int)HttpStatusCode.InternalServerError) :
-                    BadRequest(exception.Message);
-            }
-            catch (InvalidOperationException)
-            {
-                return StatusCode((int)errorStatusCode, errorObject);
-            }
+        ) =>
+            InvokeFunc(
+                () =>
+                {
+                    action();
 
-            if (message is null)
-            {
-                return Null(noContentIfNull);
-            }
-
-            return Ok(message);
-        }
+                    return okObject;
+                },
+                noContentIfNull,
+                errorStatusCode,
+                errorObject
+            );
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<IActionResult> DoActionAsync(
+        protected Task<IActionResult> InvokeActionAsync(
             Func<Task> asyncAction,
-            string? message = "OK",
+            object? okObject = null,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
             object? errorObject = null
-        )
-        {
-            try
-            {
-                await asyncAction()
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                return NoContent();
-            }
-            catch (InternalException exception)
-            {
-                return string.IsNullOrEmpty(exception.Message) ?
-                    StatusCode((int)HttpStatusCode.InternalServerError) :
-                    BadRequest(exception.Message);
-            }
-            catch (InvalidOperationException)
-            {
-                return StatusCode((int)errorStatusCode, errorObject);
-            }
+        ) =>
+            InvokeFuncAsync(
+                async () =>
+                {
+                    await asyncAction()
+                        .ConfigureAwait(false);
 
-            if (message is null)
-            {
-                return Null(noContentIfNull);
-            }
-
-            return Ok(message);
-        }
+                    return okObject;
+                },
+                noContentIfNull,
+                errorStatusCode,
+                errorObject
+            );
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected IActionResult CallFunc<TResult>(
+        protected IActionResult InvokeFunc<TResult>(
             Func<TResult> func,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
@@ -175,7 +147,7 @@ namespace HatTrick.API.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<IActionResult> CallFuncAsync<TResult>(
+        protected async Task<IActionResult> InvokeFuncAsync<TResult>(
             Func<Task<TResult>> asyncFunc,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,

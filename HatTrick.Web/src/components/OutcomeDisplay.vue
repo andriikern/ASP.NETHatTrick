@@ -5,7 +5,7 @@
          :name="'check-' + marketKey"
          :value="outcome.id"
          autocomplete="off"
-         :readonly="readonly"
+         :readonly="disabled"
          :disabled="disabled"
          @change="checkOutcome" />
   <label :class="'btn btn-outline-' + (promoted ? 'primary' : 'secondary') + ' lh-1'"
@@ -53,8 +53,6 @@
     methods: {
       initialiseData(): void {
         this.disabled = (this.outcome?.odds === null)
-
-        console.log({ outcome: this.outcome })
       },
       checkOutcome(event: Event): void {
         this.$emit('checkOutcome', event);

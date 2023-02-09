@@ -16,7 +16,7 @@
                placeholder="Bet amount"
                aria-label="Bet amount"
                aria-describedby="bet-amount-label"
-               @change="setAmount"
+               @input="setAmount"
                required />
         <span class="input-group-text" title="Euro">&euro;</span>
         <button type="submit" class="btn btn-success" title="Place bet">Place bet</button>
@@ -43,9 +43,7 @@
       '$route': 'initialiseData'
     },
     methods: {
-      initialiseData(): void {
-        console.log({ loading: this.loading })
-      },
+      initialiseData(): void { },
       setAmount(event: Event): void {
         this.$emit('setAmount', event);
       }

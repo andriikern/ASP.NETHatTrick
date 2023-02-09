@@ -39,9 +39,7 @@
       '$route': 'initialiseData'
     },
     methods: {
-      initialiseData(): void {
-        console.log({ fixture: this.fixture })
-      },
+      initialiseData(): void { },
       checkOutcome(event: Event): void {
         this.$emit('checkOutcome', event);
       }
