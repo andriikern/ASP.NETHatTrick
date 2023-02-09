@@ -29,6 +29,9 @@ namespace HatTrick.BLL
                                     stateAt == null ||
                                         t.PayInTime <= stateAt
                             )
+                            .OrderBy(t => t.PayInTime)
+                            .ThenByDescending(t => t.TotalOdds)
+                            .ThenByDescending(t => t.PayInAmount)
                     )
                         .ThenInclude(t => t.Status)
                         .Include(
@@ -38,6 +41,9 @@ namespace HatTrick.BLL
                                         stateAt == null ||
                                             t.PayInTime <= stateAt
                                 )
+                                .OrderBy(t => t.PayInTime)
+                                .ThenByDescending(t => t.TotalOdds)
+                                .ThenByDescending(t => t.PayInAmount)
                         )
                         .ThenInclude(t => t.Selections)
                         .Include(
@@ -47,6 +53,9 @@ namespace HatTrick.BLL
                                         stateAt == null ||
                                             t.PayInTime <= stateAt
                                 )
+                                .OrderBy(t => t.PayInTime)
+                                .ThenByDescending(t => t.TotalOdds)
+                                .ThenByDescending(t => t.PayInAmount)
                         )
                         .ThenInclude(t => t.Transactions)
                         .Include(
@@ -56,6 +65,8 @@ namespace HatTrick.BLL
                                         stateAt == null ||
                                             t.Time <= stateAt
                                 )
+                                .OrderBy(t => t.Time)
+                                .ThenByDescending(t => t.Amount)
                         )
                         .ThenInclude(t => t.Type)
                         .Include(
@@ -65,6 +76,8 @@ namespace HatTrick.BLL
                                         stateAt == null ||
                                             t.Time <= stateAt
                                 )
+                                .OrderBy(t => t.Time)
+                                .ThenByDescending(t => t.Amount)
                         )
                         .ThenInclude(t => t.Ticket),
                 (true, true, false) =>
@@ -75,6 +88,9 @@ namespace HatTrick.BLL
                                     stateAt == null ||
                                         t.PayInTime <= stateAt
                             )
+                            .OrderBy(t => t.PayInTime)
+                            .ThenByDescending(t => t.TotalOdds)
+                            .ThenByDescending(t => t.PayInAmount)
                     )
                         .ThenInclude(t => t.Status)
                         .Include(
@@ -84,6 +100,9 @@ namespace HatTrick.BLL
                                         stateAt == null ||
                                             t.PayInTime <= stateAt
                                 )
+                                .OrderBy(t => t.PayInTime)
+                                .ThenByDescending(t => t.TotalOdds)
+                                .ThenByDescending(t => t.PayInAmount)
                         )
                         .ThenInclude(t => t.Selections),
                 (false, _, true) =>
@@ -94,6 +113,8 @@ namespace HatTrick.BLL
                                     stateAt == null ||
                                         t.Time <= stateAt
                             )
+                            .OrderBy(t => t.Time)
+                            .ThenByDescending(t => t.Amount)
                     )
                         .ThenInclude(t => t.Type),
                 _ => usersQuery

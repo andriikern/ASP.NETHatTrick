@@ -58,7 +58,12 @@
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.userId)
+          body: JSON.stringify({
+            userId: this.userId,
+            includeTickets: false,
+            includeTicketSelections: false,
+            includeTransactions: false
+          })
         }
 
         const searchQuery = new URLSearchParams({

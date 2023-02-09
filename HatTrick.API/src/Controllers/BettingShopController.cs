@@ -30,7 +30,7 @@ namespace HatTrick.API.Controllers
         }
 
         /// <summary>Places a new bet (ticket).</summary>
-        /// <param name="ticketRequest">The new ticket information. It should contain the user's id, the list of selected outcomes' ids and the amount to bet.</param>
+        /// <param name="ticketRequest">The new ticket information.</param>
         /// <param name="placedAt">The date-time at which to place the bet. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The response.</returns>
