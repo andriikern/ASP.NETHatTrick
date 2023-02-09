@@ -11,7 +11,6 @@
 
   <ItemGroup>
 	<Folder Remove="Logs\" />
-	<Folder Include="Logs\" />
 	<Folder Include="SQLite\" />
   </ItemGroup>
 
