@@ -11,7 +11,7 @@ namespace HatTrick.Models
         [Key, DataMember]
         public int Id { get; set; }
 
-        [RegularExpression(@"\w+"), MaxLength(32), Required, DataMember]
+        [RegularExpression(@"[\-\.\w]+"), MaxLength(32), Required, DataMember]
         public string Username { get; set; } = string.Empty;
 
         [MaxLength(64), Required, DataMember]

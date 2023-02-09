@@ -13,14 +13,14 @@ namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for placing bets.</summary>
     [Route("[controller]")]
-    public class BetShopController : InternalBaseController
+    public class BettingShopController : InternalBaseController
     {
         protected readonly BetShop _betShop;
 
-        public BetShopController(
+        public BettingShopController(
             BetShop betShop,
             IMemoryCache cache,
-            ILogger<BetShopController> logger,
+            ILogger<BettingShopController> logger,
             bool disposeMembers = false
         ) :
             base(cache, logger, disposeMembers)

@@ -309,7 +309,7 @@ namespace HatTrick.API.DatabaseInitialisation
             {
                 new User()
                 {
-                    Username = "hattrick",
+                    Username = "hat-trick",
                     Name = "Leo",
                     Surname = "Jones",
                     Sex = "Male",

@@ -1,5 +1,5 @@
 <template>
-  <h1>HatTrick</h1>
+  <h1>Hat-Trick Online Betting Shop</h1>
   <OfferDisplay :now="fixedNow" :userId="userId" />
 </template>
 

@@ -35,7 +35,7 @@ module.exports = {
                 target: 'https://localhost:5001/',
                 logLevel: 'debug'
             },
-            '^/BetShop': {
+            '^/BettingShop': {
                 target: 'https://localhost:5001/',
                 logLevel: 'debug'
             }
