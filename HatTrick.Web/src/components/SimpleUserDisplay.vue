@@ -1,13 +1,12 @@
 <template>
-  <div v-if="!loading"
-       class="container container-fluid text-end">
-    <div class="container text-start">
+  <div v-if="!loading && user !== null"
+       class="container container-fluid clearfix my-3">
+    <div class="float-end">
       <div>
-        <span class="text-muted">Hello,</span>
-        <span class="fw-bold">{{ user.username }}</span>
+        <span class="text-muted">Hello,</span> <span class="fw-bold">{{ user.username }}</span>
       </div>
       <div>
-        Balance: {{ user.balance.toFixed(2) }} <span class="text-muted">&euro;</span>
+        <span class="text-muted">Balance:</span> {{ user.balance.toFixed(2) }} <span class="text-muted">&euro;</span>
       </div>
     </div>
   </div>
@@ -69,7 +68,7 @@
         console.log(this.userId)
 
         fetch('Account?' + searchQuery, requestOptions)
-          .then(r => r.json())
+          .then(r => r.ok ? r.json() : null)
           .then(json => {
             this.user = json as User
             this.loading = false

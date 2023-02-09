@@ -118,8 +118,12 @@
         })
 
         fetch("BetShop?" + searchQuery, requestOptions)
-          .then(() => location.reload())
-          .catch(error => alert(error))
+          .then(r => {
+            if (r.ok)
+              location.reload()
+            else
+              r.text().then(alert)
+          })
       }
     }
   })
