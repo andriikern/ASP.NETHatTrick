@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatTrick.Models", "HatTrick.Models\HatTrick.Models.csproj", "{D3A0F527-96AA-4B74-A443-186DDE53BF8B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatTrick.DAL", "HatTrick.DAL\HatTrick.DAL.csproj", "{4AB583A3-9B6B-4CB1-9B01-8F42B93DCA07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatTrick.BLL", "HatTrick.BLL\HatTrick.BLL.csproj", "{1F318E65-36A6-4254-B260-8CF476B44758}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatTrick.API", "HatTrick.API\HatTrick.API.csproj", "{219BDF3A-A4EB-4BB6-A8C7-87A7D9D03405}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "HatTrick.Web", "HatTrick.Web\HatTrick.Web.esproj", "{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5DEE163B-A8C4-4F23-AB69-8950A2A6689F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3A0F527-96AA-4B74-A443-186DDE53BF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A0F527-96AA-4B74-A443-186DDE53BF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A0F527-96AA-4B74-A443-186DDE53BF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A0F527-96AA-4B74-A443-186DDE53BF8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AB583A3-9B6B-4CB1-9B01-8F42B93DCA07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AB583A3-9B6B-4CB1-9B01-8F42B93DCA07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AB583A3-9B6B-4CB1-9B01-8F42B93DCA07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AB583A3-9B6B-4CB1-9B01-8F42B93DCA07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F318E65-36A6-4254-B260-8CF476B44758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F318E65-36A6-4254-B260-8CF476B44758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F318E65-36A6-4254-B260-8CF476B44758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F318E65-36A6-4254-B260-8CF476B44758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{219BDF3A-A4EB-4BB6-A8C7-87A7D9D03405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{219BDF3A-A4EB-4BB6-A8C7-87A7D9D03405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{219BDF3A-A4EB-4BB6-A8C7-87A7D9D03405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{219BDF3A-A4EB-4BB6-A8C7-87A7D9D03405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F79462A-EB87-442F-8DD6-3F96BCAA4B13}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C505E31-626D-4CDF-B629-5E4495CE0727}
+	EndGlobalSection
+EndGlobal
