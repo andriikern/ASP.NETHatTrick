@@ -8,7 +8,7 @@
 
   <SimpleUserDisplay :now="now" :userId="userId" />
 
-  <form id="ticket" action="BetShop" method="post" @submit="submit">
+  <form id="ticket" action="/API/BettingShop" method="post" @submit="submit">
     <OfferCategoryDisplay :now="now"
                           :promoted="true"
                           @onDataFetched="onDataFetched" 
@@ -117,13 +117,14 @@
           placedAt: dateToISOStringWithOffset(this.now) || ''
         })
 
-        fetch("BetShop?" + searchQuery, requestOptions)
+        fetch("/API/BettingShop?" + searchQuery, requestOptions)
           .then(r => {
             if (r.ok)
               location.reload()
-            else
-              r.text().then(alert)
+
+            return r.text()
           })
+          .then(alert)
       }
     }
   })

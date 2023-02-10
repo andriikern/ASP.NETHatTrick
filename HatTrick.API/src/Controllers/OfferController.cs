@@ -1,4 +1,4 @@
-﻿using HatTrick.BLL;
+using HatTrick.BLL;
 using HatTrick.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for accessing the information about the betting offer.</summary>
-    [Route("[controller]")]
+    [Route("API/[controller]")]
     public class OfferController : InternalBaseController
     {
         protected readonly Offer _offer;

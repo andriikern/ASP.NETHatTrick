@@ -1,4 +1,4 @@
-﻿using HatTrick.API.Models;
+using HatTrick.API.Models;
 using HatTrick.BLL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,21 +12,21 @@ using System.Threading.Tasks;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for placing bets.</summary>
-    [Route("[controller]")]
+    [Route("API/[controller]")]
     public class BettingShopController : InternalBaseController
     {
-        protected readonly BetShop _betShop;
+        protected readonly BettingShop _bettingShop;
 
         public BettingShopController(
-            BetShop betShop,
+            BettingShop bettingShop,
             IMemoryCache cache,
             ILogger<BettingShopController> logger,
             bool disposeMembers = false
         ) :
             base(cache, logger, disposeMembers)
         {
-            _betShop = betShop ??
-                throw new ArgumentNullException(nameof(betShop));
+            _bettingShop = bettingShop ??
+                throw new ArgumentNullException(nameof(bettingShop));
         }
 
         /// <summary>Places a new bet (ticket).</summary>
@@ -45,7 +45,7 @@ namespace HatTrick.API.Controllers
             CancellationToken cancellationToken = default
         ) =>
             await InvokeFuncAsync(
-                () => _betShop.PlaceBetAsync(
+                () => _bettingShop.PlaceBetAsync(
                     placedAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
                     ),
@@ -65,7 +65,7 @@ namespace HatTrick.API.Controllers
             {
                 if (_disposeMembers)
                 {
-                    _betShop.Dispose();
+                    _bettingShop.Dispose();
                 }
             }
 
@@ -80,7 +80,7 @@ namespace HatTrick.API.Controllers
             {
                 if (_disposeMembers)
                 {
-                    await _betShop.DisposeAsync()
+                    await _bettingShop.DisposeAsync()
                         .ConfigureAwait(false);
                 }
             }

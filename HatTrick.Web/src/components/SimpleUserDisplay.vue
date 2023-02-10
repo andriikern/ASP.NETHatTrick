@@ -18,19 +18,12 @@
   import { User } from '../models'
   import { dateToISOStringWithOffset } from '../auxiliaryFunctions'
 
-  import OfferCategoryDisplay from './OfferCategoryDisplay.vue'
-  import BetAmountInputDisplay from './BetAmountInputDisplay.vue'
-
   interface Data {
     loading: Boolean,
     user: User | null
   }
 
   export default defineComponent({
-    components: {
-      OfferCategoryDisplay,
-      BetAmountInputDisplay
-    },
     props: {
       now: Date,
       userId: Number
@@ -70,9 +63,7 @@
           stateAt: dateToISOStringWithOffset(this.now) || ''
         })
 
-        console.log(this.userId)
-
-        fetch('Account?' + searchQuery, requestOptions)
+        fetch("/API/Account?" + searchQuery, requestOptions)
           .then(r => r.ok ? r.json() : null)
           .then(json => {
             this.user = json as User

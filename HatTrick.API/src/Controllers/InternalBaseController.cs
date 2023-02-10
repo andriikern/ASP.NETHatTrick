@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -12,7 +12,7 @@ using HatTrick.API.Features;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides fields, properties and methods common to all application's controllers.</summary>
-    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("null"), ApiController]
+    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("API"), ApiController]
     public class InternalBaseController : ControllerBase, IDisposable, IAsyncDisposable
     {
         private static string GetAdequateContentType(

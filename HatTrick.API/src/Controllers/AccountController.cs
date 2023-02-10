@@ -1,4 +1,4 @@
-﻿using HatTrick.API.Models;
+using HatTrick.API.Models;
 using HatTrick.BLL;
 using HatTrick.Models;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for account journey.</summary>
-    [Route("[controller]")]
+    [Route("API/[controller]")]
     public class AccountController : InternalBaseController
     {
         protected readonly Account _account;

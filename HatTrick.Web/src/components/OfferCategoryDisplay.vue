@@ -62,7 +62,7 @@
           promoted: this.promoted.toString()
         })
 
-        fetch('Offer?' + searchQuery)
+        fetch("/API/Offer?" + searchQuery)
           .then(r => r.json())
           .then(json => {
             this.events = json as Event_[]
