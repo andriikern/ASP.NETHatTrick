@@ -45,6 +45,10 @@ namespace HatTrick.API.DatabaseInitialisation
 
                 logger?.LogDebug("Inserting sample data into the database...");
 
+                await dbContext.TaxGrades
+                    .AddRangeAsync(SampleData.TaxGrades, cancellationToken)
+                    .ConfigureAwait(false);
+
                 await dbContext.Sports
                     .AddRangeAsync(SampleData.Sports, cancellationToken)
                     .ConfigureAwait(false);

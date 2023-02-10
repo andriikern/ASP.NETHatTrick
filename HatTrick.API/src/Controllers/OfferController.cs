@@ -41,7 +41,7 @@ namespace HatTrick.API.Controllers
         /// <response code="200">The list of events, fixtures, markets and outcomes available at <c><paramref name="availableAt" /></c>.</response>
         /// <response code="400">Query failed due to bad user request.</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event[]))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
         public async Task<IActionResult> GetAsync(
             [FromQuery] DateTime? availableAt = null,

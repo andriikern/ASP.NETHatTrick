@@ -36,8 +36,10 @@ namespace HatTrick.API.Controllers
         /// <returns>The response.</returns>
         /// <response code="200">The user information.</response>
         /// <response code="400">Request failed.</response>
+        /// <response code="404">The user was not found.</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpPost]
         public async Task<IActionResult> PostAsync(
             [FromBody] UserInfoRequestModel userInfoRequest,
@@ -52,7 +54,6 @@ namespace HatTrick.API.Controllers
                     ),
                     userInfoRequest.IncludeTickets,
                     userInfoRequest.IncludeTicketSelections,
-                    userInfoRequest.IncludeTransactions,
                     cancellationToken
                 )
             )

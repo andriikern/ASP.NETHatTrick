@@ -122,6 +122,16 @@ class Transaction {
   amount: number = 0
 }
 
+class TicketFinancialAmounts {
+  manipulativeCostRate: number = 0;
+  payInAmount: number = 0;
+  activeAmount: number = 0;
+  totalOdds: number = 0;
+  grossPotentialWinAmount: number = 0;
+  tax: number = 0;
+  netPotentialWinAmount: number = 0
+}
+
 // Export declared types.
 
 export {
@@ -139,5 +149,6 @@ export {
   Market,
   Outcome,
   Ticket,
-  Transaction
+  Transaction,
+  TicketFinancialAmounts
 }

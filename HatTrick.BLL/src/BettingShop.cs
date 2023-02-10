@@ -1,4 +1,5 @@
 using HatTrick.BLL.Exceptions;
+using HatTrick.BLL.Models;
 using HatTrick.DAL;
 using HatTrick.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ namespace HatTrick.BLL
         public const decimal MinBetAmount = 0.25M;
         public const decimal MaxBetAmount = 250_000.00M;
 
-        public const decimal ManipulativeCost = 0.05M;
+        public const decimal ManipulativeCostRate = 0.05M;
 
         private static decimal Round(
             decimal odds
@@ -32,13 +33,24 @@ namespace HatTrick.BLL
         private static decimal CalculateActiveAmount(
             decimal payInAmount
         ) =>
-            (decimal.One - ManipulativeCost) * payInAmount;
+            (decimal.One - ManipulativeCostRate) * payInAmount;
+
+        private static decimal CalculateCostAmount(
+            decimal payInAmount,
+            decimal totalOdds,
+            out decimal activeAmount
+        )
+        {
+            activeAmount = CalculateActiveAmount(payInAmount);
+
+            return Round(totalOdds * CalculateActiveAmount(payInAmount));
+        }
 
         private static decimal CalculateCostAmount(
             decimal payInAmount,
             decimal totalOdds
         ) =>
-            Round(totalOdds * CalculateActiveAmount(payInAmount));
+            CalculateCostAmount(payInAmount, totalOdds, out var _);
 
         private static decimal CalculateTax(
             IEnumerable<TaxGrade> taxGrades,
@@ -306,10 +318,15 @@ namespace HatTrick.BLL
 
         private Task<Ticket> GetTicketByIdAsync(
             int id,
+            DateTime? stateAt = null,
             CancellationToken cancellationToken = default
         ) =>
             _context.Tickets
-                .Where(t => t.Id == id)
+                .Where(
+                    t =>
+                        (stateAt == null || t.PayInTime <= stateAt) &&
+                            t.Id == id
+                )
                 .SingleAsync(cancellationToken);
 
         private Task<Dictionary<int, Outcome>> MapSelectionIdsAsync(
@@ -549,18 +566,126 @@ namespace HatTrick.BLL
             return id;
         }
 
-        public async Task<(decimal costAmount, decimal winAmount, decimal tax)> CalculateTicketOutputAmountsAsync(
-            int ticketId,
+        public async Task<Ticket> GetTicketAsync(
+            int id,
+            DateTime? stateAt = null,
+            bool includeSelections = false,
             CancellationToken cancellationToken = default
         )
         {
-            decimal costAmount;
-            decimal winAmount;
-            decimal tax;
+            Ticket ticket;
 
             _logger.LogDebug(
-                "Calculating ticket cost amount, win amount, and tax... Ticket id: {ticketId}",
-                    ticketId
+                "Fetching ticket from the database... Id: {id}, state at: {stateAt}, include selections: {includeSelections}",
+                    id,
+                    stateAt,
+                    includeSelections
+            );
+
+            try
+            {
+                var dbTxn = await _context.Database
+                    .BeginTransactionAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                await using (dbTxn.ConfigureAwait(false))
+                {
+                    // Initialise query.
+                    IQueryable<Ticket> ticketQuery = _context.Tickets;
+
+                    // Include all requested and related entities.
+                    ticketQuery = ticketQuery.Include(t => t.Status);
+                    if (includeSelections)
+                    {
+                        ticketQuery = ticketQuery.Include(
+                            t => t.Selections
+                                .OrderBy(s => s.Type.Priority)
+                                .ThenBy(s => s.Type.Name)
+                                .ThenBy(s => s.Value)
+                                //.ThenByDescending(s => s.Odds) // Not supported in SQLite: http://learn.microsoft.com/en-gb/ef/core/providers/sqlite/limitations#query-limitations
+                                .ThenBy(s => s.AvailableUntil)
+                                .ThenByDescending(s => s.AvailableFrom)
+                        );
+                    }
+
+                    // Filter.
+                    ticketQuery = ticketQuery.Where(
+                        t =>
+                            (stateAt == null || t.PayInTime <= stateAt) &&
+                                t.Id == id
+                    );
+
+                    // Download ticket.
+                    try
+                    {
+                        ticket = await ticketQuery.AsSplitQuery()
+                            .AsNoTrackingWithIdentityResolution()
+                            .SingleAsync(cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                    catch (InvalidOperationException exception)
+                    {
+                        throw new InternalException(
+                            InternalExceptionReason.NotFound,
+                            "The ticket does not exist.",
+                            exception
+                        );
+                    }
+                }
+            }
+            catch (Exception exception)
+                when (
+                    exception is InvalidOperationException ||
+                    exception is InternalException
+                )
+            {
+                _logger.LogError(
+                    exception,
+                    "Error while fetching ticket from the database. Id: {id}, state at: {stateAt}, include selections: {includeSelections}",
+                        id,
+                        stateAt,
+                        includeSelections
+                );
+
+                if (exception is not InternalException)
+                {
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
+                }
+
+                throw;
+            }
+
+            _logger.LogInformation(
+                "Ticket successfully fetched from the database... Id: {id}, state at: {stateAt}, include selections: {includeTicketSelections}, ticket: {@ticket}",
+                    id,
+                    stateAt,
+                    includeSelections,
+                    ticket
+            );
+
+            return ticket;
+        }
+
+        public async Task<TicketFinancialAmounts> CalculateTicketFinancialAmountsAsync(
+            int ticketId,
+            DateTime? stateAt,
+            CancellationToken cancellationToken = default
+        )
+        {
+            decimal payInAmount;
+            decimal activeAmount;
+            decimal totalOdds;
+            decimal grossPotentialWinAmount;
+            decimal tax;
+            decimal netPotentialWinAmount;
+
+            _logger.LogDebug(
+                "Calculating ticket financial amounts... Ticket id: {ticketId}, state at: {stateAt}",
+                    ticketId,
+                    stateAt
             );
 
             try
@@ -575,6 +700,7 @@ namespace HatTrick.BLL
                     {
                         ticket = await GetTicketByIdAsync(
                             ticketId,
+                            stateAt,
                             cancellationToken
                         )
                             .ConfigureAwait(false);
@@ -591,9 +717,11 @@ namespace HatTrick.BLL
                     var taxGrades = await GetTaxGradesAsync(_context, cancellationToken)
                         .ConfigureAwait(false);
 
-                    costAmount = CalculateCostAmount(ticket.PayInAmount, ticket.TotalOdds);
-                    tax = CalculateTax(taxGrades, costAmount);
-                    winAmount = costAmount - tax;
+                    payInAmount = ticket.PayInAmount;
+                    totalOdds = ticket.TotalOdds;
+                    grossPotentialWinAmount = CalculateCostAmount(payInAmount, totalOdds, out activeAmount);
+                    tax = CalculateTax(taxGrades, grossPotentialWinAmount);
+                    netPotentialWinAmount = grossPotentialWinAmount - tax;
                 }
             }
             catch (Exception exception)
@@ -604,8 +732,9 @@ namespace HatTrick.BLL
             {
                 _logger.LogError(
                     exception,
-                    "Error while calculating ticket cost amount, win amount, and tax. Ticket id: {ticketId}",
-                        ticketId
+                    "Error while calculating ticket financial amounts. Ticket id: {ticketId}, state at: {stateAt}",
+                        ticketId,
+                        stateAt
                 );
 
                 if (exception is not InternalException)
@@ -620,12 +749,24 @@ namespace HatTrick.BLL
                 throw;
             }
 
+            var amounts = new TicketFinancialAmounts()
+            {
+                PayInAmount = payInAmount,
+                ActiveAmount = activeAmount,
+                TotalOdds = totalOdds,
+                GrossPotentialWinAmount = grossPotentialWinAmount,
+                Tax = tax,
+                NetPotentialWinAmount = netPotentialWinAmount
+            };
+
             _logger.LogInformation(
-                "Ticket cost amount, win amount, and tax successfully calculated. Ticket id: {ticketId}, cost amount: {costAmount:N2}, win amount: {winAmount:N2}, tax: {tax:N2}",
-                    ticketId
+                "Ticket financial amounts successfully calculated. Ticket id: {ticketId}, state at: {stateAt}, amounts: {@amounts}",
+                    ticketId,
+                    stateAt,
+                    amounts
             );
 
-            return (costAmount, winAmount, tax);
+            return amounts;
         }
 
         private void Dispose(
