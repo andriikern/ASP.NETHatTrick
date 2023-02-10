@@ -221,6 +221,7 @@ namespace HatTrick.BLL
                     catch (InvalidOperationException exception)
                     {
                         throw new InternalException(
+                            InternalExceptionReason.NotFound,
                             "The user does not exist.",
                             exception
                         );
@@ -245,7 +246,11 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(null, exception);
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
                 }
 
                 throw;

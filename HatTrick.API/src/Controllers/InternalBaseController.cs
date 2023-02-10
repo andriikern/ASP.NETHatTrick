@@ -73,6 +73,113 @@ namespace HatTrick.API.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
+        protected IActionResult InvokeFunc<TResult>(
+            Func<TResult> func,
+            bool noContentIfNull = false,
+            HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
+            object? errorObject = null
+        )
+        {
+            TResult result;
+
+            try
+            {
+                result = func();
+            }
+            catch (InternalException exception)
+            {
+                if (exception.Reason.HasFlag(InternalExceptionReason.ServerError))
+                {
+                    return StatusCode(
+                        (int)HttpStatusCode.InternalServerError
+                    );
+                }
+                if (exception.Reason.HasFlag(InternalExceptionReason.NotFound))
+                {
+                    return NotFound(exception.Message);
+                }
+                if (exception.Reason.HasFlag(InternalExceptionReason.BadInput))
+                {
+                    return BadRequest(exception.Message);
+                }
+
+                return StatusCode(
+                    (int)HttpStatusCode.InternalServerError
+                );
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(
+                    (int)errorStatusCode,
+                    errorObject
+                );
+            }
+
+            if (result is null)
+            {
+                return Null(noContentIfNull);
+            }
+
+            return Ok(result);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        protected async Task<IActionResult> InvokeFuncAsync<TResult>(
+            Func<Task<TResult>> asyncFunc,
+            bool noContentIfNull = false,
+            HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
+            object? errorObject = null
+        )
+        {
+            TResult result;
+
+            try
+            {
+                result = await asyncFunc()
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalException exception)
+            {
+                if (exception.Reason.HasFlag(InternalExceptionReason.ServerError))
+                {
+                    return StatusCode(
+                        (int)HttpStatusCode.InternalServerError
+                    );
+                }
+                if (exception.Reason.HasFlag(InternalExceptionReason.NotFound))
+                {
+                    return NotFound(exception.Message);
+                }
+                if (exception.Reason.HasFlag(InternalExceptionReason.BadInput))
+                {
+                    return BadRequest(exception.Message);
+                }
+
+                return StatusCode(
+                    (int)HttpStatusCode.InternalServerError
+                );
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(
+                    (int)errorStatusCode,
+                    errorObject
+                );
+            }
+
+            if (result is null)
+            {
+                return Null(noContentIfNull);
+            }
+
+            return Ok(result);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
         protected IActionResult InvokeAction(
             Action action,
             object? okObject = null,
@@ -112,77 +219,6 @@ namespace HatTrick.API.Controllers
                 errorStatusCode,
                 errorObject
             );
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        protected IActionResult InvokeFunc<TResult>(
-            Func<TResult> func,
-            bool noContentIfNull = false,
-            HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
-            object? errorObject = null
-        )
-        {
-            TResult result;
-
-            try
-            {
-                result = func();
-            }
-            catch (InternalException exception)
-            {
-                return string.IsNullOrEmpty(exception.Message) ?
-                    StatusCode((int)HttpStatusCode.InternalServerError) :
-                    BadRequest(exception.Message);
-            }
-            catch (InvalidOperationException)
-            {
-                return StatusCode((int)errorStatusCode, errorObject);
-            }
-
-            if (result is null)
-            {
-                return Null(noContentIfNull);
-            }
-
-            return Ok(result);
-        }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<IActionResult> InvokeFuncAsync<TResult>(
-            Func<Task<TResult>> asyncFunc,
-            bool noContentIfNull = false,
-            HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
-            object? errorObject = null
-        )
-        {
-            TResult result;
-
-            try
-            {
-                result = await asyncFunc()
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                return NoContent();
-            }
-            catch (InternalException exception)
-            {
-                return string.IsNullOrEmpty(exception.Message) ?
-                    StatusCode((int)HttpStatusCode.InternalServerError) :
-                    BadRequest(exception.Message);
-            }
-            catch (InvalidOperationException)
-            {
-                return StatusCode((int)errorStatusCode, errorObject);
-            }
-
-            if (result is null)
-            {
-                return Null(noContentIfNull);
-            }
-
-            return Ok(result);
-        }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         protected virtual void Dispose(

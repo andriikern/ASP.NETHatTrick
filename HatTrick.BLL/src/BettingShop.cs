@@ -136,12 +136,14 @@ namespace HatTrick.BLL
             if (selectionIds.IsEmpty)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"No outcome is selected. At least {1} outcome must be selected."
                 );
             }
             if (selectionIds.Length > MaxSelectionCount)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"Too many outcomes are selected. No more than {MaxSelectionCount} outcomes may be selected."
                 );
             }
@@ -155,6 +157,7 @@ namespace HatTrick.BLL
             if (!selections.TryGetValue(selectionId, out var selection))
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"An unavailable or non-existent outcome is selected."
                 );
             }
@@ -170,6 +173,7 @@ namespace HatTrick.BLL
             if (!selectedEventIds.Add(selection.Market.Fixture.Event.Id))
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     "Duplicate events are selected. Each outcome must belong to a unique event; no event may be selected more than once."
                 );
             }
@@ -202,6 +206,7 @@ namespace HatTrick.BLL
             if (promoted && promoCombinations < MinPromoCombos)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos} non-promoted outcomes of odds {PromoComboOddsThreshold} or higher must be selected, as well."
                 );
             }
@@ -250,18 +255,21 @@ namespace HatTrick.BLL
             if (amount < decimal.Zero)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     "Pay-in amount is negative."
                 );
             }
             if (amount < MinBetAmount || amount > MaxBetAmount)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"Pay-in amount is out of range. Minimal allowed bet is {MinBetAmount:N2}, maximal allowed bet is {MaxBetAmount:N2}"
                 );
             }
             if (amount > balance)
             {
                 throw new InternalException(
+                    InternalExceptionReason.BadInput,
                     $"Pay-in amount exceeds the current balance of {balance:N2}."
                 );
             }
@@ -458,6 +466,7 @@ namespace HatTrick.BLL
                     catch (InvalidOperationException exception)
                     {
                         throw new InternalException(
+                            InternalExceptionReason.NotFound,
                             "The user does not exist.",
                             exception
                         );
@@ -518,7 +527,11 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(null, exception);
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
                 }
 
                 throw;
@@ -569,6 +582,7 @@ namespace HatTrick.BLL
                     catch (InvalidOperationException exception)
                     {
                         throw new InternalException(
+                            InternalExceptionReason.NotFound,
                             "The ticket does not exist.",
                             exception
                         );
@@ -596,7 +610,11 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(null, exception);
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
                 }
 
                 throw;
