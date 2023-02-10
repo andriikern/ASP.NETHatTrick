@@ -6,15 +6,11 @@
     </div>
   </div>
 
-  <SimpleUserDisplay :now="now" :userId="userId" />
-
   <form id="ticket" action="/API/BettingShop" method="post" @submit="submit">
-    <OfferCategoryDisplay :now="now"
-                          :promoted="true"
+    <OfferCategoryDisplay :promoted="true"
                           @onDataFetched="onDataFetched" 
                           @checkOutcome="checkOutcome" />
-    <OfferCategoryDisplay :now="now"
-                          :promoted="false"
+    <OfferCategoryDisplay :promoted="false"
                           @onDataFetched="onDataFetched"
                           @checkOutcome="checkOutcome" />
     <BetAmountInputDisplay :loading="loading"
@@ -25,13 +21,16 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { dateToISOStringWithOffset } from '../auxiliaryFunctions'
-
-  import SimpleUserDisplay from './SimpleUserDisplay.vue'
-  import OfferCategoryDisplay from './OfferCategoryDisplay.vue'
-  import BetAmountInputDisplay from './BetAmountInputDisplay.vue'
+  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+    
+  import { _now, _userId } from "../main"
+    
+  import OfferCategoryDisplay from "./Offer/OfferCategoryDisplay.vue"
+  import BetAmountInputDisplay from "./Offer/BetAmountInputDisplay.vue"
 
   interface Data {
+    now: Date | null,
+    userId: Number,
     selection: Set<Number>,
     betAmount: Number,
     promoLoading: Map<Boolean, Boolean>,
@@ -40,27 +39,26 @@
 
   export default defineComponent({
     components: {
-      SimpleUserDisplay,
       OfferCategoryDisplay,
       BetAmountInputDisplay
     },
-    props: {
-      now: Date,
-      userId: Number
-    },
     data(): Data {
       return {
+        now: null,
+        userId: 0,
         selection: new Set<Number>(),
         betAmount: 0,
         promoLoading: new Map<Boolean, Boolean>(),
-        loading: false
+        loading: true
       }
     },
     created() {
-      this.selection = new Set<Number>(),
-      this.betAmount = 0,
-      this.promoLoading = new Map<Boolean, Boolean>(),
       this.loading = true
+      this.now = _now
+      this.userId = _userId
+      this.selection = new Set<Number>()
+      this.betAmount = 0
+      this.promoLoading = new Map<Boolean, Boolean>()
 
       // reset the data when the view is created and the data is already being
       // observed
@@ -118,13 +116,11 @@
         })
 
         fetch("/API/BettingShop?" + searchQuery, requestOptions)
-          .then(r => {
-            if (r.ok)
-              location.reload()
-
-            return r.text()
-          })
-          .then(alert)
+          .then(r => r.ok ? r.json() : r.text())
+          .then(r => typeof r === 'string' || r instanceof String ?
+            alert(r) :
+            this.$router.push({ name: 'ticket', params: { id: r } })
+          )
       }
     }
   })

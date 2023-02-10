@@ -1,17 +1,29 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.62-alpha">
   <PropertyGroup>
-	<StartupCommand>npm run serve</StartupCommand>
-	<JavaScriptTestRoot>.\</JavaScriptTestRoot>
-	<JavaScriptTestFramework>Jest</JavaScriptTestFramework>
-	<!-- Command to run on project build -->
-	<BuildCommand>
-	</BuildCommand>
-	<!-- Command to create an optimized build of the project that's ready for publishing -->
-	<ProductionBuildCommand>npm run build</ProductionBuildCommand>
-	<!-- Folder where production build objects will be placed -->
-	<BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+    <StartupCommand>npm run serve</StartupCommand>
+    <JavaScriptTestRoot>.\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <!-- Command to run on project build -->
+    <BuildCommand>
+    </BuildCommand>
+    <!-- Command to create an optimized build of the project that's ready for publishing -->
+    <ProductionBuildCommand>npm run build</ProductionBuildCommand>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-	<None Include=".vscode\launch.json" />
+    <None Include=".vscode\launch.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="public\index.html~RF4e76096.TMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\components\Offer\OfferDisplay.vue~RF525edb5.TMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\components\OfferDisplay.vue~RF5acf9ea.TMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\components\Ticket\" />
   </ItemGroup>
 </Project>

@@ -20,7 +20,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Outcome } from '../models'
+  import { Outcome } from "../../models"
 
   interface Data {
     disabled: Boolean

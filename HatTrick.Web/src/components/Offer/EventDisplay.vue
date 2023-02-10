@@ -2,7 +2,7 @@
   <li :class="'list-group-item border-' + (promoted ? 'primary' : 'secondary') + ' text-center'">
     <div class="container container-fluid">
       <div class="row" style="font-size: 0.75rem;">
-        <div class="col fw-bold text-start">{{ event.name }}</div>
+        <div class="col text-start"><strong>{{ event.name }}</strong></div>
         <div class="col text-center">{{ event.sport.name }}</div>
         <div class="col text-end">
           {{ new Date(event.startsAt).toLocaleString('en-GB')}}
@@ -21,9 +21,9 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_ } from '../models'
+  import { Event_ } from "../../models"
 
-  import FixtureDisplay from './FixtureDisplay.vue'
+  import FixtureDisplay from "./FixtureDisplay.vue"
 
   export default defineComponent({
     components: {

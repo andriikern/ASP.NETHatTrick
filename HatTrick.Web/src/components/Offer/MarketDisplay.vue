@@ -20,9 +20,9 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Market } from '../models'
+  import { Market } from "../../models"
 
-  import OutcomeDisplay from './OutcomeDisplay.vue'
+  import OutcomeDisplay from "./OutcomeDisplay.vue"
 
   export default defineComponent({
     components: {

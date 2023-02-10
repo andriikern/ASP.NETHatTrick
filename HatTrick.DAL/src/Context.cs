@@ -58,13 +58,13 @@ namespace HatTrick.DAL
                 .HasIndex(f => f.Name)
                 .IsUnique();
 
+            modelBuilder.Entity<MarketType>()
+                .HasIndex(f => f.Name)
+                .IsUnique();
+
             modelBuilder.Entity<OutcomeType>()
-                .HasIndex("MarketId")
-                .IsUnique(false);
-            modelBuilder.Entity<OutcomeType>()
-                .HasOne(o => o.Market)
-                .WithMany()
-                .IsRequired();
+                .HasIndex("MarketId", nameof(OutcomeType.Name))
+                .IsUnique();
 
             modelBuilder.Entity<TicketStatus>()
                 .HasIndex(t => t.Name)
@@ -75,49 +75,59 @@ namespace HatTrick.DAL
                 .IsUnique();
 
             modelBuilder.Entity<User>()
-                .HasAlternateKey(u => u.Username);
-            modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(u => u.Username);
 
             modelBuilder.Entity<Event>()
-                .HasIndex("SportId", nameof(Event.EndsAt))
-                .IsUnique(false);
-            modelBuilder.Entity<Event>()
-                .HasIndex(e => e.EndsAt)
-                .IsUnique(false);
+                .HasOne(e => e.Status)
+                .WithMany()
+                .IsRequired();
 
             modelBuilder.Entity<Fixture>()
                 .HasKey("EventId", "TypeId");
+            modelBuilder.Entity<Fixture>()
+                .HasOne(f => f.Type)
+                .WithMany()
+                .IsRequired();
 
             modelBuilder.Entity<Market>()
-                .HasIndex("FixtureEventId", "FixtureTypeId")
-                .IsUnique(false);
+                .HasOne(m => m.Type)
+                .WithMany()
+                .IsRequired();
 
             modelBuilder.Entity<Outcome>()
-                .HasIndex("MarketId")
-                .IsUnique(false);
+                .HasOne(o => o.Type)
+                .WithMany()
+                .IsRequired();
 
             modelBuilder.Entity<Ticket>()
-                .HasIndex("UserId", nameof(Ticket.PayInTime))
-                .IsUnique(false);
-            modelBuilder.Entity<Ticket>()
-                .HasIndex(t => t.PayInTime)
-                .IsUnique(false);
+                .HasOne(t => t.Status)
+                .WithMany()
+                .IsRequired();
 
             modelBuilder.Entity<TicketSelection>()
                 .HasKey("TicketId", "SelectionId");
+            modelBuilder.Entity<TicketSelection>()
+                .HasOne(ts => ts.Ticket)
+                .WithMany()
+                .IsRequired();
+            modelBuilder.Entity<TicketSelection>()
+                .HasOne(ts => ts.Selection)
+                .WithMany()
+                .IsRequired();
             modelBuilder.Entity<Ticket>()
                 .HasMany<Outcome>()
                 .WithMany()
                 .UsingEntity<TicketSelection>();
 
             modelBuilder.Entity<Transaction>()
-                .HasIndex("UserId", nameof(Transaction.Time))
-                .IsUnique(false);
-            modelBuilder.Entity<Transaction>()
-                .HasIndex(t => t.Time)
-                .IsUnique(false);
+                .HasOne(t => t.Type)
+                .WithMany()
+                .IsRequired();
+
+            _logger.LogInformation("Database model created successfully.");
 
             base.OnModelCreating(modelBuilder);
         }

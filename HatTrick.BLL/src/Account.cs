@@ -16,12 +16,11 @@ namespace HatTrick.BLL
             IQueryable<User> usersQuery,
             DateTime? stateAt = null,
             bool includeTickets = false,
-            bool includeTicketSelections = false,
-            bool includeTransactions = false
+            bool includeTicketSelections = false
         ) =>
-            (includeTickets, includeTicketSelections, includeTransactions) switch
+            (includeTickets, includeTicketSelections) switch
             {
-                (true, true, true) =>
+                (true, true) =>
                     usersQuery.Include(
                         u => u.Tickets
                             .Where(
@@ -30,8 +29,6 @@ namespace HatTrick.BLL
                                         t.PayInTime <= stateAt
                             )
                             .OrderBy(t => t.PayInTime)
-                            .ThenByDescending(t => t.TotalOdds)
-                            .ThenByDescending(t => t.PayInAmount)
                     )
                         .ThenInclude(t => t.Status)
                         .Include(
@@ -42,81 +39,19 @@ namespace HatTrick.BLL
                                             t.PayInTime <= stateAt
                                 )
                                 .OrderBy(t => t.PayInTime)
-                                .ThenByDescending(t => t.TotalOdds)
-                                .ThenByDescending(t => t.PayInAmount)
-                        )
-                        .ThenInclude(t => t.Selections)
-                        .Include(
-                            u => u.Tickets
-                                .Where(
-                                    t =>
-                                        stateAt == null ||
-                                            t.PayInTime <= stateAt
-                                )
-                                .OrderBy(t => t.PayInTime)
-                                .ThenByDescending(t => t.TotalOdds)
-                                .ThenByDescending(t => t.PayInAmount)
-                        )
-                        .ThenInclude(t => t.Transactions)
-                        .Include(
-                            u => u.Transactions
-                                .Where(
-                                    t =>
-                                        stateAt == null ||
-                                            t.Time <= stateAt
-                                )
-                                .OrderBy(t => t.Time)
-                                .ThenByDescending(t => t.Amount)
-                        )
-                        .ThenInclude(t => t.Type)
-                        .Include(
-                            u => u.Transactions
-                                .Where(
-                                    t =>
-                                        stateAt == null ||
-                                            t.Time <= stateAt
-                                )
-                                .OrderBy(t => t.Time)
-                                .ThenByDescending(t => t.Amount)
-                        )
-                        .ThenInclude(t => t.Ticket),
-                (true, true, false) =>
-                    usersQuery.Include(
-                        u => u.Tickets
-                            .Where(
-                                t =>
-                                    stateAt == null ||
-                                        t.PayInTime <= stateAt
-                            )
-                            .OrderBy(t => t.PayInTime)
-                            .ThenByDescending(t => t.TotalOdds)
-                            .ThenByDescending(t => t.PayInAmount)
-                    )
-                        .ThenInclude(t => t.Status)
-                        .Include(
-                            u => u.Tickets
-                                .Where(
-                                    t =>
-                                        stateAt == null ||
-                                            t.PayInTime <= stateAt
-                                )
-                                .OrderBy(t => t.PayInTime)
-                                .ThenByDescending(t => t.TotalOdds)
-                                .ThenByDescending(t => t.PayInAmount)
                         )
                         .ThenInclude(t => t.Selections),
-                (false, _, true) =>
+                (true, false) =>
                     usersQuery.Include(
-                        u => u.Transactions
+                        u => u.Tickets
                             .Where(
                                 t =>
                                     stateAt == null ||
-                                        t.Time <= stateAt
+                                        t.PayInTime <= stateAt
                             )
-                            .OrderBy(t => t.Time)
-                            .ThenByDescending(t => t.Amount)
+                            .OrderBy(t => t.PayInTime)
                     )
-                        .ThenInclude(t => t.Type),
+                        .ThenInclude(t => t.Status),
                 _ => usersQuery
             };
 
@@ -169,19 +104,17 @@ namespace HatTrick.BLL
             DateTime? stateAt = null,
             bool includeTickets = false,
             bool includeTicketSelections = false,
-            bool includeTransactions = false,
             CancellationToken cancellationToken = default
         )
         {
             User user;
 
             _logger.LogDebug(
-                "Fetching user from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}, include transactions: {includeTransactions}",
+                "Fetching user from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}",
                     id,
                     stateAt,
                     includeTickets,
-                    includeTicketSelections,
-                    includeTransactions
+                    includeTicketSelections
             );
 
             try
@@ -199,8 +132,7 @@ namespace HatTrick.BLL
                         userQuery,
                         stateAt,
                         includeTickets,
-                        includeTicketSelections,
-                        includeTransactions
+                        includeTicketSelections
                     );
 
                     // Filter.
@@ -236,12 +168,11 @@ namespace HatTrick.BLL
             {
                 _logger.LogError(
                     exception,
-                    "Error while fetching user from the database. Id: { id}, state at: { stateAt}, include tickets: { includeTickets}, include ticket selections: { includeTicketSelections}, include transactions: { includeTransactions}",
+                    "Error while fetching user from the database. Id: { id}, state at: { stateAt}, include tickets: { includeTickets}, include ticket selections: { includeTicketSelections}",
                         id,
                         stateAt,
                         includeTickets,
-                        includeTicketSelections,
-                        includeTransactions
+                        includeTicketSelections
                 );
 
                 if (exception is not InternalException)
@@ -257,12 +188,11 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "User successfully fetched from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}, include transactions: {includeTransactions}, user: {@user}",
+                "User successfully fetched from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}, user: {@user}",
                     id,
                     stateAt,
                     includeTickets,
                     includeTicketSelections,
-                    includeTransactions,
                     user
             );
 

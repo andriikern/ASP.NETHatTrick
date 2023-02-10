@@ -18,14 +18,17 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_ } from '../models'
-  import { dateToISOStringWithOffset } from '../auxiliaryFunctions'
+  import { Event_ } from "../../models"
+  import { dateToISOStringWithOffset } from "../../auxiliaryFunctions"
+
+  import { _now } from "../../main"
     
-  import EventDisplay from './EventDisplay.vue'
+  import EventDisplay from "./EventDisplay.vue"
 
   interface Data {
-    loading: Boolean,
-    events: Event_[] | null
+    now: Date | null,
+    events: Event_[] | null,
+    loading: Boolean
   }
 
   export default defineComponent({
@@ -33,17 +36,21 @@
       EventDisplay
     },
     props: {
-      now: Date,
       promoted: Boolean
     },
     emits: [ 'onDataFetched', 'checkOutcome' ],
     data(): Data {
       return {
-        loading: true,
-        events: null
+        now: null,
+        events: null,
+        loading: true
       }
     },
     created() {
+      this.loading = true
+      this.now = _now
+      this.events = null
+
       // fetch the data when the view is created and the data is already being
       // observed
       this.fetchData()

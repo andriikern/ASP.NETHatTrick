@@ -1,58 +1,39 @@
 <template>
-  <h1>Hat-Trick Online Betting Shop</h1>
-  <OfferDisplay :now="fixedNow" :userId="userId" />
+  <div class="container container-fluid" style="min-height: 100%;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container container-fluid">
+        <RouterLink class="navbar-brand" to="/">Hat-Trick</RouterLink>
+        <div class="d-flex">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item align-middle me-2 my-auto">
+              <RouterLink class="nav-link" to="/">
+                Today's Offer
+              </RouterLink>
+            </li>
+            <UserNavItem />
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container container-fluid p-3">
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import { RouterView } from 'vue-router'
 
-  import OfferDisplay from './components/OfferDisplay.vue'
-
-  // Set this value to `null` to use the actual current time, or to a
-  // different fixed date-time value.  Note that the event offer is not
-  // automatically updated, a point to late in time might result in an empty
-  // offer.
-  const _now: Date | null = new Date('2023-02-01T12:00:00.000000+00:00')
-
-  // Change this variable to use another user. If the user by the provided id
-  // does not exist in the database, errors will arise while using the app.
-  // However, the user is hard-coded into the app using this variable, and no
-  // authentication functionality is implemented otherwise.
-  const _userId: number = 1
-
-  interface Data {
-    now: Date | null,
-    fixedNow: Date,
-    userId: number
-  }
+  import UserNavItem from "./components/UserNavItem.vue"
 
   export default defineComponent({
-    name: 'App',
     components: {
-      OfferDisplay
+      RouterView,
+      UserNavItem
     },
-    data(): Data {
-      return {
-        now: null,
-        fixedNow: new Date(),
-        userId: 0
-      }
-    },
-    created() {
-      this.now = _now
-      this.userId = _userId
-
-      this.resetData()
-    },
-    watch: {
-      // call again the method if the route changes
-      '$route': 'resetData'
-    },
-    methods: {
-      resetData(): void {
-        this.fixedNow = new Date(this.now === null ? Date.now() : this.now)
-      }
-    }
+    created() { }
   })
 
 </script>

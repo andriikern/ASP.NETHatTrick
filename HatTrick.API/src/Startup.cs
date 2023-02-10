@@ -88,129 +88,7 @@ namespace HatTrick.API
             services.AddScoped<Account>();
             services.AddScoped<Offer>();
             services.AddScoped<BettingShop>();
-            /*
-            services.AddSingleton<IParserFactory, SimpleParserFactory>(_ => new SimpleParserFactory(';'));
-            services.AddScoped<IParser, SimpleParser>(
-                sp => (SimpleParser)sp.GetRequiredService<IParserFactory>().Create()
-            );
-            services.AddScoped<ICommunicator, Communicator>();
-            {
-                services.AddHttpClient<ICommunicator, Communicator>(
-                    (sp, client) =>
-                    {
-                        client.BaseAddress = new(Configuration["CustomBet:Authority"]);
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.ParseAdd("application/xml");
-                        client.DefaultRequestHeaders.Accept.ParseAdd("text/xml");
-                        client.DefaultRequestHeaders.Accept.ParseAdd("text/plain");
-                        client.DefaultRequestHeaders.Add(
-                            "X-Access-Token",
-                            sp.GetRequiredService<IEncryptor>().Decrypt(Configuration["CustomBet:AccessToken"])
-                        );
-                    }
-                ).ConfigurePrimaryHttpMessageHandler(
-                    sp => new HttpClientHandler()
-                    {
-                        Proxy = String.IsNullOrEmpty(Configuration["CustomBet:Proxy"]) ?
-                            null :
-                            new WebProxy(
-                                sp.GetRequiredService<IEncryptor>().Decrypt(Configuration["CustomBet:Proxy"])
-                            ),
-                        DefaultProxyCredentials = null,
-                        UseProxy = !String.IsNullOrEmpty(Configuration["CustomBet:Proxy"]),
-                        CookieContainer = sp.GetRequiredService<CookieContainer>(),
-                        UseCookies = true,
-                        ClientCertificateOptions = ClientCertificateOption.Automatic,
-                        PreAuthenticate = false,
-                        UseDefaultCredentials = false,
-                        Credentials = null
-                    }
-                );
-            }
-            services.AddSingleton<INamespacesPersisterFactory, NamespacesPersisterFactory>(
-                sp => new(
-                    sp.GetRequiredService<ILoggerFactory>(),
-                    sp.GetRequiredService<ILogger<NamespacesPersisterFactory>>(),
-                    sp.GetRequiredService<IEncryptor>().Decrypt(Configuration.GetConnectionString("CustomBet")),
-                    LogDatabaseInformation,
-                    true
-                )
-            );
-            services.AddScoped<INamespacesPersister, NamespacesPersister>(
-                sp => (NamespacesPersister)sp.GetRequiredService<INamespacesPersisterFactory>().Create()
-            );
-            services.AddSingleton<ISelectionsPersisterFactory, BLL.Db.SelectionsPersisterFactory>(
-                sp => new(
-                    sp.GetRequiredService<ILoggerFactory>(),
-                    sp.GetRequiredService<ILogger<BLL.Db.SelectionsPersisterFactory>>(),
-                    sp.GetRequiredService<IEncryptor>().Decrypt(Configuration.GetConnectionString("CustomBet")),
-                    Configuration["Persistence:DefaultNamespace"],
-                    LogDatabaseInformation,
-                    true
-                )
-            );
-            services.AddScoped<ISelectionsPersister, BLL.Db.SelectionsPersister>(
-                sp => (BLL.Db.SelectionsPersister)sp.GetRequiredService<ISelectionsPersisterFactory>().Create()
-            );
-            services.AddSingleton<ICalculationResultsPersisterFactory, CalculationResultsPersisterFactory>(
-                sp => new(
-                    sp.GetRequiredService<ILoggerFactory>(),
-                    sp.GetRequiredService<ILogger<CalculationResultsPersisterFactory>>(),
-                    sp.GetRequiredService<IEncryptor>().Decrypt(Configuration.GetConnectionString("CustomBet")),
-                    Configuration["Persistence:DefaultNamespace"],
-                    LogDatabaseInformation,
-                    true
-                )
-            );
-            services.AddScoped<ICalculationResultsPersister, CalculationResultsPersister>(
-                sp => (CalculationResultsPersister)sp.GetRequiredService<ICalculationResultsPersisterFactory>().Create()
-            );
-            */
-
-            // managers
-            /*
-            services.AddScoped(
-                sp => new SelectionsEvaluationManager(
-                    sp,
-                    sp.GetRequiredService<ILogger<SelectionsEvaluationManager>>(),
-                    sp.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(SelectionsEvaluationManager).FullName),
-                    sp.GetRequiredService<ISelectionsPersisterFactory>(),
-                    sp.GetRequiredService<ICalculationResultsPersisterFactory>(),
-                    sp.GetRequiredService<INamespacesPersister>(),
-                    sp.GetRequiredService<ISelectionsPersister>(),
-                    Configuration.GetValue<Int32>("CustomBet:Requests:BatchSize", 5)
-                )
-            );
-            {
-                services.AddHttpClient<SelectionsEvaluationManager>(
-                    (sp, client) =>
-                    {
-                        client.BaseAddress = new(Configuration["InternalApiEndpoints:Authority"]);
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-                        client.DefaultRequestHeaders.Accept.ParseAdd("text/json");
-                        client.DefaultRequestHeaders.Accept.ParseAdd("text/plain");
-                    }
-                ).ConfigurePrimaryHttpMessageHandler(
-                    sp => new HttpClientHandler()
-                    {
-                        Proxy = String.IsNullOrEmpty(Configuration["InternalApiEndpoints:Proxy"]) ?
-                            null :
-                            new WebProxy(
-                                sp.GetRequiredService<IEncryptor>().Decrypt(Configuration["InternalApiEndpoints:Proxy"])
-                            ),
-                        DefaultProxyCredentials = null,
-                        UseProxy = !String.IsNullOrEmpty(Configuration["InternalApiEndpoints:Proxy"]),
-                        CookieContainer = sp.GetRequiredService<CookieContainer>(),
-                        UseCookies = true,
-                        ClientCertificateOptions = ClientCertificateOption.Automatic,
-                        PreAuthenticate = true,
-                        UseDefaultCredentials = true
-                    }
-                );
-            }
-            */
-
+            
             // security
             services.Configure<IISOptions>(
                 options =>
@@ -223,7 +101,9 @@ namespace HatTrick.API
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
             // controllers & Swagger
-            //services.AddDatabaseDeveloperPageExceptionFilter();
+#if NET7_0_OR_GREATER
+            services.AddDatabaseDeveloperPageExceptionFilter();
+#endif // NET7_0_OR_GREATER
             services.AddControllers(
                 options => options.InputFormatters.Add(new TextPlainInputFormatter())
             );
@@ -231,11 +111,11 @@ namespace HatTrick.API
                 c =>
                 {
                     c.SwaggerDoc(
-                        $"v{Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1:D}",
+                        $"v{(Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1):D}",
                         new()
                         {
-                            Title = "",
-                            Description = "",
+                            Title = "Hat-Trick Web API",
+                            Description = "Web API for the Hat-Trick Online Betting Shop Simulator",
                             Contact = new()
                             {
                                 Name = "Davor Penzar",
@@ -301,8 +181,8 @@ namespace HatTrick.API
                 c =>
                 {
                     c.SwaggerEndpoint(
-                        $"v{Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1:D}/swagger.json",
-                        $"XXX v. {Assembly.GetEntryAssembly()?.GetName().Version}"
+                        $"v{(Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1):D}/swagger.json",
+                        $"Hat-Trick WAPI v. {Assembly.GetEntryAssembly()?.GetName().Version}"
                     );
                 }
             );

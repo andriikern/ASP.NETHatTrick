@@ -312,13 +312,13 @@ namespace HatTrick.API.DatabaseInitialisation
                     Username = "hat-trick",
                     Name = "Leo",
                     Surname = "Jones",
-                    Sex = "Male",
+                    Sex = "M",
                     Email = "leo.jones@hattrickbetting.com",
                     Address = "394 Fulham Road",
                     City = "London",
                     Country = "United Kingdom",
                     Phone = "+44 7700 986960",
-                    Birthdate = new DateTime(1996, 1, 1),
+                    Birthdate = new DateTime(2001, 1, 1),
                     RegisteredOn = new DateTime(2023, 1, 1),
                     Balance = 1000.0M
                 }
