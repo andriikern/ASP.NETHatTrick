@@ -1,4 +1,4 @@
-﻿using HatTrick.BLL.Exceptions;
+using HatTrick.BLL.Exceptions;
 using HatTrick.DAL;
 using HatTrick.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace HatTrick.BLL
 {
-    public sealed class BetShop : IDisposable, IAsyncDisposable
+    public sealed class BettingShop : IDisposable, IAsyncDisposable
     {
         public const int MaxSelectionCount = 70;
 
@@ -271,13 +271,13 @@ namespace HatTrick.BLL
 
         private readonly bool _disposeMembers;
         private readonly Context _context;
-        private readonly ILogger<BetShop> _logger;
+        private readonly ILogger<BettingShop> _logger;
 
         private bool disposed;
 
-        public BetShop(
+        public BettingShop(
             Context context,
-            ILogger<BetShop> logger,
+            ILogger<BettingShop> logger,
             bool disposeMembers = true
         )
         {
@@ -656,7 +656,7 @@ namespace HatTrick.BLL
             GC.SuppressFinalize(this);
         }
 
-        ~BetShop()
+        ~BettingShop()
         {
             Dispose(false);
         }
