@@ -1,4 +1,4 @@
-﻿using HatTrick.DAL;
+using HatTrick.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Threading;

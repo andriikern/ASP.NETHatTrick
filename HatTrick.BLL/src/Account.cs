@@ -1,4 +1,4 @@
-﻿using HatTrick.BLL.Exceptions;
+using HatTrick.BLL.Exceptions;
 using HatTrick.DAL;
 using HatTrick.Models;
 using Microsoft.EntityFrameworkCore;

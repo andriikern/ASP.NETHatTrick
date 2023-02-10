@@ -1,4 +1,4 @@
-﻿using HatTrick.Models;
+using HatTrick.Models;
 using System;
 
 namespace HatTrick.API.DatabaseInitialisation

@@ -1,4 +1,4 @@
-﻿using HatTrick.API.Features;
+using HatTrick.API.Features;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;

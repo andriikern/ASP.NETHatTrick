@@ -27,15 +27,7 @@ module.exports = {
             },
         },
         proxy: {
-            '^/Account': {
-                target: 'https://localhost:5001/',
-                logLevel: 'debug'
-            },
-            '^/Offer': {
-                target: 'https://localhost:5001/',
-                logLevel: 'debug'
-            },
-            '^/BettingShop': {
+            "^/API/*": {
                 target: 'https://localhost:5001/',
                 logLevel: 'debug'
             }

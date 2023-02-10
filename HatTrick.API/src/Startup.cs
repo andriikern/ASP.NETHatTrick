@@ -87,7 +87,7 @@ namespace HatTrick.API
             // BLL
             services.AddScoped<Account>();
             services.AddScoped<Offer>();
-            services.AddScoped<BetShop>();
+            services.AddScoped<BettingShop>();
             /*
             services.AddSingleton<IParserFactory, SimpleParserFactory>(_ => new SimpleParserFactory(';'));
             services.AddScoped<IParser, SimpleParser>(
