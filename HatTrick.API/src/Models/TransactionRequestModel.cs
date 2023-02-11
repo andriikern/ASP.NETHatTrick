@@ -10,6 +10,9 @@ namespace HatTrick.API.Models
         public int UserId { get; set; }
 
         [DataMember]
+        public bool Deposit { get; set; }
+
+        [DataMember]
         public decimal Amount { get; set; }
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }

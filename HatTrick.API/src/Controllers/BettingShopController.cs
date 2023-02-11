@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Immutable;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,7 +58,8 @@ namespace HatTrick.API.Controllers
                     ticketRequest.SelectionIds.ToImmutableArray(),
                     ticketRequest.Amount,
                     cancellationToken
-                )
+                ),
+                HttpStatusCode.Created
             )
                 .ConfigureAwait(false);
 

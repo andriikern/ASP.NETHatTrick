@@ -56,7 +56,8 @@ namespace HatTrick.API.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         protected IActionResult Null(
-            bool noContentIfNull
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            bool noContentIfNull = false
         )
         {
             if (noContentIfNull)
@@ -64,7 +65,7 @@ namespace HatTrick.API.Controllers
                 return NoContent();
             }
 
-            Response.StatusCode = (int)HttpStatusCode.OK;
+            Response.StatusCode = (int)statusCode;
 
             return Content(
                 "null",
@@ -75,6 +76,7 @@ namespace HatTrick.API.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         protected IActionResult InvokeFunc<TResult>(
             Func<TResult> func,
+            HttpStatusCode successStatusCode = HttpStatusCode.OK,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
             object? errorObject = null
@@ -117,15 +119,19 @@ namespace HatTrick.API.Controllers
 
             if (result is null)
             {
-                return Null(noContentIfNull);
+                return Null(successStatusCode, noContentIfNull);
             }
 
-            return Ok(result);
+            return StatusCode(
+                (int)successStatusCode,
+                result
+            );
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         protected async Task<IActionResult> InvokeFuncAsync<TResult>(
             Func<Task<TResult>> asyncFunc,
+            HttpStatusCode successStatusCode = HttpStatusCode.OK,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
             object? errorObject = null
@@ -173,15 +179,19 @@ namespace HatTrick.API.Controllers
 
             if (result is null)
             {
-                return Null(noContentIfNull);
+                return Null(successStatusCode, noContentIfNull);
             }
 
-            return Ok(result);
+            return StatusCode(
+                (int)successStatusCode,
+                result
+            );
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         protected IActionResult InvokeAction(
             Action action,
+            HttpStatusCode successStatusCode = HttpStatusCode.OK,
             object? okObject = null,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
@@ -194,6 +204,7 @@ namespace HatTrick.API.Controllers
 
                     return okObject;
                 },
+                successStatusCode,
                 noContentIfNull,
                 errorStatusCode,
                 errorObject
@@ -202,6 +213,7 @@ namespace HatTrick.API.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         protected Task<IActionResult> InvokeActionAsync(
             Func<Task> asyncAction,
+            HttpStatusCode successStatusCode = HttpStatusCode.OK,
             object? okObject = null,
             bool noContentIfNull = false,
             HttpStatusCode errorStatusCode = HttpStatusCode.BadRequest,
@@ -215,6 +227,7 @@ namespace HatTrick.API.Controllers
 
                     return okObject;
                 },
+                successStatusCode,
                 noContentIfNull,
                 errorStatusCode,
                 errorObject
