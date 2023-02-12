@@ -37,10 +37,10 @@ namespace HatTrick.API.Controllers
         /// <param name="placedAt">The date-time at which to place the bet. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The response.</returns>
-        /// <response code="200">The id number of the ticket.</response>
+        /// <response code="201">The id number of the ticket.</response>
         /// <response code="400">Request failed.</response>
         /// <response code="404">The user was not found.</response>
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(int))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpPost]
