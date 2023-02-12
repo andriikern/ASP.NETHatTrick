@@ -80,33 +80,6 @@ namespace HatTrick.DAL
             modelBuilder.Entity<User>()
                 .HasAlternateKey(u => u.Username);
 
-            modelBuilder.Entity<Event>()
-                .HasOne(e => e.Status)
-                .WithMany()
-                .IsRequired();
-
-            modelBuilder.Entity<Fixture>()
-                .HasKey("EventId", "TypeId");
-            modelBuilder.Entity<Fixture>()
-                .HasOne(f => f.Type)
-                .WithMany()
-                .IsRequired();
-
-            modelBuilder.Entity<Market>()
-                .HasOne(m => m.Type)
-                .WithMany()
-                .IsRequired();
-
-            modelBuilder.Entity<Outcome>()
-                .HasOne(o => o.Type)
-                .WithMany()
-                .IsRequired();
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Status)
-                .WithMany()
-                .IsRequired();
-
             modelBuilder.Entity<TicketSelection>()
                 .HasKey("TicketId", "SelectionId");
             modelBuilder.Entity<TicketSelection>()
@@ -121,11 +94,10 @@ namespace HatTrick.DAL
                 .HasMany(t => t.Selections)
                 .WithMany()
                 .UsingEntity<TicketSelection>();
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne(t => t.Type)
+            modelBuilder.Entity<Outcome>()
+                .HasMany(o => o.Selectors)
                 .WithMany()
-                .IsRequired();
+                .UsingEntity<TicketSelection>();
 
             _logger.LogInformation("Database model created successfully.");
 

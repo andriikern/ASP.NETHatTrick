@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace HatTrick.Models
 {
@@ -18,6 +21,9 @@ namespace HatTrick.Models
 
         [DataMember]
         public int Priority { get; set; }
+
+        [XmlIgnore, JsonIgnore]
+        public ICollection<Fixture> Fixtures { get; set; } = new List<Fixture>();
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }

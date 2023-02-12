@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -21,6 +22,9 @@ namespace HatTrick.Models
 
         [DataMember]
         public int Priority { get; set; }
+
+        [XmlIgnore, JsonIgnore]
+        public ICollection<Outcome> Outcomes { get; set; } = new List<Outcome>();
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }

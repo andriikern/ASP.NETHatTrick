@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -33,6 +34,9 @@ namespace HatTrick.Models
 
         [DataMember]
         public bool? IsWinning { get; set; }
+
+        [XmlIgnore, JsonIgnore]
+        public ICollection<Ticket> Selectors { get; set; } = new List<Ticket>();
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }

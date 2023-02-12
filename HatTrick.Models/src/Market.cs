@@ -14,7 +14,7 @@ namespace HatTrick.Models
         [Key, DataMember]
         public int Id { get; set; }
 
-        [Required, XmlIgnore, JsonIgnore]
+        [Required, ForeignKey("FixtureId"), XmlIgnore, JsonIgnore]
         public Fixture Fixture { get; set; } = new Fixture();
 
         [Required, ForeignKey("TypeId"), DataMember]

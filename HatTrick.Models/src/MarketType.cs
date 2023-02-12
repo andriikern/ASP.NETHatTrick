@@ -22,6 +22,9 @@ namespace HatTrick.Models
         [XmlIgnore, JsonIgnore]
         public ICollection<OutcomeType> Outcomes { get; set; } = new List<OutcomeType>();
 
+        [XmlIgnore, JsonIgnore]
+        public ICollection<Market> Markets { get; set; } = new List<Market>();
+
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }
 }

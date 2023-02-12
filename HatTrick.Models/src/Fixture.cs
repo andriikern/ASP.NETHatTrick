@@ -11,6 +11,9 @@ namespace HatTrick.Models
     [DataContract, Serializable]
     public sealed class Fixture : IExtensibleDataObject
     {
+        [Key, DataMember]
+        public int Id { get; set; }
+
         [Required, ForeignKey("EventId"), XmlIgnore, JsonIgnore]
         public Event Event { get; set; } = new Event();
 
