@@ -23,7 +23,7 @@
 
   import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
     
-  import { _now, _userId } from "../main"
+  import { now, userId } from "../main"
     
   import OfferCategoryDisplay from "./Offer/OfferCategoryDisplay.vue"
   import BetAmountInputDisplay from "./Offer/BetAmountInputDisplay.vue"
@@ -54,8 +54,8 @@
     },
     created() {
       this.loading = true
-      this.now = _now
-      this.userId = _userId
+      this.now = now
+      this.userId = userId
       this.selection = new Set<Number>()
       this.betAmount = 0
       this.promoLoading = new Map<Boolean, Boolean>()

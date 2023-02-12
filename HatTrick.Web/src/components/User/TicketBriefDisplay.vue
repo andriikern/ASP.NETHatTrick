@@ -1,6 +1,6 @@
 <template>
   <li :class="class">
-    {{ new Date(ticket.payInTime).toLocaleString('en-GB') }} ({{ ticket.totalOdds.toFixed(2) }} / {{ ticket.selections.length }})
+    {{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }} ({{ ticket.totalOdds.toFixed(2) }} / {{ ticket.selections.length }})
   </li>
 </template>
 

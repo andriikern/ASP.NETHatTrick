@@ -5,7 +5,7 @@
         <div class="col text-start"><strong>{{ event.name }}</strong></div>
         <div class="col text-center">{{ event.sport.name }}</div>
         <div class="col text-end">
-          {{ new Date(event.startsAt).toLocaleString('en-GB')}}
+          {{ new Date(event.startsAt).toLocaleString('en-GB', { month: '2-digit', day: '2-digit', timeStyle: 'short' })}}
         </div>
       </div>
     </div>

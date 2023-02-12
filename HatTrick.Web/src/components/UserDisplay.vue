@@ -9,14 +9,14 @@
   import { User } from "../models"
   import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
 
-  import { _now, _userId } from "../main"
+  import { now, userId } from "../main"
 
   import NonExistentUserErrorDisplay from "./User/NonExistentUserErrorDisplay.vue"
   import UserProfile from "./User/UserProfile.vue"
 
   interface Data {
-    _now: Date | null,
-    _userId: Number,
+    now: Date | null,
+    userId: Number,
     user: User | null,
     loading: Boolean
   }
@@ -28,16 +28,16 @@
     },
     data(): Data {
       return {
-        _now: null,
-        _userId: 0,
+        now: null,
+        userId: 0,
         user: null,
         loading: true
       }
     },
     created() {
       this.loading = true
-      this._now = _now
-      this._userId = _userId
+      this.now = now
+      this.userId = userId
       this.user = null
 
       // fetch the data when the view is created and the data is already being
@@ -57,7 +57,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: this._userId,
+          userId: this.userId,
           includeTickets: true,
           includeTicketSelections: true,
           includeTransactions: true
@@ -65,7 +65,7 @@
       }
 
       const searchQuery = new URLSearchParams({
-        stateAt: dateToISOStringWithOffset(this._now) || ''
+        stateAt: dateToISOStringWithOffset(this.now) || ''
       })
 
       fetch("/API/Account?" + searchQuery, requestOptions)

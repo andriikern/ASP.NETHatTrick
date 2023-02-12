@@ -1,18 +1,20 @@
 const addToDate =
   function (
     date: Date | null | undefined,
-    milliseconds: number | null | undefined
+    milliseconds: Number | null | undefined
   ): Date | null | undefined {
     if (date === undefined || date === null)
       return date
     if (milliseconds === undefined || milliseconds === null)
       return milliseconds
 
-    return new Date(date.getTime() + milliseconds)
+    return new Date(date.getTime() + (milliseconds as number))
 }
 
 const dateToISOStringWithOffset =
-  function (date: Date | null | undefined): string | null | undefined {
+  function (
+    date: Date | null | undefined
+  ): String | null | undefined {
     if (date === undefined || date === null)
       return date
 

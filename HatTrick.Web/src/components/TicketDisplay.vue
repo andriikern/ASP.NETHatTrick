@@ -9,7 +9,7 @@
       </tr>
       <tr>
         <th scope="row">Pay-in time</th>
-        <td>{{ new Date(ticket.payInTime).toLocaleString('en-GB') }}</td>
+        <td>{{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
       </tr>
       <tr>
         <th scope="row">Pay-in amount</th>
@@ -21,7 +21,7 @@
       </tr>
       <tr>
         <th scope="row">Total odds</th>
-        <td>{{ ticket.totalOdds }}</td>
+        <td>{{ ticket.totalOdds.toFixed(2) }}</td>
       </tr>
       <tr>
         <th scope="row">Active amount<sup>*</sup></th>
@@ -41,11 +41,15 @@
       </tr>
       <tr v-if="ticket.isResolved === true">
         <th scope="row">Resolution time</th>
-        <td>{{ new Date(ticket.resolvedAt).toLocaleString('en-GB') }}</td>
+        <td>{{ new Date(ticket.resolvedAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
       </tr>
       <tr v-if="ticket.isResolved === true && ticket.winAmount !== null">
         <th scope="row">Pay-out amount</th>
         <td class="font-monospace">{{ ticket.winAmount.toFixed(2) }} &euro;</td>
+      </tr>
+      <tr v-if="ticket.isResolved === true && ticket.winAmount !== null">
+        <th scope="row">Pay-out time</th>
+        <td>{{ new Date(ticket.payOutTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
       </tr>
     </tbody>
   </table>
@@ -66,7 +70,7 @@
   import { Ticket, TicketFinancialAmounts } from "../models"
   import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
 
-  import { _now } from "../main"
+  import { now } from "../main"
 
   interface Data {
     now: Date | null,
@@ -90,7 +94,7 @@
     },
     created() {
       this.loading = true
-      this.now = _now
+      this.now = now
       this.ticketId = Number.parseInt(this.$route.params.id as string)
       this.ticket = null
       this.ticketFinAmounts = null
@@ -129,7 +133,7 @@
             this.updateStatusClass(this.ticket.status.name)
           })
       },
-      updateStatusClass(status: string): void {
+      updateStatusClass(status: String): void {
         this.statusClass = null
         
         switch (status) {

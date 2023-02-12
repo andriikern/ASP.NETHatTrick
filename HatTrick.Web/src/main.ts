@@ -18,13 +18,13 @@ import TicketDisplay from "./components/TicketDisplay.vue"
 // Set this value to `null` to use the actual current time, or to a different
 // fixed date-time value. Note that the event offer is not automatically
 // updated, a point too late in time might result in an empty offer.
-const _now: Date | null = new Date('2023-02-01T12:00:00.000000+00:00')
+const now: Date | null = new Date('2023-02-01T12:00:00.000000+00:00')
 
 // Change this variable to use another user. If the user by the provided id
 // does not exist in the database, errors will arise while using the app.
 // However, the user is hard-coded into the app using this variable, and no
 // authentication functionality is implemented otherwise.
-const _userId: number = 1
+const userId: number = 1
 
 // Define app routes.
 const routes = [
@@ -70,6 +70,6 @@ app.mount('#app')
 // needed.
 
 export {
-  _now,
-  _userId
+  now,
+  userId
 }

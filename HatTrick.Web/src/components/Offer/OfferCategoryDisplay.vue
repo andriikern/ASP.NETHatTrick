@@ -21,7 +21,7 @@
   import { Event_ } from "../../models"
   import { dateToISOStringWithOffset } from "../../auxiliaryFunctions"
 
-  import { _now } from "../../main"
+  import { now } from "../../main"
     
   import EventDisplay from "./EventDisplay.vue"
 
@@ -48,7 +48,7 @@
     },
     created() {
       this.loading = true
-      this.now = _now
+      this.now = now
       this.events = null
 
       // fetch the data when the view is created and the data is already being
