@@ -130,10 +130,10 @@
             this.ticketFinAmounts = values[1] as TicketFinancialAmounts
             this.loading = false
 
-            this.updateStatusClass(this.ticket.status.name)
+            this.updateStatusClass(this.ticket.status.name as string)
           })
       },
-      updateStatusClass(status: String): void {
+      updateStatusClass(status: string): void {
         this.statusClass = null
         
         switch (status) {
