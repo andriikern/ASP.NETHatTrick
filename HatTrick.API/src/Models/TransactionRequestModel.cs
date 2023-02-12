@@ -10,7 +10,7 @@ namespace HatTrick.API.Models
         public int UserId { get; set; }
 
         [DataMember]
-        public bool Deposit { get; set; }
+        public TransactionRequestType Type { get; set; }
 
         [DataMember]
         public decimal Amount { get; set; }

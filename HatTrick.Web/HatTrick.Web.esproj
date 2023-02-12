@@ -11,19 +11,4 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include=".vscode\launch.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="public\index.html~RF4e76096.TMP" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="src\components\Offer\OfferDisplay.vue~RF525edb5.TMP" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="src\components\OfferDisplay.vue~RF5acf9ea.TMP" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\components\Ticket\" />
-  </ItemGroup>
 </Project>

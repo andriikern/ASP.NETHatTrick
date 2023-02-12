@@ -10,19 +10,25 @@ namespace HatTrick.API.DatabaseInitialisation
             {
                 new TaxGrade()
                 {
-                    LowerBound = decimal.Zero,
-                    UpperBound = 10_000.0M,
+                    LowerBound = 99.54M,
+                    UpperBound = 1327.23M,
                     Rate = 0.10M
                 },
                 new TaxGrade()
                 {
-                    LowerBound = 10_000.0M,
-                    UpperBound = 30_000.0M,
+                    LowerBound = 327.23M,
+                    UpperBound = 3981.63M,
                     Rate = 0.15M
                 },
                 new TaxGrade()
                 {
-                    LowerBound = 30_000.0M,
+                    LowerBound = 3981.68M,
+                    UpperBound = 66_361.40M,
+                    Rate = 0.20M
+                },
+                new TaxGrade()
+                {
+                    LowerBound = 66_361.40M,
                     UpperBound = null,
                     Rate = 0.30M
                 }
@@ -313,7 +319,7 @@ namespace HatTrick.API.DatabaseInitialisation
                     Name = "Leo",
                     Surname = "Jones",
                     Sex = "M",
-                    Email = "leo.jones@hattrickbetting.com",
+                    Email = "leo.jones@hat-trick-betting.com",
                     Address = "394 Fulham Road",
                     City = "London",
                     Country = "United Kingdom",
@@ -507,6 +513,20 @@ namespace HatTrick.API.DatabaseInitialisation
                     Type = FixtureTypes[0],
                     AvailableFrom = new DateTime(2023, 1, 1),
                     AvailableUntil = new DateTime(2023, 2, 9, 23, 48, 0)
+                },
+                new Fixture()
+                {
+                    Event = Events[1],
+                    Type = FixtureTypes[2],
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Fixture()
+                {
+                    Event = Events[9],
+                    Type = FixtureTypes[2],
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
                 }
             };
 
@@ -589,6 +609,20 @@ namespace HatTrick.API.DatabaseInitialisation
                     Type = MarketTypes[0],
                     AvailableFrom = new DateTime(2023, 1, 1),
                     AvailableUntil = new DateTime(2023, 2, 9, 23, 48, 0)
+                },
+                new Market()
+                {
+                    Fixture = Fixtures[11],
+                    Type = MarketTypes[0],
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Market()
+                {
+                    Fixture = Fixtures[12],
+                    Type = MarketTypes[0],
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
                 }
             };
 
@@ -1122,6 +1156,102 @@ namespace HatTrick.API.DatabaseInitialisation
                     Odds = null,
                     AvailableFrom = new DateTime(2023, 1, 1),
                     AvailableUntil = new DateTime(2023, 2, 9, 23, 48, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[0],
+                    Odds = 4.13M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[1],
+                    Odds = 4.80M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[2],
+                    Odds = 3.33M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[3],
+                    Odds = 2.20M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[4],
+                    Odds = 2.00M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[11],
+                    Type = OutcomeTypes[5],
+                    Odds = 1.87M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[0],
+                    Odds = 1.80M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[1],
+                    Odds = 21.33M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[2],
+                    Odds = 4.93M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[3],
+                    Odds = 1.67M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[4],
+                    Odds = 4.00M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[12],
+                    Type = OutcomeTypes[5],
+                    Odds = null,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
                 }
             };
     }

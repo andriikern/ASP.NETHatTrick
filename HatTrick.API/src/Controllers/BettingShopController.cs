@@ -44,7 +44,7 @@ namespace HatTrick.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpPost]
-        public async Task<IActionResult> PostAsync(
+        public async Task<IActionResult> PostTicketAsync(
             [FromBody] TicketRequestModel ticketRequest,
             [FromQuery] DateTime? placedAt = null,
             CancellationToken cancellationToken = default
@@ -79,7 +79,7 @@ namespace HatTrick.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpGet("{ticketId}")]
-        public async Task<IActionResult> GetAsync(
+        public async Task<IActionResult> GetTicketAsync(
             int ticketId,
             [FromQuery] DateTime? stateAt = null,
             [FromQuery] bool? includeSelections = null,
@@ -112,7 +112,7 @@ namespace HatTrick.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpGet("{ticketId}/Amounts")]
-        public async Task<IActionResult> Get1Async(
+        public async Task<IActionResult> GetTicketFinancialAmountsAsync(
             int ticketId,
             [FromQuery] DateTime? stateAt = null,
             CancellationToken cancellationToken = default
@@ -127,6 +127,15 @@ namespace HatTrick.API.Controllers
                 )
             )
                 .ConfigureAwait(false);
+
+        /// <summary>Gets the (default) manipulative cost rate.</summary>
+        /// <returns>The response.</returns>
+        /// </remarks>
+        /// <response code="200">The manipulative cost rate.</response>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
+        [HttpGet("DefaultManipulativeCostRate")]
+        public IActionResult GetDefaultManipulativeCostRate() =>
+            Ok(TicketFinancialAmounts.DefaultManipulativeCostRate);
 
         protected override void Dispose(
             bool disposing

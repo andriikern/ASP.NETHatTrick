@@ -5,50 +5,59 @@
     <tbody>
       <tr :class="statusClass">
         <th scope="row">Status</th>
-        <td>{{ ticket.status.name }} &euro;</td>
+        <td>{{ ticket.status.name }}</td>
       </tr>
       <tr>
-        <th scope="row">Pay-in Time</th>
-        <td>{{ new Date(ticket.payInTime).toLocaleString('en-GB') }} &euro;</td>
+        <th scope="row">Pay-in time</th>
+        <td>{{ new Date(ticket.payInTime).toLocaleString('en-GB') }}</td>
       </tr>
       <tr>
-        <th scope="row">Pay-in Amount</th>
+        <th scope="row">Pay-in amount</th>
         <td class="font-monospace">{{ ticket.payInAmount.toFixed(2) }} &euro;</td>
       </tr>
       <tr>
-        <th scope="row">Selection Count</th>
+        <th scope="row">Selection count</th>
         <td>{{ ticket.selections.length }}</td>
       </tr>
       <tr>
-        <th scope="row">Total Odds</th>
+        <th scope="row">Total odds</th>
         <td>{{ ticket.totalOdds }}</td>
       </tr>
       <tr>
-        <th scope="row">Active Amount ({{ (100 * ticketFinAmounts.manipulativeCostRate).toFixed(2) }} % manipulative cost)</th>
+        <th scope="row">Active amount<sup>*</sup></th>
         <td class="font-monospace">{{ ticketFinAmounts.activeAmount.toFixed(2) }} &euro;</td>
       </tr>
       <tr>
-        <th scope="row">Gross Potential Win Amount</th>
+        <th scope="row">Gross potential win amount</th>
         <td class="font-monospace">{{ ticketFinAmounts.grossPotentialWinAmount.toFixed(2) }} &euro;</td>
       </tr>
       <tr>
-        <th scope="row">Tax</th>
+        <th scope="row">Tax<sup>**</sup></th>
         <td class="font-monospace">{{ ticketFinAmounts.tax.toFixed(2) }} &euro;</td>
       </tr>
       <tr>
-        <th scope="row">Net Potential Win Amount</th>
+        <th scope="row">Net potential win amount</th>
         <td class="font-monospace">{{ ticketFinAmounts.netPotentialWinAmount.toFixed(2) }} &euro;</td>
       </tr>
       <tr v-if="ticket.isResolved === true">
-        <th scope="row">Resolution Time</th>
+        <th scope="row">Resolution time</th>
         <td>{{ new Date(ticket.resolvedAt).toLocaleString('en-GB') }}</td>
       </tr>
       <tr v-if="ticket.isResolved === true && ticket.winAmount !== null">
-        <th scope="row">Pay-out Amount</th>
+        <th scope="row">Pay-out amount</th>
         <td class="font-monospace">{{ ticket.winAmount.toFixed(2) }} &euro;</td>
       </tr>
     </tbody>
   </table>
+
+  <div class="container container-fixed">
+    <div>
+      <small><span>*</span> Manipulative cost of {{ (100 * ticketFinAmounts.manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.</small>
+    </div>
+    <div>
+      <small><span>**</span> See <a class="link link-dark" target="_blank" href="http://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/porez_dobitak_lutrijske_igre.aspx">here</a>.</small>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
