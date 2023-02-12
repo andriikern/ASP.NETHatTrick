@@ -118,7 +118,7 @@ namespace HatTrick.DAL
                 .WithMany()
                 .IsRequired();
             modelBuilder.Entity<Ticket>()
-                .HasMany<Outcome>()
+                .HasMany(t => t.Selections)
                 .WithMany()
                 .UsingEntity<TicketSelection>();
 
