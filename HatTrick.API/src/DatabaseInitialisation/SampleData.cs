@@ -163,22 +163,38 @@ namespace HatTrick.API.DatabaseInitialisation
             {
                 new MarketType()
                 {
+                    Sports = { Sports[0], Sports[1], Sports[2], Sports[3], Sports[5], Sports[8], Sports[10], Sports[11], Sports[12] },
                     Name = "Winner of match",
                     Priority = 0
                 },
                 new MarketType()
                 {
+                    Sports = { Sports[5] },
                     Name = "Winner of half",
                     Priority = 1
                 },
                 new MarketType()
                 {
+                    Sports = { Sports[8] },
                     Name = "Winner of third",
                     Priority = 1
                 },
                 new MarketType()
                 {
+                    Sports = { Sports[0], Sports[1] },
                     Name = "Winner of quarter",
+                    Priority = 2
+                },
+                new MarketType()
+                {
+                    Sports = { Sports[12] },
+                    Name = "Winner of set",
+                    Priority = 2
+                },
+                new MarketType()
+                {
+                    Sports = { Sports[2], Sports[10] },
+                    Name = "Winner of round",
                     Priority = 2
                 }
             };
