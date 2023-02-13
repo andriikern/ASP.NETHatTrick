@@ -98,6 +98,7 @@ class Outcome {
   odds: number | null = null;
   availableFrom: Date | string = '';
   availableUntil: Date | string = '';
+  isResolved: Boolean = false;
   isWinning: boolean | null = null
 }
 

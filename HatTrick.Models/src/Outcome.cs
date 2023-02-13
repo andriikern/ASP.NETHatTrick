@@ -33,6 +33,9 @@ namespace HatTrick.Models
         public DateTime AvailableUntil { get; set; }
 
         [DataMember]
+        public bool IsResolved { get; set; }
+
+        [DataMember]
         public bool? IsWinning { get; set; }
 
         [XmlIgnore, JsonIgnore]

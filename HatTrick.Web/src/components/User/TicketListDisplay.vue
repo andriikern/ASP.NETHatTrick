@@ -7,9 +7,9 @@
   </p>
   <div v-if="tickets.length"
        class="list list-group">
-    <TicketBriefDisplay v-for="ticket in tickets"
-                       :key="'ticket-' + ticket.id"
-                       :ticket="ticket" />
+    <TicketSingleDisplay v-for="ticket in tickets"
+                        :key="'ticket-' + ticket.id"
+                        :ticket="ticket" />
   </div>
 </template>
 
@@ -18,16 +18,27 @@
 
   //import { Ticket } from "../../models"
 
-  import TicketBriefDisplay from "./TicketBriefDisplay.vue"
+  import TicketSingleDisplay from "./TicketSingleDisplay.vue"
 
   export default defineComponent({
     components: {
-      TicketBriefDisplay    
+      TicketSingleDisplay    
     },
     props: {
       tickets: Array/*<Ticket>*/
     },
-    created() { }
+    created() {
+      // initialise the data when the view is created and the data is already
+      // being observed
+      this.initialiseData()
+    },
+    watch: {
+      // call again the method if the route changes
+      '$route': 'initialiseData'
+    },
+    methods: {
+      initialiseData(): void { }
+    }
   })
 
 </script>

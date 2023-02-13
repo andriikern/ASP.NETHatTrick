@@ -96,6 +96,43 @@ namespace HatTrick.API.Controllers
             )
                 .ConfigureAwait(false);
 
+        /// <summary>Gets the ticket selections.</summary>
+        /// <param name="ticketId">The ticket id number.</param>
+        /// <param name="stateAt">The date-time at which to observe the ticket collection. If omitted, current time is used.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The response.</returns>
+        /// <remarks>
+        ///     <para>The parameter <c><paramref name="stateAt" /></c> is used only for filtering tickets having been payed-in before <c><paramref name="stateAt" /></c>, but it otherwise does not affect statueses, availability, or any other information about selections</para>
+        /// </remarks>
+        /// <response code="200">The ticket selections from the event point of view.</response>
+        /// <response code="400">Request failed.</response>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event[]))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("{ticketId}/Selections")]
+        public async Task<IActionResult> GetTicketSelectionsAsync(
+            int ticketId,
+            [FromQuery] DateTime? stateAt = null,
+            CancellationToken cancellationToken = default
+        ) =>
+            await InvokeFuncAsync(
+                () => BettingShop.GetTicketSelectionsAsync(
+                    ticketId,
+                    stateAt.GetValueOrDefault(
+                        GetDefaultTime(HttpContext)
+                    ),
+                    cancellationToken
+                )
+            )
+                .ConfigureAwait(false);
+
+        /// <summary>Gets the (default) manipulative cost rate.</summary>
+        /// <returns>The response.</returns>
+        /// <response code="200">The manipulative cost rate.</response>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
+        [HttpGet("DefaultManipulativeCostRate")]
+        public IActionResult GetDefaultManipulativeCostRate() =>
+            Ok(Business.ManipulativeCostRate);
+
         /// <summary>Gets the information about ticket's financial amounts.</summary>
         /// <param name="ticketId">The ticket id number.</param>
         /// <param name="stateAt">The date-time at which to observe the ticket. If omitted, current time is used.</param>
@@ -126,13 +163,5 @@ namespace HatTrick.API.Controllers
                 )
             )
                 .ConfigureAwait(false);
-
-        /// <summary>Gets the (default) manipulative cost rate.</summary>
-        /// <returns>The response.</returns>
-        /// <response code="200">The manipulative cost rate.</response>
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
-        [HttpGet("DefaultManipulativeCostRate")]
-        public IActionResult GetDefaultManipulativeCostRate() =>
-            Ok(Business.ManipulativeCostRate);
     }
 }

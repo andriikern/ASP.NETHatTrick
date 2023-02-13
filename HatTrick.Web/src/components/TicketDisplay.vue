@@ -2,6 +2,7 @@
   <h2>Ticket Information</h2>
 
   <TicketDetailsDisplay v-if="!loading" :ticket="ticket" />
+  <TicketSelectionsDisplay v-if="!loading" :ticket="ticket" />
 </template>
 
 <script lang="ts">
@@ -13,6 +14,7 @@
   import { now } from "../main"
 
   import TicketDetailsDisplay from "./Ticket/TicketDetailsDisplay.vue"
+  import TicketSelectionsDisplay from "./Ticket/TicketSelectionsDisplay.vue"
 
   interface Data {
     now: Date | null,
@@ -23,7 +25,8 @@
 
   export default defineComponent({
     components: {
-      TicketDetailsDisplay
+      TicketDetailsDisplay,
+      TicketSelectionsDisplay
     },
     data(): Data {
       return {

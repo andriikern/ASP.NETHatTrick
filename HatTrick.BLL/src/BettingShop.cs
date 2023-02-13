@@ -163,38 +163,38 @@ namespace HatTrick.BLL
             return amount;
         }
 
-        private IQueryable<Ticket> IncludeSelections(
+        private static IQueryable<Ticket> IncludeSelections(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections);
 
-        private IQueryable<Ticket> IncludeSelectionTypes(
+        private static IQueryable<Ticket> IncludeSelectionTypes(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
                 .ThenInclude(s => s.Type);
 
-        private IQueryable<Ticket> IncludeMarkets(
+        private static IQueryable<Ticket> IncludeMarkets(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
                 .ThenInclude(s => s.Market);
 
-        private IQueryable<Ticket> IncludeMarketTypes(
+        private static IQueryable<Ticket> IncludeMarketTypes(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
                 .ThenInclude(s => s.Market)
                 .ThenInclude(m => m.Type);
 
-        private IQueryable<Ticket> IncludeFixtures(
+        private static IQueryable<Ticket> IncludeFixtures(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
                 .ThenInclude(s => s.Market)
                 .ThenInclude(m => m.Fixture);
 
-        private IQueryable<Ticket> IncludeFixtureTypes(
+        private static IQueryable<Ticket> IncludeFixtureTypes(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
@@ -202,7 +202,7 @@ namespace HatTrick.BLL
                 .ThenInclude(m => m.Fixture)
                 .ThenInclude(f => f.Type);
 
-        private IQueryable<Ticket> IncludeEvents(
+        private static IQueryable<Ticket> IncludeEvents(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
@@ -210,7 +210,7 @@ namespace HatTrick.BLL
                 .ThenInclude(m => m.Fixture)
                 .ThenInclude(f => f.Event);
 
-        private IQueryable<Ticket> IncludeEventStatuses(
+        private static IQueryable<Ticket> IncludeEventStatuses(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
@@ -219,7 +219,7 @@ namespace HatTrick.BLL
                 .ThenInclude(f => f.Event)
                 .ThenInclude(e => e.Status);
 
-        private IQueryable<Ticket> IncludeSports(
+        private static IQueryable<Ticket> IncludeSports(
             IQueryable<Ticket> ticketsQuery
         ) =>
             ticketsQuery.Include(t => t.Selections)
@@ -228,7 +228,7 @@ namespace HatTrick.BLL
                 .ThenInclude(f => f.Event)
                 .ThenInclude(e => e.Sport);
 
-        private IQueryable<Ticket> Filter(
+        private static IQueryable<Ticket> Filter(
             IQueryable<Ticket> tickets,
             DateTime? stateAt = null,
             int? ticketId = null
@@ -555,6 +555,131 @@ namespace HatTrick.BLL
             );
 
             return ticket;
+        }
+
+        public async Task<Event[]> GetTicketSelectionsAsync(
+            int ticketId,
+            DateTime? stateAt = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            Event[] events;
+
+            _logger.LogDebug(
+                "Fetching ticket selections from the database... Ticket id: {id}, state at: {stateAt}",
+                    ticketId,
+                    stateAt
+            );
+
+            try
+            {
+                var dbTxn = await _context.Database
+                        .BeginTransactionAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                await using (dbTxn.ConfigureAwait(false))
+                {
+                    // Initialise query.
+                    IQueryable<Ticket> ticketQuery = _context.Tickets;
+
+                    // Include all related entities.
+                    ticketQuery = IncludeSelections(ticketQuery);
+                    ticketQuery = IncludeSelectionTypes(ticketQuery);
+                    ticketQuery = IncludeMarkets(ticketQuery);
+                    ticketQuery = IncludeMarketTypes(ticketQuery);
+                    ticketQuery = IncludeFixtures(ticketQuery);
+                    ticketQuery = IncludeFixtureTypes(ticketQuery);
+                    ticketQuery = IncludeEvents(ticketQuery);
+                    ticketQuery = IncludeEventStatuses(ticketQuery);
+                    ticketQuery = IncludeSports(ticketQuery);
+
+                    // Filter.
+                    ticketQuery = Filter(ticketQuery, stateAt, ticketId);
+
+                    // Download data.
+                    var auxData = await ticketQuery.SelectMany(
+                        t =>
+                            t.Selections.Select(
+                                s =>
+                                    new
+                                    {
+                                        s.Market.Fixture.Event.Sport,
+                                        s.Market.Fixture.Event,
+                                        EventStatus = s.Market.Fixture.Event.Status,
+                                        s.Market.Fixture,
+                                        FixtureType = s.Market.Fixture.Type,
+                                        s.Market,
+                                        MarketType = s.Market.Type,
+                                        s.Type,
+                                        Selection = s
+                                    }
+                            )
+                    )
+                        .OrderByDescending(s => s.Event.StartsAt)
+                        .ThenBy(s => s.Event.EndsAt)
+                        .ThenBy(s => s.Event.Priority)
+                        .ThenBy(s => s.Fixture.Type.Priority)
+                        .ThenBy(s => s.Event.Sport.Priority)
+                        .ThenBy(s => s.Market.Type.Priority)
+                        .ThenBy(s => s.Selection.Type.Priority)
+                        .ThenBy(s => s.Event.Name)
+                        .AsSplitQuery()
+                        .AsNoTrackingWithIdentityResolution()
+                        .ToArrayAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    // Format data from top-level being event.
+                    events = auxData.Select(
+                        s =>
+                        {
+                            s.Event.Sport = s.Sport;
+                            s.Event.Status = s.EventStatus;
+                            s.Fixture.Type = s.FixtureType;
+                            s.Market.Type = s.MarketType;
+                            s.Selection.Type = s.Type;
+
+                            s.Market.Outcomes = new List<Outcome>() { s.Selection };
+                            s.Fixture.Markets = new List<Market>() { s.Market };
+                            s.Event.Fixtures = new List<Fixture>() { s.Fixture };
+
+                            return s.Event;
+                        }
+                    )
+                        .ToArray();
+                }
+            }
+            catch (Exception exception)
+                when (
+                    exception is InvalidOperationException ||
+                    exception is InternalException
+                )
+            {
+                _logger.LogError(
+                    exception,
+                    "Error while fetching ticket selections from the database. Ticket id: {id}, state at: {stateAt}",
+                        ticketId,
+                        stateAt
+                );
+
+                if (exception is not InternalException)
+                {
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
+                }
+
+                throw;
+            }
+
+            _logger.LogInformation(
+                "Ticket selections successfully fetched from the database... Ticket id: {id}, state at: {stateAt}, events: {@events}",
+                    ticketId,
+                    stateAt,
+                    events
+            );
+
+            return events;
         }
 
         public async Task<TicketFinancialAmounts> CalculateTicketFinancialAmountsAsync(

@@ -70,7 +70,18 @@
     props: {
       user: User
     },
-    created() { }
+    created() {
+      // initialise the data when the view is created and the data is already
+      // being observed
+      this.initialiseData()
+    },
+    watch: {
+      // call again the method if the route changes
+      '$route': 'initialiseData'
+    },
+    methods: {
+      initialiseData(): void { }
+    }
   })
 
 </script>
