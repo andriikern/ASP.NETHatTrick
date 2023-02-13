@@ -140,7 +140,7 @@ namespace HatTrick.BLL
                 )
                     .ConfigureAwait(false);
 
-                user.Balance -= amount;
+                user.Balance += amount;
             }
             else
             {
@@ -150,7 +150,7 @@ namespace HatTrick.BLL
                 )
                     .ConfigureAwait(false);
 
-                user.Balance += amount;
+                user.Balance -= amount;
             }
 
             var transaction = new Transaction()

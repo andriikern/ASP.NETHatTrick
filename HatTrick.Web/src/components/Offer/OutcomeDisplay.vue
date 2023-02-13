@@ -5,7 +5,6 @@
          :name="'check-' + marketKey"
          :value="outcome.id"
          autocomplete="off"
-         :readonly="disabled"
          :disabled="disabled"
          @change="checkOutcome" />
   <label :class="'btn btn-outline-' + (promoted ? 'primary' : 'secondary') + ' lh-1'"
@@ -23,7 +22,7 @@
   import { Outcome } from "../../models"
 
   interface Data {
-    disabled: Boolean
+    disabled: boolean
   }
 
   export default defineComponent({

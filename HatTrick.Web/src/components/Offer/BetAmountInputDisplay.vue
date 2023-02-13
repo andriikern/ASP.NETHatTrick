@@ -9,7 +9,7 @@
           <div class="input-group">
             <input type="number"
                    min="0.10"
-                   max="10000.00"
+                   max="250_000.00"
                    step="0.01"
                    inputmode="numeric"
                    class="form-control"
@@ -36,8 +36,8 @@
   import { defineComponent } from 'vue'
 
   interface Data {
-    manipulativeCostRate: Number | null,
-    mcrLoading: Boolean
+    manipulativeCostRate: number | null,
+    mcrLoading: boolean
   }
 
   export default defineComponent({

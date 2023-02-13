@@ -16,9 +16,9 @@
 
   interface Data {
     now: Date | null,
-    userId: Number,
+    userId: number,
     user: User | null,
-    loading: Boolean
+    loading: boolean
   }
 
   export default defineComponent({
@@ -50,21 +50,21 @@
     },
     methods: {
       fetchData(): void {
-      this.loading = true
-      this.user = null
+        this.loading = true
+        this.user = null
 
-      const searchQuery = new URLSearchParams({
-        stateAt: dateToISOStringWithOffset(this.now) || '',
-        includeTickets: (true).toString(),
-        includeTicketSelections: (true).toString()
-      })
-
-      fetch("/API/Account/" + this.userId + "?" + searchQuery)
-        .then(r => r.ok ? r.json() : null)
-        .then(json => {
-          this.user = json as User
-          this.loading = false
+        const searchQuery = new URLSearchParams({
+          stateAt: dateToISOStringWithOffset(this.now) || '',
+          includeTickets: (true).toString(),
+          includeTicketSelections: (true).toString()
         })
+
+        fetch("/API/Account/" + this.userId + "?" + searchQuery)
+          .then(r => r.ok ? r.json() : null)
+          .then(json => {
+            this.user = json as User
+            this.loading = false
+          })
       }
     }
   })

@@ -1,136 +1,136 @@
 class TaxGrade {
-  id: Number = 0;
-  lowerBound: Number | null = null;
-  upperBound: Number | null = null;
-  rate: Number = 0
+  id: number = 0;
+  lowerBound: number | null = null;
+  upperBound: number | null = null;
+  rate: number = 0
 }
 
 class Sport {
-  id: Number = 0;
-  name: String = '';
-  priority: Number = 0
+  id: number = 0;
+  name: string = '';
+  priority: number = 0
 }
 
 class EventStatus {
-  id: Number = 0;
-  name: String = ''
+  id: number = 0;
+  name: string = ''
 }
 
 class FixtureType {
-  id: Number = 0;
-  name: String = '';
-  isPromoted: Boolean = false;
-  priority: Number = 0
+  id: number = 0;
+  name: string = '';
+  isPromoted: boolean = false;
+  priority: number = 0
 }
 
 class MarketType {
-  id: Number = 0;
-  name: String = '';
-  priority: Number = 0
+  id: number = 0;
+  name: string = '';
+  priority: number = 0
 }
 
 class OutcomeType {
-  id: Number = 0;
-  name: String = '';
-  priority: Number = 0
+  id: number = 0;
+  name: string = '';
+  priority: number = 0
 }
 
 class TicketStatus {
-  id: Number = 0;
-  name: String = ''
+  id: number = 0;
+  name: string = ''
 }
 
 class TransactionType {
-  id: Number = 0;
-  name: String = ''
+  id: number = 0;
+  name: string = ''
 }
 
 class User {
-  id: Number = 0;
-  username: String = '';
-  name: String = '';
-  surname: String = '';
-  sex: String | null = null;
-  email: String = '';
-  address: String = '';
-  city: String = '';
-  country: String = '';
-  phone: String = '';
-  birthdate: Date | String = '';
-  deactivatedOn: Date | String | null = null;
-  balance: Number = 0;
+  id: number = 0;
+  username: string = '';
+  name: string = '';
+  surname: string = '';
+  sex: string | null = null;
+  email: string = '';
+  address: string = '';
+  city: string = '';
+  country: string = '';
+  phone: string = '';
+  birthdate: Date | string = '';
+  deactivatedOn: Date | string | null = null;
+  balance: number = 0;
   tickets: Ticket[] = new Array<Ticket>();
   transactions: Transaction[] = new Array<Transaction>()
 }
 
 class Event_ {
-  id: Number = 0;
-  name: String = '';
+  id: number = 0;
+  name: string = '';
   sport: Sport = new Sport();
-  startsAt: Date | String = '';
-  endsAt: Date | String = '';
+  startsAt: Date | string = '';
+  endsAt: Date | string = '';
   status: EventStatus = new EventStatus();
-  priority: Number = 0;
+  priority: number = 0;
   fixtures: Fixture[] = new Array<Fixture>()
 }
 
 class Fixture {
-  id: Number = 0;
+  id: number = 0;
   type: FixtureType = new FixtureType();
   markets: Market[] = new Array<Market>();
-  availableFrom: Date | String = '';
-  availableUntil: Date | String = ''
+  availableFrom: Date | string = '';
+  availableUntil: Date | string = ''
 }
 
 class Market {
-  id: Number = 0;
+  id: number = 0;
   type: MarketType = new MarketType();
-  value: String | null = null;
-  availableFrom: Date | String = '';
-  availableUntil: Date | String = '';
+  value: string | null = null;
+  availableFrom: Date | string = '';
+  availableUntil: Date | string = '';
   outcomes: Outcome[] = new Array<Outcome>()
 }
 
 class Outcome {
-  id: Number = 0;
+  id: number = 0;
   type: OutcomeType = new OutcomeType();
-  value: String | null = null;
-  odds: Number | null = null;
-  availableFrom: Date | String = '';
-  availableUntil: Date | String = '';
-  isWinning: Boolean | null = null
+  value: string | null = null;
+  odds: number | null = null;
+  availableFrom: Date | string = '';
+  availableUntil: Date | string = '';
+  isWinning: boolean | null = null
 }
 
 class Ticket {
-  id: Number = 0;
+  id: number = 0;
   selections: Outcome[] = new Array<Outcome>();
-  payInAmount: Number = 0;
-  payInTime: Date | String = '';
-  totalOdds: Number = 0;
+  payInAmount: number = 0;
+  payInTime: Date | string = '';
+  totalOdds: number = 0;
   status: TicketStatus = new TicketStatus();
-  isResolved: Boolean = false;
-  resolvedTime: Date | String | null = null;
-  costAmount: Number | null = null;
-  winAmount: Number | null = null;
-  payOutTime: Date | String | null = null
+  isResolved: boolean = false;
+  resolvedTime: Date | string | null = null;
+  costAmount: number | null = null;
+  winAmount: number | null = null;
+  payOutTime: Date | string | null = null
 }
 
 class Transaction {
-  id: Number = 0;
+  id: number = 0;
   type: TransactionType = new TransactionType();
   ticket: Ticket | null = null;
-  time: Date | String = '';
-  amount: Number = 0
+  time: Date | string = '';
+  amount: number = 0
 }
 
 class TicketFinancialAmounts {
-  manipulativeCostRate: Number = 0;
-  payInAmount: Number = 0;
-  activeAmount: Number = 0;
-  totalOdds: Number = 0;
-  grossPotentialWinAmount: Number = 0;
-  tax: Number = 0;
-  netPotentialWinAmount: Number = 0
+  manipulativeCostRate: number = 0;
+  payInAmount: number = 0;
+  activeAmount: number = 0;
+  totalOdds: number = 0;
+  grossPotentialWinAmount: number = 0;
+  tax: number = 0;
+  netPotentialWinAmount: number = 0
 }
 
 // Export declared types.

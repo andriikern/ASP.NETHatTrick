@@ -21,6 +21,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
+  import { Ticket } from "../models"
   import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
     
   import { now, userId } from "../main"
@@ -30,11 +31,11 @@
 
   interface Data {
     now: Date | null,
-    userId: Number,
-    selection: Set<Number>,
-    betAmount: Number,
-    promoLoading: Map<Boolean, Boolean>,
-    loading: Boolean
+    userId: number,
+    selection: Set<number>,
+    betAmount: number,
+    promoLoading: Map<boolean, boolean>,
+    loading: boolean
   }
 
   export default defineComponent({
@@ -46,9 +47,9 @@
       return {
         now: null,
         userId: 0,
-        selection: new Set<Number>(),
+        selection: new Set<number>(),
         betAmount: 0,
-        promoLoading: new Map<Boolean, Boolean>(),
+        promoLoading: new Map<boolean, boolean>(),
         loading: true
       }
     },
@@ -56,9 +57,9 @@
       this.loading = true
       this.now = now
       this.userId = userId
-      this.selection = new Set<Number>()
+      this.selection = new Set<number>()
       this.betAmount = 0
-      this.promoLoading = new Map<Boolean, Boolean>()
+      this.promoLoading = new Map<boolean, boolean>()
 
       // reset the data when the view is created and the data is already being
       // observed
@@ -70,15 +71,15 @@
     },
     methods: {
       resetData(): void {
-        this.selection = new Set<Number>()
+        this.selection = new Set<number>()
         this.betAmount = 0
-        this.promoLoading = new Map<Boolean, Boolean>([
+        this.promoLoading = new Map<boolean, boolean>([
           [ false, true ],
           [ true, true ]
         ])
         this.loading = true
       },
-      onDataFetched(promoted: Boolean, loading: Boolean) {
+      onDataFetched(promoted: boolean, loading: boolean) {
         this.promoLoading.set(promoted, loading)
 
         this.loading = Array.from(this.promoLoading.values()).some(l => l)
@@ -97,7 +98,7 @@
         this.betAmount = Number.parseFloat(element.value)
       },
       submit(event: Event): void {
-        //const element = event.target as HTMLFormElement
+        //const element = event.target as HTMLInputElement
 
         event.preventDefault()
 
@@ -119,7 +120,7 @@
           .then(r => r.ok ? r.json() : r.text())
           .then(r => typeof r === 'string' || r instanceof String ?
             alert(r) :
-            this.$router.push({ name: 'ticket', params: { id: r.id } })
+            this.$router.push({ name: 'ticket', params: { id: (r as Ticket).id } })
           )
       }
     }

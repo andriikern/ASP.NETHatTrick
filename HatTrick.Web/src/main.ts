@@ -1,6 +1,6 @@
 // Import Vue.
-//import { createApp } from 'vue/dist/vue.esm-bundler'
 import { createApp } from 'vue'
+//import { createApp } from 'vue/dist/vue.esm-bundler'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { createPinia } from 'pinia'
 
@@ -14,6 +14,7 @@ import App from "./App.vue"
 // Import page components.
 import OfferDisplay from "./components/OfferDisplay.vue"
 import UserDisplay from "./components/UserDisplay.vue"
+import WalletDisplay from "./components/WalletDisplay.vue"
 import TicketDisplay from "./components/TicketDisplay.vue"
 
 // Set this value to `null` to use the actual current time, or to a different
@@ -40,6 +41,12 @@ const routes = [
     title: 'User Profile',
     path: "/user",
     component: UserDisplay
+  },
+  {
+    name: 'wallet',
+    title: 'Wallet',
+    path: "/wallet",
+    component: WalletDisplay
   },
   {
     name: 'ticket',

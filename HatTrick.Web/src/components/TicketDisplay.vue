@@ -74,11 +74,11 @@
 
   interface Data {
     now: Date | null,
-    ticketId: Number,
+    ticketId: number,
     ticket: Ticket | null,
     ticketFinAmounts: TicketFinancialAmounts | null,
-    statusClass: String | null,
-    loading: Boolean
+    statusClass: string | null,
+    loading: boolean
   }
 
   export default defineComponent({

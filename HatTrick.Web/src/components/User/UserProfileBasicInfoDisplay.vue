@@ -12,11 +12,11 @@
         </th>
         <td class="clearfix">
           <span class="font-monospace align-middle my-auto">{{ user.balance.toFixed(2) }} &euro;</span>
-          <button type="button"
-                  class="btn btn-light align-middle my-auto float-end"
-                  @click="console.log">
+          <RouterLink class="btn btn-light align-middle my-auto float-end"
+                      to="wallet"
+                      role="button">
               Manage
-          </button>
+          </RouterLink>
         </td>
       </tr>
     </thead>
@@ -59,6 +59,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue'
+  import { RouterLink } from 'vue-router'
 
   import { User } from "../../models"
 

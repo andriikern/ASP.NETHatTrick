@@ -23,9 +23,9 @@
 
   interface Data {
     now: Date | null,
-    userId: Number,
+    userId: number,
     user: User | null,
-    loading: Boolean
+    loading: boolean
   }
 
   export default defineComponent({
@@ -61,8 +61,8 @@
 
       const searchQuery = new URLSearchParams({
         stateAt: dateToISOStringWithOffset(this.now) || '',
-        includeTickets: (true).toString(),
-        includeTicketSelections: (true).toString()
+        includeTickets: (false).toString(),
+        includeTicketSelections: (false).toString()
       })
 
       fetch("/API/Account/" + this.userId + "?" + searchQuery)

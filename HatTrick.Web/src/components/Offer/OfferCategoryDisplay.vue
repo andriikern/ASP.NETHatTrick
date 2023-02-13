@@ -28,7 +28,7 @@
   interface Data {
     now: Date | null,
     events: Event_[] | null,
-    loading: Boolean
+    loading: boolean
   }
 
   export default defineComponent({

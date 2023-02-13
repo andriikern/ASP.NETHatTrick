@@ -10,7 +10,7 @@
   import { Ticket } from "../../models"
 
   interface Data {
-    statusClass: String | null
+    statusClass: string | null
   }
 
   export default defineComponent({
