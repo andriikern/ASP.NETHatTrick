@@ -71,7 +71,7 @@
         fetch("/API/BettingShop/DefaultManipulativeCostRate")
           .then(r => r.json())
           .then(json => {
-            this.manipulativeCostRate = json as Number
+            this.manipulativeCostRate = json as number
             this.mcrLoading = false
           })
       },

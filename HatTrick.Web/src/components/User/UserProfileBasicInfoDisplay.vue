@@ -64,6 +64,9 @@
   import { User } from "../../models"
 
   export default defineComponent({
+    components: {
+      RouterLink
+    },
     props: {
       user: User
     },
