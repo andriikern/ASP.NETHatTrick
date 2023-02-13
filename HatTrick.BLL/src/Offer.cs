@@ -1,9 +1,9 @@
+using HatTrick.BLL.Exceptions;
 using HatTrick.DAL;
 using HatTrick.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,8 +81,7 @@ namespace HatTrick.BLL
 
         private static IQueryable<Event> IncludeOutcomes(
             IQueryable<Event> eventsQuery,
-            DateTime? availableAt = null,
-            ImmutableArray<int>? ids = null
+            DateTime? availableAt = null
         ) =>
             eventsQuery.Include(e => e.Fixtures)
                 .ThenInclude(f => f.Markets)
@@ -90,14 +89,11 @@ namespace HatTrick.BLL
                     m => m.Outcomes
                         .Where(
                             o =>
-                                (
-                                    availableAt == null ||
-                                        (
-                                            o.AvailableFrom <= availableAt &&
-                                                o.AvailableUntil > availableAt
-                                        )
-                                ) &&
-                                    (ids == null || ids.Contains(o.Id))
+                                availableAt == null ||
+                                    (
+                                        o.AvailableFrom <= availableAt &&
+                                            o.AvailableUntil > availableAt
+                                    )
                         )
                         .OrderBy(o => o.Type.Priority)
                         .ThenBy(o => o.Type.Name)
@@ -118,7 +114,6 @@ namespace HatTrick.BLL
         private static IQueryable<Event> FilterAndSort(
             IQueryable<Event> eventsQuery,
             DateTime? availableAt = null,
-            ImmutableArray<int>? ids = null,
             bool? promoted = false,
             int skip = 0,
             int take = DefaultTakeN
@@ -126,7 +121,6 @@ namespace HatTrick.BLL
             eventsQuery.Where(
                 e =>
                     (availableAt == null || e.EndsAt > availableAt) &&
-                        (ids == null || ids.Contains(e.Id)) &&
                         !_ignoreEventStatuses.Contains(e.Status.Name) &&
                         e.Fixtures.Any(
                             f =>
@@ -160,67 +154,89 @@ namespace HatTrick.BLL
 
         public async Task<Event[]> GetEventsAsync(
             DateTime? availableAt = null,
-            ImmutableArray<int>? eventIds = null,
             bool? promoted = null,
-            ImmutableArray<int>? outcomeIds = null,
             int skip = 0,
             int take = DefaultTakeN,
             CancellationToken cancellationToken = default
         )
         {
             _logger.LogTrace(
-                "Fetching events from the database... Available at: {availableAt}, event ids: {@eventIds}, promoted: {promoted}, outcome ids: {@outcomeIds}, skip: {skip}, take: {take}",
+                "Fetching events from the database... Available at: {availableAt}, promoted: {promoted}, skip: {skip}, take: {take}",
                     availableAt,
-                    eventIds?.AsEnumerable(),
                     promoted,
-                    outcomeIds?.AsEnumerable(),
                     skip,
                     take
             );
 
             Event[] events;
 
-            var dbTxn = await _context.Database
-                .BeginTransactionAsync(cancellationToken)
-                .ConfigureAwait(false);
-            await using (dbTxn.ConfigureAwait(false))
+            try
             {
-                // Initialise query.
-                IQueryable<Event> eventsQuery = _context.Events;
+                var dbTxn = await _context.Database
+                    .BeginTransactionAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                await using (dbTxn.ConfigureAwait(false))
+                {
+                    // Initialise query.
+                    IQueryable<Event> eventsQuery = _context.Events;
 
-                // Include all related entities.
-                eventsQuery = IncludeSports(eventsQuery);
-                eventsQuery = IncludeStatuses(eventsQuery);
-                eventsQuery = IncludeFixtures(eventsQuery, availableAt, promoted);
-                eventsQuery = IncludeFixtureTypes(eventsQuery);
-                eventsQuery = IncludeMarkets(eventsQuery, availableAt);
-                eventsQuery = IncludeMarketTypes(eventsQuery);
-                eventsQuery = IncludeOutcomes(eventsQuery, availableAt, outcomeIds);
-                eventsQuery = IncludeOutcomeTypes(eventsQuery);
+                    // Include all related entities.
+                    eventsQuery = IncludeSports(eventsQuery);
+                    eventsQuery = IncludeStatuses(eventsQuery);
+                    eventsQuery = IncludeFixtures(eventsQuery, availableAt, promoted);
+                    eventsQuery = IncludeFixtureTypes(eventsQuery);
+                    eventsQuery = IncludeMarkets(eventsQuery, availableAt);
+                    eventsQuery = IncludeMarketTypes(eventsQuery);
+                    eventsQuery = IncludeOutcomes(eventsQuery, availableAt);
+                    eventsQuery = IncludeOutcomeTypes(eventsQuery);
 
-                // Filter and sort.
-                eventsQuery = FilterAndSort(
-                    eventsQuery,
-                    availableAt,
-                    eventIds,
-                    promoted,
-                    skip,
-                    take
+                    // Filter and sort.
+                    eventsQuery = FilterAndSort(
+                        eventsQuery,
+                        availableAt,
+                        promoted,
+                        skip,
+                        take
+                    );
+
+                    // Download events.
+                    events = await eventsQuery.AsSplitQuery()
+                        .AsNoTrackingWithIdentityResolution()
+                        .ToArrayAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (Exception exception)
+                when (
+                    exception is InvalidOperationException ||
+                    exception is InternalException
+                )
+            {
+                _logger.LogError(
+                    exception,
+                    "Error while fetching events from the database. Available at: {availableAt}, promoted: {promoted}, skip: {skip}, take: {take}",
+                        availableAt,
+                        promoted,
+                        skip,
+                        take
                 );
 
-                // Download events.
-                events = await eventsQuery.AsSplitQuery()
-                    .AsNoTrackingWithIdentityResolution()
-                    .ToArrayAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                if (exception is not InternalException)
+                {
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
+                }
+
+                throw;
             }
 
             _logger.LogInformation(
-                "Events successfully fetched from the database... Available at: {availableAt}, event ids: {@eventIds}, promoted: {promoted}, outcome ids: {@outcomeIds}, skip: {skip}, take: {take}, event count: {count}",
+                "Events successfully fetched from the database... Available at: {availableAt}, promoted: {promoted}, skip: {skip}, take: {take}, event count: {count}",
                     availableAt,
-                    eventIds?.AsEnumerable(),
                     promoted,
-                    outcomeIds?.AsEnumerable(),
                     skip,
                     take,
                     events.Length

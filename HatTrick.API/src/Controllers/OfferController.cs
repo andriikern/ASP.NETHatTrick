@@ -75,11 +75,9 @@ namespace HatTrick.API.Controllers
                     availableAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
                     ),
-                    null,
                     promoted,
-                    null,
                     skip.GetValueOrDefault(0),
-                    take.GetValueOrDefault(Offer.DefaultTakeN),
+                    take.GetValueOrDefault(Business.DefaultTakeN),
                     cancellationToken
                 )
             )
