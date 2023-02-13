@@ -257,12 +257,12 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "User successfully fetched from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}, user: {@user}",
+                "User successfully fetched from the database... Id: {id}, state at: {stateAt}, include tickets: {includeTickets}, include ticket selections: {includeTicketSelections}, username: {username}",
                     id,
                     stateAt,
                     includeTickets,
                     includeTicketSelections,
-                    user
+                    user.Username
             );
 
             return user;
@@ -367,12 +367,12 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "New transaction successfully made in the database... Made at: {time}, user id: {userId}, deposit: {deposit}, amount: {amount:N2}, transaction: {@transaction}",
+                "New transaction successfully made in the database... Made at: {time}, user id: {userId}, deposit: {deposit}, amount: {amount:N2}, transaction id: {id}",
                     time,
                     userId,
                     deposit,
                     amount,
-                    transaction
+                    transaction.Id
             );
 
             return transaction;

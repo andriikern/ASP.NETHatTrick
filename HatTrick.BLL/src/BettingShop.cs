@@ -443,12 +443,12 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "New bet successfully placed into the database. Placed at: {placedAt}, user id: {userId}, selection ids: {@selectionIds}, amount: {amount:N2}, ticket: {@ticket}",
+                "New bet successfully placed into the database. Placed at: {placedAt}, user id: {userId}, selection ids: {@selectionIds}, amount: {amount:N2}, ticket id: {id}",
                     placedAt,
                     userId,
                     selectionIds.AsEnumerable(),
                     amount,
-                    ticket
+                    ticket.Id
             );
 
             return ticket;
@@ -547,11 +547,11 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "Ticket successfully fetched from the database... Id: {id}, state at: {stateAt}, include selections: {includeTicketSelections}, ticket: {@ticket}",
+                "Ticket successfully fetched from the database... Id: {id}, state at: {stateAt}, include selections: {includeTicketSelections}, ticket status: {status}",
                     id,
                     stateAt,
                     includeSelections,
-                    ticket
+                    ticket.Status.Name
             );
 
             return ticket;
@@ -669,10 +669,10 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "Ticket selections successfully fetched from the database... Ticket id: {id}, state at: {stateAt}, events: {@events}",
+                "Ticket selections successfully fetched from the database... Ticket id: {id}, state at: {stateAt}, selection count: {count}",
                     ticketId,
                     stateAt,
-                    events
+                    events.Length
             );
 
             return events;
