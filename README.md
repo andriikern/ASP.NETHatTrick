@@ -60,11 +60,5 @@ However, there are some more important implications, regarding the architecture 
     * entities for tournaments, competitors, and maybe even locations &ndash; sure, the tournaments table could be utilised for this app, to present the events in the offer groupped by tournaments, but, for it to make sense, more events should be present in the sample data; for other tables I do not see a signifficant value they would add to the app if present,
     * keeping track of rescheduled events and having the rescheduled events reference the original events &ndash; again, I only see the value added by this in internal business processes, such as when analysing how many different events were offered during a certain period (month, year, &c.).
 5. Although the [database model](http://en.wikipedia.org/wiki/Database_model) is simplified, the sample data contains some unused entries which fit into the model, but utilising them would make the simulator much more complex than it is (e. g. live fixtures or *cashed out* ticket status).
-
-## To Do
-
-1. Implement deposit/withdrawal mechanism.
-2. Implement displaying of ticket's selections.
-3. Minor refinement of the code (e. g. extracting some parts of larger [Vue.js](http://vuejs.org/) components into dedicated smaller components).
-4. Add promoted fixtures/markets/outcomes to the offer (the mechanism is already ready, but the data is not present in the database).
-5. Describe the solution here in [`README`](README.md).
+6. The offer migh be a little more diverse. Primarily, there are only two types of markets, and one of them is available only for a single event. However, the offer is here just to present the data in the database and to allow the user to simulate placing a bet. Extending the offer would make the simulator seem more realistic, but no additional functionality would be added to the simulator. As one can easily copy the offer from an existing betting provider, without much creativity, I decided not to pursue this goal, but to focus more on the business logic.
+7. The app includes some functionality to display tickets differently depending on their status and resolution (cash-out/win/lose). However, to see this, the sample data should be extended. I might add additional data to the database, but it is not guaranteed.
