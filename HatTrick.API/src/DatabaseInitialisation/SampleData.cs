@@ -196,6 +196,12 @@ namespace HatTrick.API.DatabaseInitialisation
                     Sports = { Sports[2], Sports[10] },
                     Name = "Winner of round",
                     Priority = 2
+                },
+                new MarketType()
+                {
+                    Sports = { Sports[5] },
+                    Name = "Total corners",
+                    Priority = 3
                 }
             };
 
@@ -273,6 +279,18 @@ namespace HatTrick.API.DatabaseInitialisation
                     Market = MarketTypes[1],
                     Name = "12",
                     Priority = 5
+                },
+                new OutcomeType()
+                {
+                    Market = MarketTypes[6],
+                    Name = "Less",
+                    Priority = 0
+                },
+                new OutcomeType()
+                {
+                    Market = MarketTypes[6],
+                    Name = "More",
+                    Priority = 1
                 }
             };
 
@@ -637,6 +655,14 @@ namespace HatTrick.API.DatabaseInitialisation
                 {
                     Fixture = Fixtures[12],
                     Type = MarketTypes[0],
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Market()
+                {
+                    Fixture = Fixtures[1],
+                    Type = MarketTypes[6],
+                    Value = "9.5",
                     AvailableFrom = new DateTime(2023, 1, 1),
                     AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
                 }
@@ -1268,6 +1294,22 @@ namespace HatTrick.API.DatabaseInitialisation
                     Odds = null,
                     AvailableFrom = new DateTime(2023, 1, 1),
                     AvailableUntil = new DateTime(2023, 2, 9, 3, 58, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[13],
+                    Type = OutcomeTypes[12],
+                    Odds = 1.85M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
+                },
+                new Outcome()
+                {
+                    Market = Markets[13],
+                    Type = OutcomeTypes[13],
+                    Odds = 1.85M,
+                    AvailableFrom = new DateTime(2023, 1, 1),
+                    AvailableUntil = new DateTime(2023, 2, 8, 21, 8, 0)
                 }
             };
     }
