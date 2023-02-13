@@ -163,6 +163,82 @@ namespace HatTrick.BLL
             return amount;
         }
 
+        private IQueryable<Ticket> IncludeSelections(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections);
+
+        private IQueryable<Ticket> IncludeSelectionTypes(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Type);
+
+        private IQueryable<Ticket> IncludeMarkets(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market);
+
+        private IQueryable<Ticket> IncludeMarketTypes(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Type);
+
+        private IQueryable<Ticket> IncludeFixtures(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Fixture);
+
+        private IQueryable<Ticket> IncludeFixtureTypes(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Fixture)
+                .ThenInclude(f => f.Type);
+
+        private IQueryable<Ticket> IncludeEvents(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Fixture)
+                .ThenInclude(f => f.Event);
+
+        private IQueryable<Ticket> IncludeEventStatuses(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Fixture)
+                .ThenInclude(f => f.Event)
+                .ThenInclude(e => e.Status);
+
+        private IQueryable<Ticket> IncludeSports(
+            IQueryable<Ticket> ticketsQuery
+        ) =>
+            ticketsQuery.Include(t => t.Selections)
+                .ThenInclude(s => s.Market)
+                .ThenInclude(m => m.Fixture)
+                .ThenInclude(f => f.Event)
+                .ThenInclude(e => e.Sport);
+
+        private IQueryable<Ticket> Filter(
+            IQueryable<Ticket> tickets,
+            DateTime? stateAt = null,
+            int? ticketId = null
+        ) =>
+            tickets.Where(
+                t =>
+                    (stateAt == null || t.PayInTime <= stateAt) &&
+                        (ticketId == null || t.Id == ticketId)
+            );
+
         public BettingShop(
             Context context,
             ILogger<BettingShop> logger,
@@ -257,40 +333,6 @@ namespace HatTrick.BLL
             _context.Users.Update(user);
 
             return (ticket, transaction);
-        }
-
-        public async Task<int[]> GetSelectionEventIdsAsync(
-            DateTime selectedAt,
-            ImmutableArray<int> selectionIds,
-            CancellationToken cancellationToken = default
-        )
-        {
-            _logger.LogDebug(
-                "Fetching event ids of selections from the database... Selected at: {selectedAt}, selectionIds: {selectionIds}",
-                    selectedAt,
-                    selectionIds.AsEnumerable()
-            );
-
-            var eventIds = await _context.Outcomes
-                .Where(
-                    s =>
-                        s.AvailableFrom <= selectedAt &&
-                            s.AvailableUntil > selectedAt &&
-                            selectionIds.Contains(s.Id)
-                )
-                .Select(s => s.Market.Fixture.Event.Id)
-                .Distinct()
-                .ToArrayAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            _logger.LogInformation(
-                "Event ids of selections successfully fetched from the database... Selected at: {selectedAt}, selectionIds: {selectionIds}, event count: {count}",
-                    selectedAt,
-                    selectionIds.AsEnumerable(),
-                    eventIds.Length
-            );
-
-            return eventIds;
         }
 
         public async Task<Ticket> PlaceBetAsync(
@@ -517,7 +559,7 @@ namespace HatTrick.BLL
 
         public async Task<TicketFinancialAmounts> CalculateTicketFinancialAmountsAsync(
             int ticketId,
-            DateTime? stateAt,
+            DateTime? stateAt = null,
             CancellationToken cancellationToken = default
         )
         {

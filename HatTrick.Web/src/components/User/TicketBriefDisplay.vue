@@ -1,7 +1,8 @@
 <template>
-  <li :class="statusClass">
-    {{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }} ({{ ticket.totalOdds.toFixed(2) }} / {{ ticket.selections.length }})
-  </li>
+  <RouterLink :class="statusClass"
+              :to="'ticket/' + ticket.id">
+    {{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}: {{ ticket.status.name }}, (odds {{ ticket.totalOdds.toFixed(2) }}, pay-in {{ ticket.payInAmount.toFixed(2) }} &euro;, {{ ticket.selections.length }} selections)
+  </RouterLink>
 </template>
 
 <script lang="ts">

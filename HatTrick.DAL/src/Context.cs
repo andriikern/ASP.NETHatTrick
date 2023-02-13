@@ -115,7 +115,7 @@ namespace HatTrick.DAL
                 .WithMany()
                 .UsingEntity<TicketSelection>();
             modelBuilder.Entity<Outcome>()
-                .HasMany(o => o.Tickets)
+                .HasMany(s => s.Tickets)
                 .WithMany()
                 .UsingEntity<TicketSelection>();
 

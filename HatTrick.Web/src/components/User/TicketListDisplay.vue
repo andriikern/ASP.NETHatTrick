@@ -5,12 +5,12 @@
      class="text-muted">
       No tickets yet.
   </p>
-  <ul v-if="tickets.length"
-      class="list list-group">
+  <div v-if="tickets.length"
+       class="list list-group">
     <TicketBriefDisplay v-for="ticket in tickets"
-                   :key="'ticket-' + ticket.id"
-                   :ticket="ticket" />
-  </ul>
+                       :key="'ticket-' + ticket.id"
+                       :ticket="ticket" />
+  </div>
 </template>
 
 <script lang="ts">
