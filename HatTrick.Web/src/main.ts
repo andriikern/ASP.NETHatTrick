@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 
 // Import Bootstrap.
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import bootstrap from 'bootstrap'
 
 // Import main app.

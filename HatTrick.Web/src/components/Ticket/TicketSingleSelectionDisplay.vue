@@ -18,7 +18,7 @@
           {{ selection.fixtures[0].markets[0].outcomes[0].odds.toFixed(2) }}
         </div>
         <div class="col">
-          <i v-if="(icon !== null)" :class="iconk"></i>
+          <i v-if="(icon !== null)" :class="icon"></i>
         </div>
       </div>
     </div>
@@ -63,8 +63,6 @@
         this.icon = null
 
         const outcome = this.selection!.fixtures[0].markets[0].outcomes[0]
-
-        this.statusClass = 'list-group-item'
 
         if (outcome.isResolved) {
           if (outcome.isWinning) {
