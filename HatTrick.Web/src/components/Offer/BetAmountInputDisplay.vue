@@ -76,7 +76,7 @@
           })
       },
       setAmount(event: Event): void {
-        this.$emit('setAmount', event);
+        this.$emit('setAmount', event)
       }
     }
   })

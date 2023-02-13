@@ -46,7 +46,7 @@
     methods: {
       initialiseData(): void { },
       checkOutcome(event: Event): void {
-        this.$emit('checkOutcome', event);
+        this.$emit('checkOutcome', event)
       }
     }
   })

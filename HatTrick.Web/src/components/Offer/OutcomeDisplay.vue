@@ -54,7 +54,7 @@
         this.disabled = (this.outcome?.odds === null)
       },
       checkOutcome(event: Event): void {
-        this.$emit('checkOutcome', event);
+        this.$emit('checkOutcome', event)
       }
     }
   })

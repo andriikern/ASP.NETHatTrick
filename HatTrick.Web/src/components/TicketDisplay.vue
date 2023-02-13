@@ -1,8 +1,8 @@
 <template>
   <h2>Ticket Information</h2>
 
-  <TicketDetailsDisplay v-if="!loading" :ticket="ticket" />
-  <TicketSelectionsDisplay v-if="!loading" :ticket="ticket" />
+  <NonExistentTicketErrorDisplay v-if="!loading && ticket === null" />
+  <TicketInfoDisplay v-if="!loading && ticket !== null" :ticket="ticket" />
 </template>
 
 <script lang="ts">
@@ -13,8 +13,8 @@
 
   import { now } from "../main"
 
-  import TicketDetailsDisplay from "./Ticket/TicketDetailsDisplay.vue"
-  import TicketSelectionsDisplay from "./Ticket/TicketSelectionsDisplay.vue"
+  import NonExistentTicketErrorDisplay from "./Ticket/NonExistentTicketErrorDisplay.vue"
+  import TicketInfoDisplay from "./Ticket/TicketInfoDisplay.vue"
 
   interface Data {
     now: Date | null,
@@ -25,8 +25,8 @@
 
   export default defineComponent({
     components: {
-      TicketDetailsDisplay,
-      TicketSelectionsDisplay
+      NonExistentTicketErrorDisplay,
+      TicketInfoDisplay
     },
     data(): Data {
       return {
@@ -61,7 +61,7 @@
         })
 
         fetch("/API/BettingShop/" + this.ticketId + "?" + searchQuery)
-          .then(r => r.json())
+          .then(r => r.ok ? r.json() : null)
           .then(json => {
             this.ticket = json as Ticket
             this.loading = false

@@ -79,10 +79,10 @@
           })
       },
       onDataFetched(promoted: Boolean, loading: Boolean): void {
-        this.$emit('onDataFetched', promoted, loading);
+        this.$emit('onDataFetched', promoted, loading)
       },
       checkOutcome(event: Event): void {
-        this.$emit('checkOutcome', event);
+        this.$emit('checkOutcome', event)
       }
     }
   })

@@ -93,7 +93,7 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos} non-promoted outcomes of odds {PromoComboOddsThreshold} or higher must be selected, as well."
+                    $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos} non-promoted outcomes of odds greater than {PromoComboOddsThreshold} must be selected, as well."
                 );
             }
         }
