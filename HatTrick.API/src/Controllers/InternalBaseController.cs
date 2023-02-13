@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HatTrick.BLL.Exceptions;
 using Microsoft.AspNetCore.Http;
 using HatTrick.API.Features;
+using HatTrick.BLL;
 
 namespace HatTrick.API.Controllers
 {
@@ -36,20 +37,25 @@ namespace HatTrick.API.Controllers
         protected readonly bool _disposeMembers;
         protected readonly IMemoryCache _cache;
         protected readonly ILogger _logger;
+        protected readonly Business _business;
 
         protected bool Disposed { get; private set; }
 
-        public InternalBaseController(
+        private protected InternalBaseController(
+            Business business,
             IMemoryCache cache,
             ILogger logger,
             bool disposeMembers = false
         )
         {
+            _disposeMembers = disposeMembers;
+
+            _business = business ??
+                throw new ArgumentNullException(nameof(business));
             _cache = cache ??
                 throw new ArgumentNullException(nameof(cache));
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
-            _disposeMembers = disposeMembers;
 
             Disposed = false;
         }
@@ -242,7 +248,7 @@ namespace HatTrick.API.Controllers
             {
                 if (_disposeMembers)
                 {
-                    // ...
+                    _business.Dispose();
                 }
             }
 
@@ -250,7 +256,7 @@ namespace HatTrick.API.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected virtual ValueTask DisposeAsync(
+        protected virtual async ValueTask DisposeAsync(
             bool disposing
         )
         {
@@ -258,13 +264,12 @@ namespace HatTrick.API.Controllers
             {
                 if (_disposeMembers)
                 {
-                    // ...
+                    await _business.DisposeAsync()
+                        .ConfigureAwait(false);
                 }
             }
 
             Disposed = true;
-
-            return ValueTask.CompletedTask;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

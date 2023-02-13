@@ -17,6 +17,7 @@ namespace HatTrick.DAL
         public DbSet<OutcomeType> OutcomeTypes { get; private set; }
         public DbSet<TicketStatus> TicketStatuses { get; private set; }
         public DbSet<TransactionType> TransactionTypes { get; private set; }
+        public DbSet<SportMarket> SportMarkets { get; private set; }
         public DbSet<User> Users { get; private set; }
         public DbSet<Event> Events { get; private set; }
         public DbSet<Fixture> Fixtures { get; private set; }
@@ -74,6 +75,25 @@ namespace HatTrick.DAL
                 .HasIndex(t => t.Name)
                 .IsUnique();
 
+            modelBuilder.Entity<SportMarket>()
+                .HasKey("SportId", "MarketId");
+            modelBuilder.Entity<SportMarket>()
+                .HasOne(sm => sm.Sport)
+                .WithMany()
+                .IsRequired();
+            modelBuilder.Entity<SportMarket>()
+                .HasOne(sm => sm.Market)
+                .WithMany()
+                .IsRequired();
+            modelBuilder.Entity<Sport>()
+                .HasMany(s => s.Markets)
+                .WithMany()
+                .UsingEntity<SportMarket>();
+            modelBuilder.Entity<MarketType>()
+                .HasMany(m => m.Sports)
+                .WithMany()
+                .UsingEntity<SportMarket>();
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
@@ -95,7 +115,7 @@ namespace HatTrick.DAL
                 .WithMany()
                 .UsingEntity<TicketSelection>();
             modelBuilder.Entity<Outcome>()
-                .HasMany(o => o.Selectors)
+                .HasMany(o => o.Tickets)
                 .WithMany()
                 .UsingEntity<TicketSelection>();
 

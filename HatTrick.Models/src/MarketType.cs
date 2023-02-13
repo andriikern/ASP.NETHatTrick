@@ -13,6 +13,9 @@ namespace HatTrick.Models
         [DataMember]
         public int Id { get; set; }
 
+        [XmlIgnore, JsonIgnore]
+        public ICollection<Sport> Sports { get; set; } = new List<Sport>();
+
         [MaxLength(32), Required, DataMember]
         public string Name { get; set; } = string.Empty;
 

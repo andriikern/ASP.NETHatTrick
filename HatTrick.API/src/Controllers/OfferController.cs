@@ -14,7 +14,8 @@ namespace HatTrick.API.Controllers
     [Route("API/[controller]")]
     public class OfferController : InternalBaseController
     {
-        protected readonly Offer _offer;
+        protected Offer Offer =>
+            (Offer)_business;
 
         public OfferController(
             Offer offer,
@@ -22,10 +23,8 @@ namespace HatTrick.API.Controllers
             ILogger<OfferController> logger,
             bool disposeMembers = false
         ) :
-            base(cache, logger, disposeMembers)
+            base(offer, cache, logger, disposeMembers)
         {
-            _offer = offer ??
-                throw new ArgumentNullException(nameof(offer));
         }
 
         /// <summary>Gets the complete offer.</summary>
@@ -72,7 +71,7 @@ namespace HatTrick.API.Controllers
             }
 
             return await InvokeFuncAsync(
-                () => _offer.GetEventsAsync(
+                () => Offer.GetEventsAsync(
                     availableAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
                     ),
@@ -84,38 +83,6 @@ namespace HatTrick.API.Controllers
                     cancellationToken
                 )
             )
-                .ConfigureAwait(false);
-        }
-
-        protected override void Dispose(
-            bool disposing
-        )
-        {
-            if (disposing && !Disposed)
-            {
-                if (_disposeMembers)
-                {
-                    _offer.Dispose();
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (disposing && !Disposed)
-            {
-                if (_disposeMembers)
-                {
-                    await _offer.DisposeAsync()
-                        .ConfigureAwait(false);
-                }
-            }
-
-            await base.DisposeAsync(disposing)
                 .ConfigureAwait(false);
         }
     }

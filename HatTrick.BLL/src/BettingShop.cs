@@ -13,134 +13,8 @@ using System.Threading.Tasks;
 
 namespace HatTrick.BLL
 {
-    public sealed class BettingShop : IDisposable, IAsyncDisposable
+    public sealed class BettingShop : Business
     {
-        public const int MaxSelectionCount = 70;
-
-        public const decimal PromoComboOddsThreshold = 1.10M;
-        public const int MinPromoCombos = 5;
-
-        public const decimal MinBetAmount = 0.25M;
-        public const decimal MaxBetAmount = 250_000.00M;
-
-        public const decimal ManipulativeCostRate = 0.05M;
-
-        private static decimal Round(
-            decimal odds
-        ) =>
-            decimal.Round(odds, 2);
-
-        private static decimal CalculateActiveAmount(
-            decimal payInAmount
-        ) =>
-            (decimal.One - ManipulativeCostRate) * payInAmount;
-
-        private static decimal CalculateCostAmount(
-            decimal payInAmount,
-            decimal totalOdds,
-            out decimal activeAmount
-        )
-        {
-            activeAmount = CalculateActiveAmount(payInAmount);
-
-            return Round(totalOdds * CalculateActiveAmount(payInAmount));
-        }
-
-        private static decimal CalculateCostAmount(
-            decimal payInAmount,
-            decimal totalOdds
-        ) =>
-            CalculateCostAmount(payInAmount, totalOdds, out var _);
-
-        private static decimal CalculateTax(
-            IEnumerable<TaxGrade> taxGrades,
-            decimal costAmount
-        )
-        {
-            var tax = decimal.Zero;
-
-            foreach (var taxGrade in taxGrades)
-            {
-                if (
-                    taxGrade.LowerBound.HasValue &&
-                    costAmount < taxGrade.LowerBound
-                )
-                {
-                    continue;
-                }
-
-                var taxedAmount =
-                    Math.Min(
-                        costAmount,
-                        taxGrade.UpperBound
-                            .GetValueOrDefault(costAmount)
-                    ) -
-                        taxGrade.LowerBound
-                            .GetValueOrDefault(decimal.Zero);
-
-                tax += taxGrade.Rate * taxedAmount;
-            }
-
-            tax = Round(tax);
-
-            return tax;
-        }
-
-        private static Task<TaxGrade[]> GetTaxGradesAsync(
-            Context context,
-            CancellationToken cancellationToken = default
-        ) =>
-            context.TaxGrades
-                .ToArrayAsync(cancellationToken);
-
-        private static Task<TicketStatus> GetTicketStatusByNameAsync(
-            Context context,
-            string name,
-            CancellationToken cancellationToken = default
-        ) =>
-            context.TicketStatuses
-                .Where(t => t.Name == name)
-                .SingleAsync(cancellationToken);
-
-        private static Task<TicketStatus> GetActiveTicketStatusAsync(
-            Context context,
-            CancellationToken cancellationToken = default
-        ) =>
-            GetTicketStatusByNameAsync(
-                context,
-                "Active",
-                cancellationToken
-            );
-
-        private static Task<TransactionType> GetTransactionTypeByNameAsync(
-            Context context,
-            string name,
-            CancellationToken cancellationToken = default
-        ) =>
-            context.TransactionTypes
-                .Where(t => t.Name == name)
-                .SingleAsync(cancellationToken);
-
-        private static Task<TransactionType> GetPayInTransactionTypeAsync(
-            Context context,
-            CancellationToken cancellationToken = default
-        ) =>
-            GetTransactionTypeByNameAsync(
-                context,
-                "Pay-in",
-                cancellationToken
-            );
-
-        private static Task<TransactionType> GetPayOutTransactionTypeAsync(
-            Context context,
-            CancellationToken cancellationToken = default
-        ) =>
-            GetTransactionTypeByNameAsync(
-                context,
-                "Pay-out",
-                cancellationToken
-            );
-
         private static void EnsureValidSelectionCount(
             ImmutableArray<int> selectionIds
         )
@@ -289,32 +163,14 @@ namespace HatTrick.BLL
             return amount;
         }
 
-        private readonly bool _disposeMembers;
-        private readonly Context _context;
-        private readonly ILogger<BettingShop> _logger;
-
-        private bool disposed;
-
         public BettingShop(
             Context context,
             ILogger<BettingShop> logger,
             bool disposeMembers = true
-        )
+        ) :
+            base(context, logger, disposeMembers)
         {
-            _disposeMembers = disposeMembers;
-            _context = context;
-            _logger = logger;
-
-            disposed = false;
         }
-
-        private Task<User> GetUserByIdAsync(
-            int id,
-            CancellationToken cancellationToken = default
-        ) =>
-            _context.Users
-                .Where(t => t.Id == id)
-                .SingleAsync(cancellationToken);
 
         private Task<Ticket> GetTicketByIdAsync(
             int id,
@@ -396,19 +252,11 @@ namespace HatTrick.BLL
             user.Tickets.Add(ticket);
             user.Transactions.Add(transaction);
 
-            return (ticket, transaction);
-        }
+            user.Balance -= transaction.Amount;
 
-        private void SaveBet(
-            User user,
-            Transaction transaction
-        )
-        {
-            user.Balance = Math.Max(
-                user.Balance - transaction.Amount,
-                decimal.Zero
-            );
             _context.Users.Update(user);
+
+            return (ticket, transaction);
         }
 
         public async Task<int[]> GetSelectionEventIdsAsync(
@@ -445,7 +293,7 @@ namespace HatTrick.BLL
             return eventIds;
         }
 
-        public async Task<int> PlaceBetAsync(
+        public async Task<Ticket> PlaceBetAsync(
             DateTime placedAt,
             int userId,
             ImmutableArray<int> selectionIds,
@@ -453,7 +301,7 @@ namespace HatTrick.BLL
             CancellationToken cancellationToken = default
         )
         {
-            int id;
+            Ticket ticket;
 
             _logger.LogDebug(
                 "Placing new bet into the database... Placed at: {placedAt}, user id: {userId}, selection ids: {@selectionIds}, amount: {amount:N2}",
@@ -491,9 +339,11 @@ namespace HatTrick.BLL
 
                     // Ensure valid pay-in amount. It must be in the allowed
                     // range of [`MinBetAmount`, `MaxBetAmount`], and it may
-                    // not exceed the current user's balance.
+                    // not exceed the user's current balance.
                     amount = EnsureValidPayInAmount(user.Balance, amount);
 
+                    // Map selection ids to actual outcome entries in the
+                    // database.
                     var selections = await MapSelectionIdsAsync(
                         placedAt,
                         selectionIds,
@@ -501,9 +351,11 @@ namespace HatTrick.BLL
                     )
                         .ConfigureAwait(false);
 
+                    // Evaluate selections.
                     var totalOdds = EvaluateSelections(selectionIds, selections);
 
-                    var (ticket, transaction) = await CreateNewBetAsync(
+                    // Create new ticket and the corresponding transaction.
+                    (ticket, var transaction) = await CreateNewBetAsync(
                         user,
                         selections.Values.ToList(),
                         placedAt,
@@ -513,17 +365,11 @@ namespace HatTrick.BLL
                     )
                         .ConfigureAwait(false);
 
-                    SaveBet(
-                        user,
-                        transaction
-                    );
-
+                    // Save changes into the database.
                     await _context.SaveChangesAsync(cancellationToken)
                         .ConfigureAwait(false);
                     await dbTxn.CommitAsync(cancellationToken)
                         .ConfigureAwait(false);
-
-                    id = ticket.Id;
                 }
             }
             catch (Exception exception)
@@ -555,15 +401,15 @@ namespace HatTrick.BLL
             }
 
             _logger.LogInformation(
-                "New bet successfully placed into the database. Placed at: {placedAt}, user id: {userId}, selection ids: {@selectionIds}, amount: {amount:N2}, ticket id: {ticketId}",
+                "New bet successfully placed into the database. Placed at: {placedAt}, user id: {userId}, selection ids: {@selectionIds}, amount: {amount:N2}, ticket: {@ticket}",
                     placedAt,
                     userId,
                     selectionIds.AsEnumerable(),
                     amount,
-                    id
+                    ticket
             );
 
-            return id;
+            return ticket;
         }
 
         public async Task<Ticket> GetTicketAsync(
@@ -767,57 +613,6 @@ namespace HatTrick.BLL
             );
 
             return amounts;
-        }
-
-        private void Dispose(
-            bool disposing
-        )
-        {
-            if (disposing && !disposed)
-            {
-                if (_disposeMembers)
-                {
-                    _context.Dispose();
-                }
-            }
-
-            disposed = true;
-        }
-
-        private async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (disposing && !disposed)
-            {
-                if (_disposeMembers)
-                {
-                    await _context.DisposeAsync()
-                        .ConfigureAwait(false);
-                }
-            }
-
-            disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsync(true)
-                .ConfigureAwait(false);
-
-            GC.SuppressFinalize(this);
-        }
-
-        ~BettingShop()
-        {
-            Dispose(false);
         }
     }
 }

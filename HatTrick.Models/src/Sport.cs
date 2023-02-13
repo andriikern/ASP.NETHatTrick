@@ -22,6 +22,9 @@ namespace HatTrick.Models
         [XmlIgnore, JsonIgnore]
         public ICollection<Event> Events { get; set; } = new List<Event>();
 
+        [XmlIgnore, JsonIgnore]
+        public ICollection<MarketType> Markets { get; set; } = new List<MarketType>();
+
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }
 }

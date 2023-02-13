@@ -15,7 +15,8 @@ namespace HatTrick.API.Controllers
     [Route("API/[controller]")]
     public class AccountController : InternalBaseController
     {
-        protected readonly Account _account;
+        protected Account Account =>
+            (Account)_business;
 
         public AccountController(
             Account account,
@@ -23,14 +24,14 @@ namespace HatTrick.API.Controllers
             ILogger<AccountController> logger,
             bool disposeMembers = false
         ) :
-            base(cache, logger, disposeMembers)
+            base(account, cache, logger, disposeMembers)
         {
-            _account = account ??
-                throw new ArgumentNullException(nameof(account));
         }
 
         /// <summary>Gets the information about a user.</summary>
-        /// <param name="userInfoRequest">The information specifying what user data to retrieve.</param>
+        /// <param name="userId">The user id number.</param>
+        /// <param name="includeTickets">If <c>true</c>, tickets shall be included in the user information.</param>
+        /// <param name="includeTicketSelections">If <c>true</c>, ticket selections shall be included in the user information. If the <c><paramref name="includeTickets" /></c> parameter is not <c>true</c>, this parameter is ignored.</param>
         /// <param name="stateAt">The date-time at which to observe the user. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The response.</returns>
@@ -40,54 +41,74 @@ namespace HatTrick.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-        [HttpPost]
-        public async Task<IActionResult> PostAsync(
-            [FromBody] UserInfoRequestModel userInfoRequest,
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserAsync(
+            int userId,
             [FromQuery] DateTime? stateAt = null,
+            [FromQuery] bool? includeTickets = null,
+            [FromQuery] bool? includeTicketSelections = null,
             CancellationToken cancellationToken = default
         ) =>
             await InvokeFuncAsync(
-                () => _account.GetUserAsync(
-                    userInfoRequest.UserId,
+                () => Account.GetUserAsync(
+                    userId,
                     stateAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
                     ),
-                    userInfoRequest.IncludeTickets,
-                    userInfoRequest.IncludeTicketSelections,
+                    includeTickets.GetValueOrDefault(false),
+                    includeTicketSelections.GetValueOrDefault(false),
                     cancellationToken
                 )
             )
                 .ConfigureAwait(false);
 
-        protected override void Dispose(
-            bool disposing
+        /// <summary>Creates a new transaction.</summary>
+        /// <param name="transactionRequest">The new transaction information.</param>
+        /// <param name="time">The date-time at which to make the transaction. If omitted, current time is used.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The response.</returns>
+        /// <response code="201">The newly created transaction containing basic information.</response>
+        /// <response code="400">Request failed.</response>
+        /// <response code="404">The user was not found.</response>
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Transaction))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [HttpPost]
+        public async Task<IActionResult> PostTransactionAsync(
+            [FromBody] TransactionRequestModel transactionRequest,
+            [FromQuery] DateTime? time = null,
+            CancellationToken cancellationToken = default
         )
         {
-            if (disposing && !Disposed)
+            if (!Enum.IsDefined(transactionRequest.Type))
             {
-                if (_disposeMembers)
-                {
-                    _account.Dispose();
-                }
+                ModelState.AddModelError(
+                    nameof(TransactionRequestModel.Type),
+                    "Type value must be from the defined range."
+                );
+            }
+            if (transactionRequest.Type == TransactionRequestType.Unspecified)
+            {
+                ModelState.AddModelError(
+                    nameof(TransactionRequestModel.Type),
+                    "Type may not be unspecified."
+                );
             }
 
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (disposing && !Disposed)
+            if (ModelState.ErrorCount != 0)
             {
-                if (_disposeMembers)
-                {
-                    await _account.DisposeAsync()
-                        .ConfigureAwait(false);
-                }
+                return BadRequest(ModelState);
             }
 
-            await base.DisposeAsync(disposing)
+            return await InvokeFuncAsync(
+                () => Account.MakeTransactionAsync(
+                    time.GetValueOrDefault(GetDefaultTime(HttpContext)),
+                    transactionRequest.UserId,
+                    transactionRequest.Type.IsDebosit(),
+                    transactionRequest.Amount,
+                    cancellationToken
+                )
+            )
                 .ConfigureAwait(false);
         }
     }

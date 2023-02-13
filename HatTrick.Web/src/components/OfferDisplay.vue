@@ -119,7 +119,7 @@
           .then(r => r.ok ? r.json() : r.text())
           .then(r => typeof r === 'string' || r instanceof String ?
             alert(r) :
-            this.$router.push({ name: 'ticket', params: { id: r } })
+            this.$router.push({ name: 'ticket', params: { id: r.id } })
           )
       }
     }

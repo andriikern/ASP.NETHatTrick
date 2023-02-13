@@ -59,22 +59,13 @@
       this.loading = true
       this.user = null
 
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: this.userId,
-          includeTickets: true,
-          includeTicketSelections: true,
-          includeTransactions: true
-        })
-      }
-
       const searchQuery = new URLSearchParams({
-        stateAt: dateToISOStringWithOffset(this.now) || ''
+        stateAt: dateToISOStringWithOffset(this.now) || '',
+        includeTickets: (true).toString(),
+        includeTicketSelections: (true).toString()
       })
 
-      fetch("/API/Account?" + searchQuery, requestOptions)
+      fetch("/API/Account/" + this.userId + "?" + searchQuery)
         .then(r => r.ok ? r.json() : null)
         .then(json => {
           this.user = json as User

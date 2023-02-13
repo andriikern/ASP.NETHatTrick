@@ -10,8 +10,43 @@ using System.Threading.Tasks;
 
 namespace HatTrick.BLL
 {
-    public sealed class Account : IDisposable, IAsyncDisposable
+    public sealed class Account : Business
     {
+        private static decimal EnsureValidTransactionAmount(
+            bool deposit,
+            decimal balance,
+            decimal amount
+        )
+        {
+            amount = Round(amount);
+
+            if (amount < decimal.Zero)
+            {
+                throw new InternalException(
+                    InternalExceptionReason.BadInput,
+                    "Transaction amount is negative."
+                );
+            }
+
+            if (amount < MinTransactionAmount || amount > MaxTransactionAmount)
+            {
+                throw new InternalException(
+                    InternalExceptionReason.BadInput,
+                    $"Transaction amount is out of range. Minimal allowed transaction is {MinTransactionAmount:N2}, maximal allowed single transaction is {MaxTransactionAmount:N2}"
+                );
+            }
+
+            if (!deposit && amount > balance)
+            {
+                throw new InternalException(
+                    InternalExceptionReason.BadInput,
+                    $"Withdrawal amount exceeds the current balance of {balance:N2}."
+                );
+            }
+
+            return amount;
+        }
+
         private static IQueryable<User> IncludeAdditionalInformation(
             IQueryable<User> usersQuery,
             DateTime? stateAt = null,
@@ -78,25 +113,59 @@ namespace HatTrick.BLL
                 .ThenBy(u => u.RegisteredOn)
                 .ThenByDescending(u => u.DeactivatedOn);
 
-        private readonly bool _disposeMembers;
-        private readonly Context _context;
-        private readonly ILogger<Account> _logger;
-
-        private bool disposed;
-
         public Account(
             Context context,
             ILogger<Account> logger,
             bool disposeMembers = true
+        ) :
+            base(context, logger, disposeMembers)
+        {
+        }
+
+        private async Task<Transaction> CreateNewTransactionAsync(
+            User user,
+            DateTime time,
+            bool deposit,
+            decimal amount,
+            CancellationToken cancellationToken
         )
         {
-            _context = context ??
-                throw new ArgumentNullException(nameof(context));
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
-            _disposeMembers = disposeMembers;
+            TransactionType type;
 
-            disposed = false;
+            if (deposit)
+            {
+                type = await GetDepositTransactionTypeAsync(
+                    _context,
+                    cancellationToken
+                )
+                    .ConfigureAwait(false);
+
+                user.Balance -= amount;
+            }
+            else
+            {
+                type = await GetWithdrawalTransactionTypeAsync(
+                    _context,
+                    cancellationToken
+                )
+                    .ConfigureAwait(false);
+
+                user.Balance += amount;
+            }
+
+            var transaction = new Transaction()
+            {
+                User = user,
+                Type = type,
+                Time = time,
+                Amount = amount
+            };
+
+            user.Transactions.Add(transaction);
+
+            _context.Users.Update(user);
+
+            return transaction;
         }
 
         public async Task<User> GetUserAsync(
@@ -199,56 +268,114 @@ namespace HatTrick.BLL
             return user;
         }
 
-        private void Dispose(
-            bool disposing
+        public async Task<Transaction> MakeTransactionAsync(
+            DateTime time,
+            int userId,
+            bool deposit,
+            decimal amount,
+            CancellationToken cancellationToken = default
         )
         {
-            if (!disposed && disposing)
-            {
-                if (_disposeMembers)
-                {
-                    _context.Dispose();
-                }
-            }
+            Transaction transaction;
 
-            disposed = true;
-        }
+            _logger.LogDebug(
+                "Making new transaction in the database... Made at: {time}, user id: {userId}, deposit: {deposit}, amount: {amount:N2}",
+                    time,
+                    userId,
+                    deposit,
+                    amount
+            );
 
-        private async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (!disposed && disposing)
+            try
             {
-                if (_disposeMembers)
+                var dbTxn = await _context.Database
+                    .BeginTransactionAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                await using (dbTxn.ConfigureAwait(false))
                 {
-                    await _context
-                        .DisposeAsync()
+                    // Download user.
+                    User user;
+                    try
+                    {
+                        user = await GetUserByIdAsync(
+                            userId,
+                            cancellationToken
+                        )
+                            .ConfigureAwait(false);
+                    }
+                    catch (InvalidOperationException exception)
+                    {
+                        throw new InternalException(
+                            InternalExceptionReason.NotFound,
+                            "The user does not exist.",
+                            exception
+                        );
+                    }
+
+                    // Ensure valid transaction amount. It must be in the allowed
+                    // range of
+                    // [`MinTransactionAmount`, `MaxTransactionAmount`], and,
+                    // if it a withdrawal, it may not exceed the user's
+                    // current balance.
+                    amount = EnsureValidTransactionAmount(
+                        deposit,
+                        user.Balance,
+                        amount
+                    );
+
+                    // Create new transaction.
+                    transaction = await CreateNewTransactionAsync(
+                        user,
+                        time,
+                        deposit,
+                        amount,
+                        cancellationToken
+                    ).ConfigureAwait(false);
+
+                    // Save changes into the database.
+                    await _context.SaveChangesAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                    await dbTxn.CommitAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
             }
+            catch (Exception exception)
+                when (
+                    exception is InvalidOperationException ||
+                    exception is InternalException
+                )
+            {
+                _logger.LogError(
+                    exception,
+                    "Error while making new transaction in the database. Made at: {time}, user id: {userId}, deposit: {deposit}, amount: {amount:N2}",
+                        time,
+                        userId,
+                        deposit,
+                        amount
+                );
 
-            disposed = true;
-        }
+                if (exception is not InternalException)
+                {
+                    throw new InternalException(
+                        InternalExceptionReason.ServerError,
+                        null,
+                        exception
+                    );
+                }
 
-        public void Dispose()
-        {
-            Dispose(true);
+                throw;
+            }
 
-            GC.SuppressFinalize(this);
-        }
+            _logger.LogInformation(
+                "New transaction successfully made in the database... Made at: {time}, user id: {userId}, deposit: {deposit}, amount: {amount:N2}, transaction: {@transaction}",
+                    time,
+                    userId,
+                    deposit,
+                    amount,
+                    transaction
+            );
 
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsync(true)
-                .ConfigureAwait(false);
-
-            GC.SuppressFinalize(this);
-        }
-
-        ~Account()
-        {
-            Dispose(false);
+            return transaction;
         }
     }
 }

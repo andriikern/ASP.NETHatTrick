@@ -18,7 +18,8 @@ namespace HatTrick.API.Controllers
     [Route("API/[controller]")]
     public class BettingShopController : InternalBaseController
     {
-        protected readonly BettingShop _bettingShop;
+        protected BettingShop BettingShop =>
+            (BettingShop)_business;
 
         public BettingShopController(
             BettingShop bettingShop,
@@ -26,10 +27,8 @@ namespace HatTrick.API.Controllers
             ILogger<BettingShopController> logger,
             bool disposeMembers = false
         ) :
-            base(cache, logger, disposeMembers)
+            base(bettingShop, cache, logger, disposeMembers)
         {
-            _bettingShop = bettingShop ??
-                throw new ArgumentNullException(nameof(bettingShop));
         }
 
         /// <summary>Places a new bet (ticket).</summary>
@@ -37,10 +36,10 @@ namespace HatTrick.API.Controllers
         /// <param name="placedAt">The date-time at which to place the bet. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The response.</returns>
-        /// <response code="201">The id number of the ticket.</response>
+        /// <response code="201">The newly created ticket containing basic information.</response>
         /// <response code="400">Request failed.</response>
         /// <response code="404">The user was not found.</response>
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Ticket))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpPost]
@@ -50,7 +49,7 @@ namespace HatTrick.API.Controllers
             CancellationToken cancellationToken = default
         ) =>
             await InvokeFuncAsync(
-                () => _bettingShop.PlaceBetAsync(
+                () => BettingShop.PlaceBetAsync(
                     placedAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
                     ),
@@ -86,7 +85,7 @@ namespace HatTrick.API.Controllers
             CancellationToken cancellationToken = default
         ) =>
             await InvokeFuncAsync(
-                () => _bettingShop.GetTicketAsync(
+                () => BettingShop.GetTicketAsync(
                     ticketId,
                     stateAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
@@ -118,7 +117,7 @@ namespace HatTrick.API.Controllers
             CancellationToken cancellationToken = default
         ) =>
             await InvokeFuncAsync(
-                () => _bettingShop.CalculateTicketFinancialAmountsAsync(
+                () => BettingShop.CalculateTicketFinancialAmountsAsync(
                     ticketId,
                     stateAt.GetValueOrDefault(
                         GetDefaultTime(HttpContext)
@@ -130,43 +129,10 @@ namespace HatTrick.API.Controllers
 
         /// <summary>Gets the (default) manipulative cost rate.</summary>
         /// <returns>The response.</returns>
-        /// </remarks>
         /// <response code="200">The manipulative cost rate.</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
         [HttpGet("DefaultManipulativeCostRate")]
         public IActionResult GetDefaultManipulativeCostRate() =>
-            Ok(TicketFinancialAmounts.DefaultManipulativeCostRate);
-
-        protected override void Dispose(
-            bool disposing
-        )
-        {
-            if (disposing && !Disposed)
-            {
-                if (_disposeMembers)
-                {
-                    _bettingShop.Dispose();
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (disposing && !Disposed)
-            {
-                if (_disposeMembers)
-                {
-                    await _bettingShop.DisposeAsync()
-                        .ConfigureAwait(false);
-                }
-            }
-
-            await base.DisposeAsync(disposing)
-                .ConfigureAwait(false);
-        }
+            Ok(Business.ManipulativeCostRate);
     }
 }

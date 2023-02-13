@@ -10,16 +10,8 @@ using System.Threading.Tasks;
 
 namespace HatTrick.BLL
 {
-    public sealed class Offer : IDisposable, IAsyncDisposable
+    public sealed class Offer : Business
     {
-        public const int DefaultTakeN = 1000;
-
-        private static readonly ImmutableArray<string> _ignoreEventStatuses =
-            ImmutableArray.Create(
-                "Rescheduled",
-                "Cancelled"
-            );
-
         private static IQueryable<Event> IncludeSports(
             IQueryable<Event> eventsQuery
         ) =>
@@ -157,25 +149,13 @@ namespace HatTrick.BLL
                 .Skip(skip)
                 .Take(take);
 
-        private readonly bool _disposeMembers;
-        private readonly Context _context;
-        private readonly ILogger<Offer> _logger;
-
-        private bool disposed;
-
         public Offer(
             Context context,
             ILogger<Offer> logger,
             bool disposeMembers = true
-        )
+        ) :
+            base(context, logger, disposeMembers)
         {
-            _context = context ??
-                throw new ArgumentNullException(nameof(context));
-            _logger = logger ??
-                throw new ArgumentNullException(nameof(logger));
-            _disposeMembers = disposeMembers;
-
-            disposed = false;
         }
 
         public async Task<Event[]> GetEventsAsync(
@@ -247,58 +227,6 @@ namespace HatTrick.BLL
             );
 
             return events;
-        }
-
-        private void Dispose(
-            bool disposing
-        )
-        {
-            if (!disposed && disposing)
-            {
-                if (_disposeMembers)
-                {
-                    _context.Dispose();
-                }
-            }
-
-            disposed = true;
-        }
-
-        private async ValueTask DisposeAsync(
-            bool disposing
-        )
-        {
-            if (!disposed && disposing)
-            {
-                if (_disposeMembers)
-                {
-                    await _context
-                        .DisposeAsync()
-                        .ConfigureAwait(false);
-                }
-            }
-
-            disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await DisposeAsync(true)
-                .ConfigureAwait(false);
-
-            GC.SuppressFinalize(this);
-        }
-
-        ~Offer()
-        {
-            Dispose(false);
         }
     }
 }

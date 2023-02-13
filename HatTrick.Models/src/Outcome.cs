@@ -36,7 +36,7 @@ namespace HatTrick.Models
         public bool? IsWinning { get; set; }
 
         [XmlIgnore, JsonIgnore]
-        public ICollection<Ticket> Selectors { get; set; } = new List<Ticket>();
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
     }
