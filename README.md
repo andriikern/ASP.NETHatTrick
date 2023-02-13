@@ -32,7 +32,7 @@ Since [Entity Framework](http://learn.microsoft.com/en-gb/ef/) is used for acces
 
 ## Running the App
 
-**IMPORTANT.** If the front-end web page does not display, even when refreshing after the back-end has started, comment the [line 3](HatTrick.Web/src/main.ts#L3) and uncomment the [line 2](HatTrick.Web/src/main.ts#L2) in [*main.ts*](HatTrick.Web/src/main.ts).
+**IMPORTANT.** If the front-end web page does not display, even when refreshing after the back-end has started, uncomment the [line 3](HatTrick.Web/src/main.ts#L3) and comment the [line 2](HatTrick.Web/src/main.ts#L2) in [*main.ts*](HatTrick.Web/src/main.ts).
 
 First, [clone the repo](http://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository/). Once the code is available locally, **the app must be run in development mode**&mdash;this refers to the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects. It cannot run in production mode because the [connection string](http://en.wikipedia.org/wiki/Connection_string) is currently set only in the [development `AppSettings`](HatTrick.API/appsettings.Development.json), and the [Vue.js](http://vuejs.org/) [proxy server](http://en.wikipedia.org/wiki/Proxy_server) is set only for the [`devServer.proxy`](http://cli.vuejs.org/config/#devserver-proxy) in [`vue.config`](HatTrick.Web/vue.config.js). See below how to achieve running in development mode.
 
