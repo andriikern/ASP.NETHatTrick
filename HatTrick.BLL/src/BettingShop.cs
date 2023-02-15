@@ -601,8 +601,13 @@ namespace HatTrick.BLL
                         .AsNoTrackingWithIdentityResolution()
                         .AsAsyncEnumerable();
 
-                    // Format data from top-level being event.
+                    // Sort and format data from top-level being event.
                     events = await selections.Select(s => s.Market.Fixture.Event)
+                        .OrderByDescending(e => e.StartsAt)
+                        .ThenBy(e => e.EndsAt)
+                        .ThenBy(e => e.Priority)
+                        .ThenBy(e => e.Sport.Priority)
+                        .ThenBy(e => e.Name)
                         .ToArrayAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
