@@ -36,13 +36,26 @@ The resulting [database model](http://en.wikipedia.org/wiki/Database_model) is v
 
 **IMPORTANT.** If the front-end web page does not display, even when refreshing after the back-end has started, uncomment the [line 3](HatTrick.Web/src/main.ts#L3) and comment the [line 2](HatTrick.Web/src/main.ts#L2) in [*main.ts*](HatTrick.Web/src/main.ts).
 
+### Prerequisites
+
+* [.NET SDK, ASP.NET Core Runtime](http://dotnet.microsoft.com/en-gb/download/dotnet/): [.NET 6](http://dotnet.microsoft.com/en-gb/download/dotnet/6.0/),
+* [Node.js](http://nodejs.org/en/): v. 16.0 or higher,
+* [Vue.js](https//vuejs.org/): v. 3.0 or higher,
+* [Vue CLI](http://cli.vuejs.org/): v. 4.0 or higher,
+* [Visual Studio](http://visualstudio.microsoft.com/): [Visual Studio 2022](http://learn.microsoft.com/en-gb/visualstudio/releases/2022/release-notes/), maybe [Visual Studio 2019](http://learn.microsoft.com/en-gb/visualstudio/releases/2019/release-notes/) (not tested), or higher &ndash; optional, but recommended,
+    * [Chrome](http://google.com/chrome/) or [Edge](http://microsoft.com/en-gb/edge/) &ndash; if using [Edge](http://microsoft.com/en-gb/edge/), [`launch`](HatTrick.Web/.vscode/launch.json) should be updated.
+
+I am not sure which are the minimal versions of [Node.js](http://nodejs.org/en/) and [Vue CLI](http://cli.vuejs.org/) required for the code to be successfully compiled and run. Actually, maybe [Node.js](http://nodejs.org/en/) alone is sufficient for simply running the already set up [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj). Otherwise, the versions mentioned above may in fact be insufficient, as the code was built on versions higher than the ones listed.
+
+### Universal Guidelines
+
 First, [clone the repo](http://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository/). Once the code is available locally, **the app must be run in development mode**&mdash;this refers to the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects. It cannot run in production mode because the [connection string](http://en.wikipedia.org/wiki/Connection_string) is currently set only in the [development `AppSettings`](HatTrick.API/appsettings.Development.json), and the [Vue.js](http://vuejs.org/) [proxy server](http://en.wikipedia.org/wiki/Proxy_server) is set only for the [`devServer.proxy`](http://cli.vuejs.org/config/#devserver-proxy) in [`vue.config`](HatTrick.Web/vue.config.js). See below how to achieve running in development mode.
 
-### Through [Visual Studio](http://visualstudio.microsoft.com/)
+### Running Using [Visual Studio](http://visualstudio.microsoft.com/)
 
 The application is implemented as a [Visual Studio Solution](http://learn.microsoft.com/en-gb/visualstudio/ide/solutions-and-projects-in-visual-studio/#solutions). The simplest way to run the app is to open the [HatTrick.sln solution](HatTrick.sln) in [Visual Studio](http://visualstudio.microsoft.com/), and run the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects in parallel: see [here](http://learn.microsoft.com/en-gb/visualstudio/javascript/tutorial-asp-net-core-with-vue/#set-the-startup-project) and [here](http://learn.microsoft.com/en-gb/visualstudio/javascript/tutorial-asp-net-core-with-vue/#start-the-project). By default, the app will run in development mode, but this can be changed, as explained [here](http://learn.microsoft.com/en-gb/aspnet/core/fundamentals/environments/#development-and-launchsettingsjson) and [here](http://cli.vuejs.org/guide/mode-and-env.html#modes-and-environment-variables).
 
-### Manually
+### Running Manually
 
 Again, the [HatTrick.API](HatTrick.API/HatTrick.API.csproj) and [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) projects must be run in parallel. To run the former in development mode, see [here](http://learn.microsoft.com/en-gb/aspnet/core/fundamentals/environments/#development-and-launchsettingsjson) and [here](http://learn.microsoft.com/en-gb/aspnet/core/fundamentals/environments/#set-environment-on-the-command-line); note that the `Development` environment is already defined in the [`launchSettings`](HatTrick.API/Properties/launchSettings.json). To run the latter in development mode, see [here](http://cli.vuejs.org/guide/mode-and-env.html); more about running the [HatTrick.Web](HatTrick.Web/HatTrick.Web.esproj) is available in its own [`README`](HatTrick.Web/README.md).
 
