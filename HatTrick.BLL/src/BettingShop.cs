@@ -596,51 +596,15 @@ namespace HatTrick.BLL
                     ticketQuery = Filter(ticketQuery, stateAt, ticketId);
 
                     // Download data.
-                    var auxData = await ticketQuery.SelectMany(
-                        t =>
-                            t.Selections.Select(
-                                s =>
-                                    new
-                                    {
-                                        s.Market.Fixture.Event.Sport,
-                                        s.Market.Fixture.Event,
-                                        EventStatus = s.Market.Fixture.Event.Status,
-                                        s.Market.Fixture,
-                                        FixtureType = s.Market.Fixture.Type,
-                                        s.Market,
-                                        MarketType = s.Market.Type,
-                                        s.Type,
-                                        Selection = s
-                                    }
-                            )
-                    )
-                        .OrderByDescending(s => s.Event.StartsAt)
-                        .ThenBy(s => s.Event.EndsAt)
-                        .ThenBy(s => s.Event.Priority)
-                        .ThenBy(s => s.Event.Name)
+                    var selections = ticketQuery.SelectMany(t => t.Selections)
                         .AsSplitQuery()
                         .AsNoTrackingWithIdentityResolution()
-                        .ToArrayAsync(cancellationToken)
-                        .ConfigureAwait(false);
+                        .AsAsyncEnumerable();
 
                     // Format data from top-level being event.
-                    events = auxData.Select(
-                        s =>
-                        {
-                            s.Event.Sport = s.Sport;
-                            s.Event.Status = s.EventStatus;
-                            s.Fixture.Type = s.FixtureType;
-                            s.Market.Type = s.MarketType;
-                            s.Selection.Type = s.Type;
-
-                            s.Market.Outcomes = new List<Outcome>() { s.Selection };
-                            s.Fixture.Markets = new List<Market>() { s.Market };
-                            s.Event.Fixtures = new List<Fixture>() { s.Fixture };
-
-                            return s.Event;
-                        }
-                    )
-                        .ToArray();
+                    events = await selections.Select(s => s.Market.Fixture.Event)
+                        .ToArrayAsync(cancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception exception)
