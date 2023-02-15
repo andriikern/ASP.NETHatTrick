@@ -20,7 +20,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Market } from "../../models"
+  import { Market } from "@/models"
 
   import OutcomeDisplay from "./OutcomeDisplay.vue"
 

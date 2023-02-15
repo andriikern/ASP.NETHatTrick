@@ -18,10 +18,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_ } from "../../models"
-  import { dateToISOStringWithOffset } from "../../auxiliaryFunctions"
+  import { Event_ } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now } from "../../main"
+  import { now } from "@/main"
     
   import EventDisplay from "./EventDisplay.vue"
 

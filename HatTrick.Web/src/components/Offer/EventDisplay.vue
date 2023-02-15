@@ -21,7 +21,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_ } from "../../models"
+  import { Event_ } from "@/models"
 
   import FixtureDisplay from "./FixtureDisplay.vue"
 

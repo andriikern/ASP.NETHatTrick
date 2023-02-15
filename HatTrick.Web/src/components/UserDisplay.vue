@@ -6,10 +6,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { User } from "../models"
-  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+  import { User } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now, userId } from "../main"
+  import { now, userId } from "@/main"
 
   import NonExistentUserErrorDisplay from "./User/NonExistentUserErrorDisplay.vue"
   import UserProfile from "./User/UserProfile.vue"

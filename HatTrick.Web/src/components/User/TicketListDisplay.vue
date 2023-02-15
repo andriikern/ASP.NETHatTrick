@@ -8,15 +8,15 @@
   <div v-if="tickets.length"
        class="list list-group">
     <TicketSingleDisplay v-for="ticket in tickets"
-                        :key="'ticket-' + ticket.id"
-                        :ticket="ticket" />
+                         :key="'ticket-' + ticket.id"
+                         :ticket="ticket" />
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
+  import { defineComponent, PropType } from 'vue'
 
-  //import { Ticket } from "../../models"
+  import { Ticket } from "@/models"
 
   import TicketSingleDisplay from "./TicketSingleDisplay.vue"
 
@@ -25,7 +25,7 @@
       TicketSingleDisplay    
     },
     props: {
-      tickets: Array/*<Ticket>*/
+      tickets: Array as PropType<Ticket[]>
     },
     created() {
       // initialise the data when the view is created and the data is already

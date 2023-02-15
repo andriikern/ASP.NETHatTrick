@@ -7,7 +7,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { User } from "../../models"
+  import { User } from "@/models"
     
   import UserProfileBasicInfoDisplay from "./UserProfileBasicInfoDisplay.vue"
   import TicketListDisplay from "./TicketListDisplay.vue"

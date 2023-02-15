@@ -15,7 +15,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Fixture } from "../../models"
+  import { Fixture } from "@/models"
 
   import MarketDisplay from "./MarketDisplay.vue"
 

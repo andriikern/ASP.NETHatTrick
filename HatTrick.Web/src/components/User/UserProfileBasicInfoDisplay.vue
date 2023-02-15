@@ -61,7 +61,7 @@
   import { defineComponent } from 'vue'
   import { RouterLink } from 'vue-router'
 
-  import { User } from "../../models"
+  import { User } from "@/models"
 
   export default defineComponent({
     components: {

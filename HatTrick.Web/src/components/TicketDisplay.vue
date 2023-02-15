@@ -8,10 +8,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket } from "../models"
-  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+  import { Ticket } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now } from "../main"
+  import { now } from "@/main"
 
   import NonExistentTicketErrorDisplay from "./Ticket/NonExistentTicketErrorDisplay.vue"
   import TicketInfoDisplay from "./Ticket/TicketInfoDisplay.vue"

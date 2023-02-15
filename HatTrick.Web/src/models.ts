@@ -59,8 +59,8 @@ class User {
   birthdate: Date | string = '';
   deactivatedOn: Date | string | null = null;
   balance: number = 0;
-  tickets: Ticket[] = new Array<Ticket>();
-  transactions: Transaction[] = new Array<Transaction>()
+  tickets: Ticket[] = [];
+  transactions: Transaction[] = []
 }
 
 class Event_ {
@@ -71,13 +71,13 @@ class Event_ {
   endsAt: Date | string = '';
   status: EventStatus = new EventStatus();
   priority: number = 0;
-  fixtures: Fixture[] = new Array<Fixture>()
+  fixtures: Fixture[] = []
 }
 
 class Fixture {
   id: number = 0;
   type: FixtureType = new FixtureType();
-  markets: Market[] = new Array<Market>();
+  markets: Market[] = [];
   availableFrom: Date | string = '';
   availableUntil: Date | string = ''
 }
@@ -88,7 +88,7 @@ class Market {
   value: string | null = null;
   availableFrom: Date | string = '';
   availableUntil: Date | string = '';
-  outcomes: Outcome[] = new Array<Outcome>()
+  outcomes: Outcome[] = []
 }
 
 class Outcome {
@@ -104,7 +104,7 @@ class Outcome {
 
 class Ticket {
   id: number = 0;
-  selections: Outcome[] = new Array<Outcome>();
+  selections: Outcome[] = [];
   payInAmount: number = 0;
   payInTime: Date | string = '';
   totalOdds: number = 0;

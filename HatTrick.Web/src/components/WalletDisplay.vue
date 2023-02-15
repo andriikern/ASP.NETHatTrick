@@ -12,10 +12,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { User } from "../models"
-  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+  import { User } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now, userId } from "../main"
+  import { now, userId } from "@/main"
     
   import NonExistentWalletErrorDisplay from "./Wallet/NonExistentWalletErrorDisplay.vue"
   import TransactionFormDisplay from "./Wallet/TransactionFormDisplay.vue"

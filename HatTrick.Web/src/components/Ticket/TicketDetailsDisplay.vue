@@ -65,10 +65,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket, TicketFinancialAmounts } from "../../models"
-  import { dateToISOStringWithOffset } from "../../auxiliaryFunctions"
+  import { Ticket, TicketFinancialAmounts } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now } from "../../main"
+  import { now } from "@/main"
 
   interface Data {
     now: Date | null,

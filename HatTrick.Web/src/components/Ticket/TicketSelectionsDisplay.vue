@@ -10,10 +10,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_, Ticket } from "../../models"
-  import { dateToISOStringWithOffset } from "../../auxiliaryFunctions"
+  import { Event_, Ticket } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now } from "../../main"
+  import { now } from "@/main"
 
   import TicketSingleSelectionDisplay from "./TicketSingleSelectionDisplay.vue"
 

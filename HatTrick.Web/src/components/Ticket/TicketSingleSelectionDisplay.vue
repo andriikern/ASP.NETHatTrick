@@ -28,7 +28,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Event_ } from "../../models"
+  import { Event_ } from "@/models"
 
   interface Data {
     statusClass: string | null,

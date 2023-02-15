@@ -8,7 +8,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket } from "../../models"
+  import { Ticket } from "@/models"
 
   interface Data {
     statusClass: string | null

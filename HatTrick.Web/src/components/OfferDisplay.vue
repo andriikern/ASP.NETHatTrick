@@ -21,10 +21,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket } from "../models"
-  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+  import { Ticket } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
     
-  import { now, userId } from "../main"
+  import { now, userId } from "@/main"
     
   import OfferCategoryDisplay from "./Offer/OfferCategoryDisplay.vue"
   import BetAmountInputDisplay from "./Offer/BetAmountInputDisplay.vue"

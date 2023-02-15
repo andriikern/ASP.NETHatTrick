@@ -16,10 +16,10 @@
   import { defineComponent } from 'vue'
   import { RouterLink } from 'vue-router'
 
-  import { User } from "../models"
-  import { dateToISOStringWithOffset } from "../auxiliaryFunctions"
+  import { User } from "@/models"
+  import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
 
-  import { now, userId } from "../main"
+  import { now, userId } from "@/main"
 
   interface Data {
     now: Date | null,

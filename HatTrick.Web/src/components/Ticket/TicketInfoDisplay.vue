@@ -6,7 +6,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket } from "../../models"
+  import { Ticket } from "@/models"
 
   import TicketDetailsDisplay from "./TicketDetailsDisplay.vue"
   import TicketSelectionsDisplay from "./TicketSelectionsDisplay.vue"
