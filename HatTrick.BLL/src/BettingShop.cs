@@ -595,19 +595,19 @@ namespace HatTrick.BLL
                     // Filter.
                     ticketQuery = Filter(ticketQuery, stateAt, ticketId);
 
-                    // Download data.
+                    // Sort and download data.
                     var selections = ticketQuery.SelectMany(t => t.Selections)
+                        .OrderByDescending(s => s.Market.Fixture.Event.StartsAt)
+                        .ThenBy(s => s.Market.Fixture.Event.EndsAt)
+                        .ThenBy(s => s.Market.Fixture.Event.Priority)
+                        .ThenBy(s => s.Market.Fixture.Event.Sport.Priority)
+                        .ThenBy(s => s.Market.Fixture.Event.Name)
                         .AsSplitQuery()
                         .AsNoTrackingWithIdentityResolution()
                         .AsAsyncEnumerable();
 
-                    // Sort and format data from top-level being event.
+                    // Format data from top-level being event.
                     events = await selections.Select(s => s.Market.Fixture.Event)
-                        .OrderByDescending(e => e.StartsAt)
-                        .ThenBy(e => e.EndsAt)
-                        .ThenBy(e => e.Priority)
-                        .ThenBy(e => e.Sport.Priority)
-                        .ThenBy(e => e.Name)
                         .ToArrayAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
