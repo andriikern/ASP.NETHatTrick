@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace HatTrick.API.Formatters
 {
@@ -47,16 +48,16 @@ namespace HatTrick.API.Formatters
             TextPlainMediaTypesRegex = textPlainRegexMediaTypes.AsReadOnly();
         }
 
-        private static Boolean IsExceptionToCatch(
-            [MaybeNullWhen(false), NotNullWhen(true)] Exception ex
+        private static bool IsExceptionToCatch(
+            [MaybeNullWhen(false), NotNullWhen(true)] Exception exception
         ) =>
-            ex is ArgumentException ||
-                ex is InvalidOperationException ||
-                ex is IOException ||
-                ex is ObjectDisposedException;
+            exception is ArgumentException ||
+                exception is InvalidOperationException ||
+                exception is IOException ||
+                exception is ObjectDisposedException;
 
         private static Encoding GetEncoding(
-            String? contentType
+            string? contentType
         )
         {
             if (string.IsNullOrEmpty(contentType))
@@ -86,12 +87,22 @@ namespace HatTrick.API.Formatters
                 );
         }
 
-        public TextPlainInputFormatter()
+        private readonly ILogger<TextPlainInputFormatter>? _logger;
+
+        public TextPlainInputFormatter(
+            ILogger<TextPlainInputFormatter>? logger
+        )
         {
+            _logger = logger;
+
             foreach (var type in TextPlainMediaTypes)
             {
                 SupportedMediaTypes.Add(type);
             }
+        }
+
+        public TextPlainInputFormatter() : this(null)
+        {
         }
 
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(
@@ -100,36 +111,128 @@ namespace HatTrick.API.Formatters
         {
             string content;
 
+            var request = context?.HttpContext.Request;
+
+            _logger?.LogTrace(
+                "Reading input from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}",
+                    request?.Method,
+                    request?.Path,
+                    request?.QueryString,
+                    request?.ContentType
+            );
+
             try
             {
-                var request = context.HttpContext.Request;
-                var encoding = GetEncoding(request.ContentType);
+                if (context is null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
 
-                using var reader = new StreamReader(request.Body, encoding);
+                var encoding = GetEncoding(request!.ContentType);
 
-                content = await reader.ReadToEndAsync().ConfigureAwait(false);
+                using var reader = new StreamReader(
+                    request.Body,
+                    encoding,
+                    true,
+                    -1,
+                    true
+                );
+
+                content = await reader.ReadToEndAsync()
+                    .ConfigureAwait(false);
             }
-            catch (Exception ex) when (IsExceptionToCatch(ex))
+            catch (Exception exception)
+                when (IsExceptionToCatch(exception))
             {
-                return await InputFormatterResult.FailureAsync().ConfigureAwait(false);
+                _logger?.LogError(
+                    exception,
+                    "Error while reading input from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}",
+                        request!.Method,
+                        request!.Path,
+                        request!.QueryString,
+                        request!.ContentType
+                );
+
+                return await InputFormatterResult.FailureAsync()
+                    .ConfigureAwait(false);
             }
+
+            _logger?.LogDebug(
+                "Input successfully read from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}, content length: {length}",
+                    request!.Method,
+                    request!.Path,
+                    request!.QueryString,
+                    request!.ContentType,
+                    content.Length
+            );
 
             return string.IsNullOrEmpty(content) ?
-                await InputFormatterResult.NoValueAsync().ConfigureAwait(false) :
-                await InputFormatterResult.SuccessAsync(content).ConfigureAwait(false);
+                await InputFormatterResult.NoValueAsync()
+                    .ConfigureAwait(false) :
+                await InputFormatterResult.SuccessAsync(content)
+                    .ConfigureAwait(false);
         }
 
-        public override Boolean CanRead(InputFormatterContext context)
+        public override bool CanRead(
+            InputFormatterContext context
+        )
         {
-            var contentType = context.HttpContext.Request.ContentType;
-            if (string.IsNullOrEmpty(contentType))
+            bool canRead = false;
+
+            var request = context?.HttpContext.Request;
+
+            _logger?.LogTrace(
+                "Checking if possible to read input from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}",
+                    request?.Method,
+                    request?.Path,
+                    request?.QueryString,
+                    request?.ContentType
+            );
+
+            try
             {
+                if (context is null)
+                {
+                    throw new ArgumentNullException(nameof(context));
+                }
+
+                var contentType = request!.ContentType;
+
+                if (string.IsNullOrEmpty(contentType))
+                {
+                    return false;
+                }
+
+                contentType = contentType.Split(';', 1, StringSplitOptions.TrimEntries)
+                    .First();
+
+                canRead = TextPlainMediaTypesRegex.Any(r => r.IsMatch(contentType));
+            }
+            catch (Exception exception)
+                when (IsExceptionToCatch(exception))
+            {
+                _logger?.LogError(
+                    exception,
+                    "Error while checking if possible to read input from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}",
+                        request!.Method,
+                        request!.Path,
+                        request!.QueryString,
+                        request!.ContentType
+                );
+
                 return false;
             }
 
-            contentType = contentType.Split(';', 1, StringSplitOptions.TrimEntries).First();
+            _logger?.LogDebug(
+                "Successfully checked if possible to read from the HTTP request... Method: {method}, path: {path}, query: {query}, content type: {contentType}, can read: {canRead}",
+                    request!.Method,
+                    request!.Path,
+                    request!.QueryString,
+                    request!.ContentType,
+                    canRead
+            );
 
-            return TextPlainMediaTypesRegex.Any(r => r.IsMatch(contentType));
+            return canRead;
         }
     }
 }
