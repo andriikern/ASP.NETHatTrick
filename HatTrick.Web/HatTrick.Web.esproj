@@ -1,14 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.62-alpha">
+
   <PropertyGroup>
     <StartupCommand>npm run serve</StartupCommand>
-    <JavaScriptTestRoot>.\</JavaScriptTestRoot>
+    <JavaScriptTestRoot>./</JavaScriptTestRoot>
     <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <!-- Command to run on project build -->
-    <BuildCommand>
-    </BuildCommand>
+    <BuildCommand></BuildCommand>
     <!-- Command to create an optimized build of the project that's ready for publishing -->
     <ProductionBuildCommand>npm run build</ProductionBuildCommand>
     <!-- Folder where production build objects will be placed -->
-    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+    <BuildOutputFolder>$(MSBuildProjectDirectory)/dist</BuildOutputFolder>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <ProjectGuid>5ABA4826-EB19-0ECF-7ABE-431C98B45AD4</ProjectGuid>
+    <PackageId>HatTrick.Web</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Davor Penzar</Authors>
+    <Description>Web GUI for the Hat-Trick Online Betting Shop Simulator.</Description>
+    <PackageTags>betting, sport betting, online betting, betting shop, web GUI</PackageTags>
+    <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageProjectUrl>http://DavorPenzar.github.io/hat-trick/</PackageProjectUrl>
+    <PackageReadmeFile>../README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+  </PropertyGroup>
+
 </Project>

@@ -1,22 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<LangVersion>11.0</LangVersion>
-	<TargetFramework>net6.0</TargetFramework>
-	<ImplicitUsings>disable</ImplicitUsings>
-	<Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ProjectGuid>879B7F6E-A956-1115-1E84-A57B562AFE33</ProjectGuid>
+    <PackageId>HatTrick.BLL</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Davor Penzar</Authors>
+    <Description>Business logic for the Hat-Trick Online Betting Shop Simulator.</Description>
+    <PackageTags>betting, sport betting, online betting, betting shop, BLL</PackageTags>
+    <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageProjectUrl>http://DavorPenzar.github.io/hat-trick/</PackageProjectUrl>
+    <PackageReadmeFile>../README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-	<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
-	<PackageReference Include="System.Linq.Async" Version="6.0.1" />
-	<PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\HatTrick.DAL\HatTrick.DAL.csproj" />
-	<ProjectReference Include="..\HatTrick.Models\HatTrick.Models.csproj" />
+    <ProjectReference Include="../HatTrick.DAL/HatTrick.DAL.csproj" />
+    <ProjectReference Include="../HatTrick.Models/HatTrick.Models.csproj" />
   </ItemGroup>
 
 </Project>

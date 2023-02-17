@@ -1,28 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<LangVersion>11.0</LangVersion>
-	<TargetFramework>net6.0</TargetFramework>
-	<ImplicitUsings>disable</ImplicitUsings>
-	<Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ProjectGuid>61CF90B7-3DA0-B130-FFCE-5CEC34C326B7</ProjectGuid>
+    <PackageId>HatTrick.DAL</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Davor Penzar</Authors>
+    <Description>Data access for the Hat-Trick Online Betting Shop Simulator.</Description>
+    <PackageTags>betting, sport betting, online betting, betting shop, DAL</PackageTags>
+    <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageProjectUrl>http://DavorPenzar.github.io/hat-trick/</PackageProjectUrl>
+    <PackageReadmeFile>../README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
-	  <PrivateAssets>all</PrivateAssets>
-	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.3" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
-	  <PrivateAssets>all</PrivateAssets>
-	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
-	<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\HatTrick.Models\HatTrick.Models.csproj" />
+    <ProjectReference Include="../HatTrick.Models/HatTrick.Models.csproj" />
   </ItemGroup>
 
 </Project>
