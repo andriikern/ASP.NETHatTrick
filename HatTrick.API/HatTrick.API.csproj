@@ -4,23 +4,18 @@
   <PropertyGroup>
     <LangVersion>10.0</LangVersion>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
     <ProjectGuid>450DCA63-5991-3826-7162-FB37A3873691</ProjectGuid>
-    <PackageId>HatTrick.API</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
     <Authors>Davor Penzar</Authors>
     <Description>Web API for the Hat-Trick Online Betting Shop Simulator.</Description>
     <PackageTags>betting, sport betting, online betting, betting shop, web API</PackageTags>
     <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
-    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
-    <PackageProjectUrl>http://DavorPenzar.github.io/hat-trick/</PackageProjectUrl>
-    <PackageReadmeFile>../README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

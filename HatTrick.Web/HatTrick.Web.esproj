@@ -14,9 +14,11 @@
     <ProjectGuid>5ABA4826-EB19-0ECF-7ABE-431C98B45AD4</ProjectGuid>
     <Authors>Davor Penzar</Authors>
     <Description>Web GUI for the Hat-Trick Online Betting Shop Simulator.</Description>
+    <PackageTags>betting, sport betting, online betting, betting shop, web GUI</PackageTags>
     <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>

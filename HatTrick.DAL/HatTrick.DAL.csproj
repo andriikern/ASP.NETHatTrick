@@ -10,15 +10,10 @@
 
   <PropertyGroup>
     <ProjectGuid>61CF90B7-3DA0-B130-FFCE-5CEC34C326B7</ProjectGuid>
-    <PackageId>HatTrick.DAL</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
     <Authors>Davor Penzar</Authors>
     <Description>Data access for the Hat-Trick Online Betting Shop Simulator.</Description>
     <PackageTags>betting, sport betting, online betting, betting shop, DAL</PackageTags>
     <Copyright>Copyright (c) Davor Penzar 2023</Copyright>
-    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
-    <PackageProjectUrl>http://DavorPenzar.github.io/hat-trick/</PackageProjectUrl>
-    <PackageReadmeFile>../README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>http://github.com/DavorPenzar/hat-trick/</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
