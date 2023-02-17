@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.AspNetCore;
 using System;
@@ -112,11 +113,11 @@ namespace HatTrick.API
                 {
                     c.SwaggerDoc(
                         $"v{(Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1):D}",
-                        new()
+                        new OpenApiInfo()
                         {
                             Title = "Hat-Trick Web API",
                             Description = "Web API for the Hat-Trick Online Betting Shop Simulator",
-                            Contact = new()
+                            Contact = new OpenApiContact()
                             {
                                 Name = "Davor Penzar",
                                 Email = "davor.penzar@gmail.com"
