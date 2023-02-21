@@ -35,9 +35,9 @@ namespace HatTrick.BLL
             );
 
         protected static decimal Round(
-            decimal odds
+            decimal value
         ) =>
-            decimal.Round(odds, 2);
+            decimal.Round(value, 2);
 
         protected static decimal CalculateActiveAmount(
             decimal payInAmount
@@ -102,6 +102,15 @@ namespace HatTrick.BLL
             context.TaxGrades
                 .ToArrayAsync(cancellationToken);
 
+        protected static Task<TicketStatus> GetTicketStatusByIdAsync(
+            Context context,
+            int id,
+            CancellationToken cancellationToken = default
+        ) =>
+            context.TicketStatuses
+                .Where(t => t.Id == id)
+                .SingleAsync(cancellationToken);
+
         protected static Task<TicketStatus> GetTicketStatusByNameAsync(
             Context context,
             string name,
@@ -115,11 +124,20 @@ namespace HatTrick.BLL
             Context context,
             CancellationToken cancellationToken = default
         ) =>
-            GetTicketStatusByNameAsync(
+            GetTicketStatusByIdAsync(
                 context,
-                "Active",
+                1,
                 cancellationToken
             );
+
+        protected static Task<TransactionType> GetTransactionTypeByIdAsync(
+            Context context,
+            int id,
+            CancellationToken cancellationToken = default
+        ) =>
+            context.TransactionTypes
+                .Where(t => t.Id == id)
+                .SingleAsync(cancellationToken);
 
         protected static Task<TransactionType> GetTransactionTypeByNameAsync(
             Context context,
@@ -134,9 +152,9 @@ namespace HatTrick.BLL
             Context context,
             CancellationToken cancellationToken = default
         ) =>
-            GetTransactionTypeByNameAsync(
+            GetTransactionTypeByIdAsync(
                 context,
-                "Deposit",
+                1,
                 cancellationToken
             );
 
@@ -144,18 +162,18 @@ namespace HatTrick.BLL
             Context context,
             CancellationToken cancellationToken = default
         ) =>
-            GetTransactionTypeByNameAsync(
+            GetTransactionTypeByIdAsync(
                 context,
-                "Withdrawal",
+                2,
                 cancellationToken
             );
         protected static Task<TransactionType> GetPayInTransactionTypeAsync(
             Context context,
             CancellationToken cancellationToken = default
         ) =>
-            GetTransactionTypeByNameAsync(
+            GetTransactionTypeByIdAsync(
                 context,
-                "Pay-in",
+                3,
                 cancellationToken
             );
 
@@ -163,9 +181,9 @@ namespace HatTrick.BLL
             Context context,
             CancellationToken cancellationToken = default
         ) =>
-            GetTransactionTypeByNameAsync(
+            GetTransactionTypeByIdAsync(
                 context,
-                "Pay-out",
+                4,
                 cancellationToken
             );
 
@@ -197,6 +215,14 @@ namespace HatTrick.BLL
         ) =>
             _context.Users
                 .Where(t => t.Id == id)
+                .SingleAsync(cancellationToken);
+
+        protected Task<User> GetUserByUsernameAsync(
+            string username,
+            CancellationToken cancellationToken = default
+        ) =>
+            _context.Users
+                .Where(t => t.Username == username)
                 .SingleAsync(cancellationToken);
 
         protected virtual void Dispose(

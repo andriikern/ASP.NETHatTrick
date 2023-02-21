@@ -30,8 +30,8 @@ namespace HatTrick.DAL
 #nullable disable
 
         public Context(
-            ILogger<Context> logger,
-            DbContextOptions options
+            DbContextOptions options,
+            ILogger<Context> logger
         ) :
             base(options)
         {
@@ -45,35 +45,40 @@ namespace HatTrick.DAL
             ModelBuilder modelBuilder
         )
         {
+            if (modelBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(modelBuilder));
+            }
+
             _logger.LogDebug("Creating database model...");
 
-            modelBuilder.Entity<Sport>()
-                .HasIndex(s => s.Name)
-                .IsUnique();
+            //modelBuilder.Entity<Sport>()
+            //    .HasIndex(s => s.Name)
+            //    .IsUnique();
 
-            modelBuilder.Entity<EventStatus>()
-                .HasIndex(e => e.Name)
-                .IsUnique();
+            //modelBuilder.Entity<EventStatus>()
+            //    .HasIndex(e => e.Name)
+            //    .IsUnique();
 
-            modelBuilder.Entity<FixtureType>()
-                .HasIndex(f => f.Name)
-                .IsUnique();
+            //modelBuilder.Entity<FixtureType>()
+            //    .HasIndex(f => f.Name)
+            //    .IsUnique();
 
-            modelBuilder.Entity<MarketType>()
-                .HasIndex(f => f.Name)
-                .IsUnique();
+            //modelBuilder.Entity<MarketType>()
+            //    .HasIndex(f => f.Name)
+            //    .IsUnique();
 
-            modelBuilder.Entity<OutcomeType>()
-                .HasIndex("MarketId", nameof(OutcomeType.Name))
-                .IsUnique();
+            //modelBuilder.Entity<OutcomeType>()
+            //    .HasIndex("MarketId", nameof(OutcomeType.Name))
+            //    .IsUnique();
 
-            modelBuilder.Entity<TicketStatus>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
+            //modelBuilder.Entity<TicketStatus>()
+            //    .HasIndex(t => t.Name)
+            //    .IsUnique();
 
-            modelBuilder.Entity<TransactionType>()
-                .HasIndex(t => t.Name)
-                .IsUnique();
+            //modelBuilder.Entity<TransactionType>()
+            //    .HasIndex(t => t.Name)
+            //    .IsUnique();
 
             modelBuilder.Entity<SportMarket>()
                 .HasKey("SportId", "MarketId");
