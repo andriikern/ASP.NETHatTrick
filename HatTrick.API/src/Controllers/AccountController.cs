@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -107,7 +108,8 @@ namespace HatTrick.API.Controllers
                     transactionRequest.Type.IsDebosit(),
                     transactionRequest.Amount,
                     cancellationToken
-                )
+                ),
+                HttpStatusCode.Created
             )
                 .ConfigureAwait(false);
         }
