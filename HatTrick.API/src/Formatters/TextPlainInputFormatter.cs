@@ -56,7 +56,43 @@ namespace HatTrick.API.Formatters
                 exception is IOException ||
                 exception is ObjectDisposedException;
 
-        private static Encoding GetEncoding(
+        private static Encoding GetEncodingFromCharset(
+            string? charset
+        )
+        {
+            Encoding encoding;
+
+            try
+            {
+                if (string.IsNullOrEmpty(charset))
+                {
+                    encoding = Encoding.Default;
+                }
+                else if (
+                    charset.Length > 2 &&
+                    charset.StartsWith('\"') &&
+                    charset.EndsWith('\"')
+                )
+                {
+                    encoding = Encoding.GetEncoding(charset[1..^1]);
+                }
+                else
+                {
+                    encoding = Encoding.GetEncoding(charset);
+                }
+            }
+            catch (ArgumentException exception)
+            {
+                throw new InvalidOperationException(
+                    "The character set provided in ContentType is invalid.",
+                    exception
+                );
+            }
+
+            return encoding;
+        }
+
+        private static Encoding GetEncodingFromContentType(
             string? contentType
         )
         {
@@ -71,20 +107,16 @@ namespace HatTrick.API.Formatters
                     StringSplitOptions.TrimEntries
             );
 
-            var charset = parts.SingleOrDefault(
+            var charsetProperty = parts.FirstOrDefault(
                 p => p.StartsWith(
                     "charset",
                     StringComparison.InvariantCultureIgnoreCase
                 )
             );
 
-            return string.IsNullOrEmpty(charset) ?
-                Encoding.Default :
-                Encoding.GetEncoding(
-                    charset[(charset.IndexOf('=') + 1)..]
-                        .Trim()
-                        .ToUpperInvariant()
-                );
+            return GetEncodingFromCharset(
+                charsetProperty?[(charsetProperty.IndexOf('=') + 1)..]
+            );
         }
 
         private readonly ILogger<TextPlainInputFormatter>? _logger;
@@ -128,7 +160,7 @@ namespace HatTrick.API.Formatters
                     throw new ArgumentNullException(nameof(context));
                 }
 
-                var encoding = GetEncoding(request!.ContentType);
+                var encoding = GetEncodingFromContentType(request!.ContentType);
 
                 using var reader = new StreamReader(
                     request.Body,

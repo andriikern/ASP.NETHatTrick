@@ -1,4 +1,3 @@
-using HatTrick.API.Formatters;
 using HatTrick.API.Middlewares;
 using HatTrick.BLL;
 using HatTrick.DAL;
@@ -25,8 +24,8 @@ namespace HatTrick.API
 {
     internal sealed class Startup
     {
-        public CultureInfo Culture { get; init; }
-        public IConfiguration Configuration { get; init; }
+        public CultureInfo Culture { get; }
+        public IConfiguration Configuration { get; }
 
         public Startup(
             IConfiguration configuration,
@@ -66,7 +65,7 @@ namespace HatTrick.API
             services.AddSingleton(Culture);
             services.AddSingleton<IFormatProvider, CultureInfo>(_ => Culture);
             services.Configure<RequestLocalizationOptions>(
-                (options) =>
+                options =>
                 {
                     options.AddSupportedCultures(Culture.Name);
                     options.AddSupportedUICultures(Culture.Name);
@@ -105,13 +104,11 @@ namespace HatTrick.API
 #if NET7_0_OR_GREATER
             services.AddDatabaseDeveloperPageExceptionFilter();
 #endif // NET7_0_OR_GREATER
-            services.AddControllers(
-                options => options.InputFormatters.Add(new TextPlainInputFormatter())
-            );
+            services.AddControllers();
             services.AddSwaggerGen(
-                c =>
+                swagger =>
                 {
-                    c.SwaggerDoc(
+                    swagger.SwaggerDoc(
                         $"v{(Assembly.GetEntryAssembly()?.GetName().Version?.Major ?? 1):D}",
                         new OpenApiInfo()
                         {
@@ -126,9 +123,9 @@ namespace HatTrick.API
                         }
                     );
 
-                    //c.ResolveConflictingActions(Enumerable.FirstOrDefault);
+                    //swagger.ResolveConflictingActions(Enumerable.FirstOrDefault);
 
-                    c.IncludeXmlComments(
+                    swagger.IncludeXmlComments(
                         Path.Combine(
                             AppContext.BaseDirectory,
                             $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"
