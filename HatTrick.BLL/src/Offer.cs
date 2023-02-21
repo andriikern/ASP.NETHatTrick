@@ -98,7 +98,7 @@ namespace HatTrick.BLL
                         .OrderBy(o => o.Type.Priority)
                         .ThenBy(o => o.Type.Name)
                         .ThenBy(o => o.Value)
-                        //.ThenByDescending(o => o.Odds) // Not supported in SQLite: http://learn.microsoft.com/en-gb/ef/core/providers/sqlite/limitations#query-limitations
+                        //.ThenByDescending(o => o.Odds) // Not supported in SQLite: http://learn.microsoft.com/en-gb/ef/core/providers/sqlite/limitations/#query-limitations
                         .ThenBy(o => o.AvailableUntil)
                         .ThenByDescending(o => o.AvailableFrom)
                 );

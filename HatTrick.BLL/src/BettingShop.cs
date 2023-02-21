@@ -23,14 +23,14 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"No outcome is selected. At least {1} outcome must be selected."
+                    $"No outcome is selected. At least {1:D} outcome must be selected."
                 );
             }
             if (selectionIds.Length > MaxSelectionCount)
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"Too many outcomes are selected. No more than {MaxSelectionCount} outcomes may be selected."
+                    $"Too many outcomes are selected. No more than {MaxSelectionCount:D} outcomes may be selected."
                 );
             }
         }
@@ -44,7 +44,7 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"An unavailable or non-existent outcome is selected."
+                    "An unavailable or non-existent outcome is selected."
                 );
             }
 
@@ -76,7 +76,7 @@ namespace HatTrick.BLL
             {
                 promoted = true;
             }
-            else if (selection.Odds > PromoComboOddsThreshold)
+            else if (selection.Odds >= PromoComboOddsThreshold)
             {
                 ++promoCombinations;
             }
@@ -93,7 +93,7 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos} non-promoted outcomes of odds greater than {PromoComboOddsThreshold} must be selected, as well."
+                    $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos:D} non-promoted outcomes of odds greater than or equal to {PromoComboOddsThreshold:N2} must be selected, as well."
                 );
             }
         }
@@ -149,7 +149,7 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"Pay-in amount is out of range. Minimal allowed bet is {MinBetAmount:N2}, maximal allowed bet is {MaxBetAmount:N2}"
+                    $"Pay-in amount is out of range. Minimal allowed bet is {MinBetAmount:N2}, maximal allowed bet is {MaxBetAmount:N2}."
                 );
             }
             if (amount > balance)

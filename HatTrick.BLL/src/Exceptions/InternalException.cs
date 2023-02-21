@@ -60,7 +60,7 @@ namespace HatTrick.BLL.Exceptions
         {
             base.GetObjectData(info, context);
 
-            info.AddValue(nameof(Reason), _reason);
+            info.AddValue(nameof(Reason), (int)_reason);
         }
     }
 }

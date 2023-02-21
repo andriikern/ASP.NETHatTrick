@@ -32,7 +32,7 @@ namespace HatTrick.BLL
             {
                 throw new InternalException(
                     InternalExceptionReason.BadInput,
-                    $"Transaction amount is out of range. Minimal allowed transaction is {MinTransactionAmount:N2}, maximal allowed single transaction is {MaxTransactionAmount:N2}"
+                    $"Transaction amount is out of range. Minimal allowed transaction is {MinTransactionAmount:N2}, maximal allowed single transaction is {MaxTransactionAmount:N2}."
                 );
             }
 
