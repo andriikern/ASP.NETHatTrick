@@ -133,7 +133,7 @@ namespace HatTrick.API.Controllers
         public IActionResult GetDefaultManipulativeCostRate() =>
             Ok(Business.ManipulativeCostRate);
 
-        /// <summary>Gets the information about ticket's financial amounts.</summary>
+        /// <summary>Gets the information about the ticket's financial amounts.</summary>
         /// <param name="ticketId">The ticket id number.</param>
         /// <param name="stateAt">The date-time at which to observe the ticket. If omitted, current time is used.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
