@@ -201,7 +201,7 @@ namespace HatTrick.API.HttpContents
             out long length
         )
         {
-            length = 0;
+            length = 0L;
 
             return false;
         }
