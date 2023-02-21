@@ -2,13 +2,11 @@ using System;
 
 namespace HatTrick.API.Features
 {
-    public sealed class HttpRequestTimeFeature : IHttpRequestTimeFeature
+    public sealed class HttpRequestTimeFeature : HttpRequestTimeBaseFeature
     {
-        public DateTime RequestTime { get; init; }
-
-        public HttpRequestTimeFeature()
+        public HttpRequestTimeFeature() :
+            base(DateTime.Now)
         {
-            RequestTime = DateTime.Now;
         }
     }
 }

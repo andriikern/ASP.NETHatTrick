@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 
 namespace HatTrick.API.Middlewares
 {
-    public sealed class RequestTimeMiddleware
+    public sealed class RequestUtcTimeMiddleware
     {
         private readonly RequestDelegate? _next;
 
-        public RequestTimeMiddleware(
+        public RequestUtcTimeMiddleware(
             RequestDelegate? next
         )
         {
             _next = next;
         }
 
-        public RequestTimeMiddleware() :
+        public RequestUtcTimeMiddleware() :
             this(null)
         {
         }
@@ -25,7 +25,7 @@ namespace HatTrick.API.Middlewares
         )
         {
             context.Features.Set<IHttpRequestTimeFeature>(
-                new HttpRequestTimeFeature()
+                new HttpRequestUtcTimeFeature()
             );
 
             return _next?.Invoke(context) ?? Task.CompletedTask;
