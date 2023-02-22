@@ -10,8 +10,7 @@ namespace HatTrick.API.Middlewares
         )
             where
                 THttpRequestTimeFeature : IHttpRequestTimeFeature, new()
-        {
-            return builder.UseMiddleware<RequestTimeMiddleware<THttpRequestTimeFeature>>();
-        }
+            =>
+            builder.UseMiddleware<RequestTimeMiddleware<THttpRequestTimeFeature>>();
     }
 }
