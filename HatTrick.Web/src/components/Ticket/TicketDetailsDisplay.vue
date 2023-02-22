@@ -7,11 +7,15 @@
       </tr>
       <tr>
         <th scope="row">Pay-in time</th>
-        <td>{{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+        <td>
+          {{ new Date(ticket.payInTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}
+        </td>
       </tr>
       <tr>
         <th scope="row">Pay-in amount</th>
-        <td class="font-monospace">{{ ticket.payInAmount.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticket.payInAmount.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr>
         <th scope="row">Selection count</th>
@@ -19,45 +23,65 @@
       </tr>
       <tr>
         <th scope="row">Total odds</th>
-        <td>{{ ticket.totalOdds.toFixed(2) }}</td>
+        <td class="font-monospace">
+          
+          {{ ticket.totalOdds.toFixed(2) }}</td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Active amount<sup>*</sup></th>
-        <td class="font-monospace">{{ ticketFinAmounts.activeAmount.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticketFinAmounts.activeAmount.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Gross potential win amount</th>
-        <td class="font-monospace">{{ ticketFinAmounts.grossPotentialWinAmount.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticketFinAmounts.grossPotentialWinAmount.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Tax<sup>**</sup></th>
-        <td class="font-monospace">{{ ticketFinAmounts.tax.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticketFinAmounts.tax.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Net potential win amount</th>
-        <td class="font-monospace">{{ ticketFinAmounts.netPotentialWinAmount.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticketFinAmounts.netPotentialWinAmount.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr v-if="ticket.isResolved === true">
         <th scope="row">Resolution time</th>
-        <td>{{ new Date(ticket.resolvedAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+        <td>
+          {{ new Date(ticket.resolvedAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}
+        </td>
       </tr>
       <tr v-if="ticket.isResolved === true && ticket.winAmount !== null">
         <th scope="row">Pay-out amount</th>
-        <td class="font-monospace">{{ ticket.winAmount.toFixed(2) }} &euro;</td>
+        <td class="font-monospace">
+          {{ ticket.winAmount.toFixed(2) }} &euro;
+        </td>
       </tr>
       <tr v-if="ticket.isResolved === true && ticket.winAmount !== null">
         <th scope="row">Pay-out time</th>
-        <td>{{ new Date(ticket.payOutTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+        <td>
+          {{ new Date(ticket.payOutTime).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}
+        </td>
       </tr>
     </tbody>
   </table>
 
   <div v-if="!loading" class="container container-fixed">
     <div>
-      <small><span>*</span> Manipulative cost of {{ (100 * ticketFinAmounts.manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.</small>
+      <small>
+        <span>*</span> Manipulative cost of {{ (100 * ticketFinAmounts.manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.
+      </small>
     </div>
     <div>
-      <small><span>**</span> See <a class="link link-dark" target="_blank" href="http://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/porez_dobitak_lutrijske_igre.aspx">here</a>.</small>
+      <small>
+        <span>**</span> See <a class="link link-dark" target="_blank" href="http://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/porez_dobitak_lutrijske_igre.aspx">here</a>.
+      </small>
     </div>
   </div>
 </template>

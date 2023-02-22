@@ -5,14 +5,18 @@
     <div class="col">
       <div class="container container-fluid">
         <div class="row">
-          <label class="sr-only visually-hidden" id="bet-amount-label" for="bet-amount">Pay-in amount</label>
+          <label class="sr-only visually-hidden"
+                 id="bet-amount-label"
+                 for="bet-amount">
+            Pay-in amount
+          </label>
           <div class="input-group">
             <input type="number"
                    min="0.10"
                    max="250_000.00"
                    step="0.01"
                    inputmode="numeric"
-                   class="form-control"
+                   class="form-control font-monospace"
                    id="bet-amount"
                    title="Bet amount"
                    placeholder="Bet amount"
@@ -20,12 +24,21 @@
                    aria-describedby="bet-amount-label"
                    @input="setAmount"
                    required />
-            <span class="input-group-text" title="Euro">&euro;</span>
-            <button type="submit" class="btn btn-success" title="Place bet">Place bet</button>
+            <span class="input-group-text font-monospace"
+                  title="Euro">
+              &euro;
+            </span>
+            <button type="submit"
+                    class="btn btn-success"
+                    title="Place bet">
+              Place bet
+            </button>
           </div>
         </div>
         <div v-if="!mcrLoading" class="row">
-          <small class="text-muted">Manipulative cost of {{ (100 * manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.</small>
+          <small class="text-muted">
+            Manipulative cost of {{ (100 * manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.
+          </small>
         </div>
       </div>
     </div>

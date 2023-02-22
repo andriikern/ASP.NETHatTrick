@@ -2,7 +2,7 @@
   <h2>Wallet</h2>
 
   <NonExistentWalletErrorDisplay v-if="!loading && user === null" />
-  <TransactionFormDisplay v-if="!loading && user !== null"
+  <TransactionFormDisplay v-if="!(loading && user === null)"
                           :user="user"
                           @submit="submit"
                           @setAmount="setAmount"
@@ -103,10 +103,12 @@
 
         fetch("/API/Account?" + searchQuery, requestOptions)
           .then(r => r.ok ? r.json() : r.text())
-          .then(r => typeof r === 'string' || r instanceof String ?
-            alert(r) :
-            window.location.reload()
-          )
+          .then(r => {
+            if (typeof r === 'string' || r instanceof String)
+              alert(r)
+            else
+              window.location.reload()
+          })
       }
     }
   })

@@ -10,9 +10,14 @@
   <label :class="'btn btn-outline-' + (promoted ? 'primary' : 'secondary') + ' lh-1'"
          :for="'check-' + outcomeKey"
          style="font-size: 0.9rem;">
-    <span class="fw-bold">{{ outcome.type.name + (outcome.value === null ? '' : (': ' + outcome.value)) }}</span>
+    <span class="fw-bold">
+      {{ outcome.type.name + (outcome.value === null ? '' : (': ' + outcome.value)) }}
+    </span>
     <br />
-    <span style="font-size: 0.75rem;">{{ outcome.odds === null ? '&mdash;' : outcome.odds.toFixed(2) }}</span>
+    <span class="font-monospace"
+          style="font-size: 0.75rem;">
+      {{ outcome.odds === null ? '&mdash;' : outcome.odds.toFixed(2) }}
+    </span>
   </label>
 </template>
 

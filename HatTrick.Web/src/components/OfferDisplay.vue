@@ -118,10 +118,15 @@
 
         fetch("/API/BettingShop?" + searchQuery, requestOptions)
           .then(r => r.ok ? r.json() : r.text())
-          .then(r => typeof r === 'string' || r instanceof String ?
-            alert(r) :
-            this.$router.push({ name: 'ticket', params: { id: (r as Ticket).id } })
-          )
+          .then(r => {
+            if (typeof r === 'string' || r instanceof String)
+              alert(r)
+            else
+              this.$router.push({
+                name: 'ticket',
+                params: { id: r['id'] }
+              })
+          })
       }
     }
   })

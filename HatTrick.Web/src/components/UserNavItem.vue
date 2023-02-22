@@ -6,7 +6,7 @@
         <span class="text-muted">Hello,</span> <RouterLink to="/user" class="link link-dark"><strong>{{ user.username }}</strong></RouterLink>
       </div>
       <div>
-        <span class="text-muted">Balance:</span> {{ user.balance.toFixed(2) }} <span class="text-muted">&euro;</span>
+        <span class="text-muted">Balance:</span> <span class="font-monospace">{{ user.balance.toFixed(2) }} <span class="text-muted">&euro;</span></span>
       </div>
     </div>
   </li>

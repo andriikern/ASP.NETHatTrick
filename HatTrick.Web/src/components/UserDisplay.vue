@@ -1,6 +1,7 @@
 <template>
   <NonExistentUserErrorDisplay v-if="!loading && user === null" />
-  <UserProfile v-if="!(loading || user === null)" :user="user" />
+  <UserProfile v-if="!(loading || user === null)"
+               :user="user" />
 </template>
 
 <script lang="ts">

@@ -1,5 +1,6 @@
 <template>
   <h2>Profile</h2>
+
   <UserProfileBasicInfoDisplay :user="user" />
   <TicketListDisplay :tickets="user.tickets" />
 </template>

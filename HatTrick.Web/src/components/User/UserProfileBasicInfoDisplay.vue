@@ -35,23 +35,37 @@
       </tr>
       <tr>
         <th scope="row">Email</th>
-        <td class="font-monospace"><a class="link link-dark" target="_blank" :href="'mailto:' + user.email">&lt;{{ user.email }}&gt;</a></td>
+        <td class="font-monospace">
+          <a class="link link-dark"
+             target="_blank"
+             :href="'mailto:' + user.email">
+            &lt;{{ user.email }}&gt;
+          </a>
+        </td>
       </tr>
       <tr>
         <th scope="row">Address</th>
-        <td>{{ user.address }}, {{ user.city }}, {{ user.country }}</td>
+        <td>
+          {{ user.address }}, {{ user.city }}, {{ user.country }}
+        </td>
       </tr>
       <tr>
         <th scope="row">Phone</th>
-        <td class="font-monospace">{{ user.phone }}</td>
+        <td class="font-monospace">
+          {{ user.phone }}
+        </td>
       </tr>
       <tr>
         <th scope="row">Birthdate</th>
-        <td>{{ new Date(user.birthdate).toLocaleString('en-GB', { dateStyle: 'short' }) }}</td>
+        <td>
+          {{ new Date(user.birthdate).toLocaleString('en-GB', { dateStyle: 'short' }) }}
+        </td>
       </tr>
       <tr>
         <th scope="row">Registration date</th>
-        <td>{{ new Date(user.registeredOn).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+        <td>
+          {{ new Date(user.registeredOn).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }) }}
+        </td>
       </tr>
     </tbody>
   </table>

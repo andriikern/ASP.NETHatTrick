@@ -2,7 +2,7 @@
   <h2>Ticket Information</h2>
 
   <NonExistentTicketErrorDisplay v-if="!loading && ticket === null" />
-  <TicketInfoDisplay v-if="!loading && ticket !== null" :ticket="ticket" />
+  <TicketInfoDisplay v-if="!(loading || ticket === null)" :ticket="ticket" />
 </template>
 
 <script lang="ts">
