@@ -1,10 +1,5 @@
 <template>
-  <div v-if="loading" class="card bg-warning text-white">
-    <div class="card-header font-weight-bold">Warning</div>
-    <div class="card-body text-white">
-      Please refresh once the <a class="link" target="_blank" href="http://dotnet.microsoft.com/apps/aspnet"><em>ASP.NET</em></a> backend has started. See <a class="link link-info" target="_blank" href="http://learn.microsoft.com/en-gb/visualstudio/javascript/tutorial-asp-net-core-with-vue">here</a> for more details.
-    </div>
-  </div>
+  <APILoadingWarningDisplay v-if="loading" />
 
   <form id="ticket" action="/API/BettingShop" method="post" @submit="submit">
     <OfferCategoryDisplay :promoted="true"
@@ -21,11 +16,11 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
 
-  import { Ticket } from "@/models"
   import { dateToISOStringWithOffset } from "@/auxiliaryFunctions"
     
   import { now, userId } from "@/main"
-    
+
+  import APILoadingWarningDisplay from "./APILoadingWarningDisplay.vue"
   import OfferCategoryDisplay from "./Offer/OfferCategoryDisplay.vue"
   import BetAmountInputDisplay from "./Offer/BetAmountInputDisplay.vue"
 
@@ -40,6 +35,7 @@
 
   export default defineComponent({
     components: {
+      APILoadingWarningDisplay,
       OfferCategoryDisplay,
       BetAmountInputDisplay
     },
