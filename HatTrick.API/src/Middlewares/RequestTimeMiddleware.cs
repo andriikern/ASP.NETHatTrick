@@ -1,11 +1,17 @@
 using HatTrick.API.Features;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 
 namespace HatTrick.API.Middlewares
 {
-    public sealed class RequestTimeMiddleware
+    public sealed class RequestTimeMiddleware<THttpRequestTimeFeature>
+        where
+            THttpRequestTimeFeature : IHttpRequestTimeFeature, new()
     {
+        public static Type HttpRequestTimeFeatureType =>
+            typeof(THttpRequestTimeFeature);
+
         private readonly RequestDelegate? _next;
 
         public RequestTimeMiddleware(
@@ -25,7 +31,7 @@ namespace HatTrick.API.Middlewares
         )
         {
             context.Features.Set<IHttpRequestTimeFeature>(
-                new HttpRequestTimeFeature()
+                new THttpRequestTimeFeature()
             );
 
             return _next?.Invoke(context) ?? Task.CompletedTask;

@@ -1,3 +1,4 @@
+using HatTrick.API.Features;
 using HatTrick.API.Middlewares;
 using HatTrick.BLL;
 using HatTrick.DAL;
@@ -172,7 +173,7 @@ namespace HatTrick.API
 
             app.UseRequestLocalization();
 
-            app.UseRequestTime();
+            app.UseRequestTime<HttpRequestTimeFeature>();
 
             app.UseSwagger();
             app.UseSwaggerUI(
