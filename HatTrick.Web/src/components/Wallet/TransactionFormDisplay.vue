@@ -38,22 +38,22 @@
     </div>
     <div class="form-group row">
       <div class="col col-form-label">
-        <button type="button"
+        <button type="submit"
                 class="btn btn-success form-control"
                 id="deposit"
                 title="Deposit"
                 value="1"
-                @click="makeTransaction">
+                @click="setTransactionType">
           Deposit
         </button>
       </div>
       <div class="col col-form-label">
-        <button type="button"
+        <button type="submit"
                 class="btn btn-danger form-control"
                 id="withdraw"
                 title="Withdraw"
                 value="-1"
-                @click="makeTransaction">
+                @click="setTransactionType">
           Withdraw
         </button>
       </div>
@@ -70,7 +70,7 @@
     props: {
       user: User
     },
-    emits: [ 'submit', 'setAmount', 'makeTransaction' ],
+    emits: [ 'submit', 'setTransactionType', 'setAmount' ],
     created() {
       // initialise the data when the view is created and the data is already
       // being observed
@@ -85,11 +85,11 @@
       submit(event: Event): void {
         this.$emit('submit', event)
       },
+      setTransactionType(event: Event): void {
+        this.$emit('setTransactionType', event)
+      },
       setAmount(event: Event): void {
         this.$emit('setAmount', event)
-      },
-      makeTransaction(event: Event): void {
-        this.$emit('makeTransaction', event)
       }
     }
   })

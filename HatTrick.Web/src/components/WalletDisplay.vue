@@ -5,8 +5,8 @@
   <TransactionFormDisplay v-if="!(loading && user === null)"
                           :user="user"
                           @submit="submit"
-                          @setAmount="setAmount"
-                          @makeTransaction="makeTransaction" />
+                          @setTransactionType="setTransactionType"
+                          @setAmount="setAmount" />
 </template>
 
 <script lang="ts">
@@ -24,6 +24,7 @@
     now: Date | null,
     userId: number,
     user: User | null,
+    transactionType: number,
     amount: number,
     loading: boolean
   }
@@ -38,6 +39,7 @@
         now: null,
         userId: 0,
         user: null,
+        transactionType: 0,
         amount: 0,
         loading: true
       }
@@ -47,6 +49,7 @@
       this.now = now
       this.userId = userId
       this.user = null
+      this.transactionType = 0
       this.amount = 0
 
       // fetch the data when the view is created and the data is already being
@@ -75,24 +78,15 @@
             this.loading = false
           })
       },
-      setAmount(event: Event): void {
-        const element = event.target as HTMLInputElement
-
-        this.amount = Number.parseFloat(element.value)
-      },
       submit(event: Event) {
         event.preventDefault()
-      },
-      makeTransaction(event: Event) {
-        const element = event.target as HTMLInputElement
-        const type = Number.parseInt(element.value)
 
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userId: this.userId,
-            type: type,
+            type: this.transactionType,
             amount: this.amount
           })
         }
@@ -109,6 +103,17 @@
             else
               window.location.reload()
           })
+      },
+      setTransactionType(event: Event) {
+        const element = event.target as HTMLInputElement
+
+        this.transactionType = Number.parseInt(element.value)
+      },
+      setAmount(event: Event): void {
+        const element = event.target as HTMLInputElement
+
+        this.transactionType = 0
+        this.amount = Number.parseFloat(element.value)
       }
     }
   })
