@@ -146,7 +146,7 @@ namespace HatTrick.BLL
         public Offer(
             Context context,
             ILogger<Offer> logger,
-            bool disposeMembers = true
+            bool disposeMembers = false
         ) :
             base(context, logger, disposeMembers)
         {
@@ -223,8 +223,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );

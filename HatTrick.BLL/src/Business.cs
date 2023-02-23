@@ -196,7 +196,7 @@ namespace HatTrick.BLL
         private protected Business(
             Context context,
             ILogger logger,
-            bool disposeMembers = true
+            bool disposeMembers = false
         )
         {
             _disposeMembers = disposeMembers;

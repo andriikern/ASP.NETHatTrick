@@ -1,5 +1,6 @@
 using HatTrick.API.Models;
 using HatTrick.BLL;
+using HatTrick.BLL.Exceptions;
 using HatTrick.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,26 +8,40 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for account journey.</summary>
-    [Route("API/[controller]")]
-    public class AccountController : InternalBaseController
+    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("API/[controller]"), ApiController]
+    public sealed class AccountController : ControllerBase, IDisposable, IAsyncDisposable
     {
-        protected Account Account =>
-            (Account)_business;
+        private readonly bool _disposeMembers;
+        private readonly IMemoryCache _cache;
+        private readonly ILogger _logger;
+        private readonly Account _account;
+
+        private bool disposed;
 
         public AccountController(
             Account account,
             IMemoryCache cache,
             ILogger<AccountController> logger,
             bool disposeMembers = false
-        ) :
-            base(account, cache, logger, disposeMembers)
+        )
         {
+            _disposeMembers = disposeMembers;
+
+            _account = account ??
+                throw new ArgumentNullException(nameof(account));
+            _cache = cache ??
+                throw new ArgumentNullException(nameof(cache));
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
+            disposed = false;
         }
 
         /// <summary>Gets the information about a user.</summary>
@@ -49,19 +64,42 @@ namespace HatTrick.API.Controllers
             [FromQuery] bool? includeTickets = null,
             [FromQuery] bool? includeTicketSelections = null,
             CancellationToken cancellationToken = default
-        ) =>
-            await InvokeFuncAsync(
-                () => Account.GetUserAsync(
+        )
+        {
+            User user;
+
+            try
+            {
+                user = await _account.GetUserAsync(
                     userId,
                     stateAt.GetValueOrDefault(
-                        GetDefaultTime(HttpContext)
+                        ControllerBaseExtensions.GetDefaultTime(this)
                     ),
                     includeTickets.GetValueOrDefault(false),
                     includeTicketSelections.GetValueOrDefault(false),
                     cancellationToken
                 )
-            )
-                .ConfigureAwait(false);
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            return Ok(user);
+        }
 
         /// <summary>Creates a new transaction.</summary>
         /// <param name="transactionRequest">The new transaction information.</param>
@@ -101,17 +139,94 @@ namespace HatTrick.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            return await InvokeFuncAsync(
-                () => Account.MakeTransactionAsync(
-                    time.GetValueOrDefault(GetDefaultTime(HttpContext)),
+            Transaction transaction;
+
+            try
+            {
+                transaction = await _account.MakeTransactionAsync(
+                    time.GetValueOrDefault(
+                        ControllerBaseExtensions.GetDefaultTime(this)
+                    ),
                     transactionRequest.UserId,
                     transactionRequest.Type.IsDebosit(),
                     transactionRequest.Amount,
                     cancellationToken
-                ),
-                HttpStatusCode.Created
-            )
+                )
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            return Created(string.Empty, transaction);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private void Dispose(
+            bool disposing
+        )
+        {
+            if (disposing && !disposed)
+            {
+                if (_disposeMembers)
+                {
+                    _account.Dispose();
+                }
+            }
+
+            disposed = true;
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private async ValueTask DisposeAsync(
+            bool disposing
+        )
+        {
+            if (disposing && !disposed)
+            {
+                if (_disposeMembers)
+                {
+                    await _account.DisposeAsync()
+                        .ConfigureAwait(false);
+                }
+            }
+
+            disposed = true;
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true)
                 .ConfigureAwait(false);
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~AccountController()
+        {
+            Dispose(false);
         }
     }
 }

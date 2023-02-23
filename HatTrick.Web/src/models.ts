@@ -125,7 +125,6 @@ class Transaction {
 }
 
 class TicketFinancialAmounts {
-  manipulativeCostRate: number = 0;
   payInAmount: number = 0;
   activeAmount: number = 0;
   totalOdds: number = 0;

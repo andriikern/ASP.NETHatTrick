@@ -21,15 +21,13 @@ namespace HatTrick.BLL
         {
             if (selectionIds.IsEmpty)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"No outcome is selected. At least {1:D} outcome must be selected."
                 );
             }
             if (selectionIds.Length > MaxSelectionCount)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Too many outcomes are selected. No more than {MaxSelectionCount:D} outcomes may be selected."
                 );
             }
@@ -42,8 +40,7 @@ namespace HatTrick.BLL
         {
             if (!selections.TryGetValue(selectionId, out var selection))
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     "An unavailable or non-existent outcome is selected."
                 );
             }
@@ -58,8 +55,7 @@ namespace HatTrick.BLL
         {
             if (!selectedEventIds.Add(selection.Market.Fixture.Event.Id))
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     "Duplicate events are selected. Each outcome must belong to a unique event; no event may be selected more than once."
                 );
             }
@@ -91,8 +87,7 @@ namespace HatTrick.BLL
         {
             if (promoted && promoCombinations < MinPromoCombos)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Invalid promotion combination selected. If a promoted fixture is selected, at least {MinPromoCombos:D} non-promoted outcomes of odds greater than or equal to {PromoComboOddsThreshold:N2} must be selected, as well."
                 );
             }
@@ -140,22 +135,19 @@ namespace HatTrick.BLL
 
             if (amount < decimal.Zero)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     "Pay-in amount is negative."
                 );
             }
             if (amount < MinBetAmount || amount > MaxBetAmount)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Pay-in amount is out of range. Minimal allowed bet is {MinBetAmount:N2}, maximal allowed bet is {MaxBetAmount:N2}."
                 );
             }
             if (amount > balance)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Pay-in amount exceeds the current balance of {balance:N2}."
                 );
             }
@@ -242,7 +234,7 @@ namespace HatTrick.BLL
         public BettingShop(
             Context context,
             ILogger<BettingShop> logger,
-            bool disposeMembers = true
+            bool disposeMembers = false
         ) :
             base(context, logger, disposeMembers)
         {
@@ -372,8 +364,7 @@ namespace HatTrick.BLL
                     }
                     catch (InvalidOperationException exception)
                     {
-                        throw new InternalException(
-                            InternalExceptionReason.NotFound,
+                        throw new InternalNotFoundException(
                             "The user does not exist.",
                             exception
                         );
@@ -432,8 +423,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );
@@ -512,8 +502,7 @@ namespace HatTrick.BLL
                     }
                     catch (InvalidOperationException exception)
                     {
-                        throw new InternalException(
-                            InternalExceptionReason.NotFound,
+                        throw new InternalNotFoundException(
                             "The ticket does not exist.",
                             exception
                         );
@@ -536,8 +525,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );
@@ -578,6 +566,22 @@ namespace HatTrick.BLL
                         .ConfigureAwait(false);
                 await using (dbTxn.ConfigureAwait(false))
                 {
+                    var exists = await _context.Tickets
+                        .Where(
+                            t =>
+                                (stateAt == null || t.PayInTime <= stateAt) &&
+                                    t.Id == ticketId
+                        )
+                        .AnyAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    if (!exists)
+                    {
+                        throw new InternalNotFoundException(
+                            "The ticket does not exist."
+                        );
+                    }
+
                     // Initialise query.
                     IQueryable<Ticket> ticketQuery = _context.Tickets;
 
@@ -627,8 +631,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );
@@ -685,8 +688,7 @@ namespace HatTrick.BLL
                     }
                     catch (InvalidOperationException exception)
                     {
-                        throw new InternalException(
-                            InternalExceptionReason.NotFound,
+                        throw new InternalNotFoundException(
                             "The ticket does not exist.",
                             exception
                         );
@@ -717,8 +719,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );

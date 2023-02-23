@@ -22,24 +22,21 @@ namespace HatTrick.BLL
 
             if (amount < decimal.Zero)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     "Transaction amount is negative."
                 );
             }
 
             if (amount < MinTransactionAmount || amount > MaxTransactionAmount)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Transaction amount is out of range. Minimal allowed transaction is {MinTransactionAmount:N2}, maximal allowed single transaction is {MaxTransactionAmount:N2}."
                 );
             }
 
             if (!deposit && amount > balance)
             {
-                throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                throw new InternalBadInputException(
                     $"Withdrawal amount exceeds the current balance of {balance:N2}."
                 );
             }
@@ -116,7 +113,7 @@ namespace HatTrick.BLL
         public Account(
             Context context,
             ILogger<Account> logger,
-            bool disposeMembers = true
+            bool disposeMembers = false
         ) :
             base(context, logger, disposeMembers)
         {
@@ -221,8 +218,7 @@ namespace HatTrick.BLL
                     }
                     catch (InvalidOperationException exception)
                     {
-                        throw new InternalException(
-                            InternalExceptionReason.NotFound,
+                        throw new InternalNotFoundException(
                             "The user does not exist.",
                             exception
                         );
@@ -246,8 +242,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );
@@ -305,8 +300,7 @@ namespace HatTrick.BLL
                     }
                     catch (InvalidOperationException exception)
                     {
-                        throw new InternalException(
-                            InternalExceptionReason.NotFound,
+                        throw new InternalNotFoundException(
                             "The user does not exist.",
                             exception
                         );
@@ -356,8 +350,7 @@ namespace HatTrick.BLL
 
                 if (exception is not InternalException)
                 {
-                    throw new InternalException(
-                        InternalExceptionReason.ServerError,
+                    throw new InternalServerErrorException(
                         null,
                         exception
                     );

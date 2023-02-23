@@ -1,5 +1,6 @@
 using HatTrick.API.Models;
 using HatTrick.BLL;
+using HatTrick.BLL.Exceptions;
 using HatTrick.BLL.Models;
 using HatTrick.Models;
 using Microsoft.AspNetCore.Http;
@@ -9,26 +10,40 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Immutable;
 using System.Net;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HatTrick.API.Controllers
 {
     /// <summary>Provides endpoints for placing bets.</summary>
-    [Route("API/[controller]")]
-    public class BettingShopController : InternalBaseController
+    [Produces(MediaTypeNames.Application.Json, "text/json", MediaTypeNames.Text.Plain), Route("API/[controller]"), ApiController]
+    public sealed class BettingShopController : ControllerBase, IDisposable, IAsyncDisposable
     {
-        protected BettingShop BettingShop =>
-            (BettingShop)_business;
+        private readonly bool _disposeMembers;
+        private readonly IMemoryCache _cache;
+        private readonly ILogger _logger;
+        private readonly BettingShop _bettingShop;
+
+        private bool disposed;
 
         public BettingShopController(
             BettingShop bettingShop,
             IMemoryCache cache,
-            ILogger<BettingShopController> logger,
+            ILogger<AccountController> logger,
             bool disposeMembers = false
-        ) :
-            base(bettingShop, cache, logger, disposeMembers)
+        )
         {
+            _disposeMembers = disposeMembers;
+
+            _bettingShop = bettingShop ??
+                throw new ArgumentNullException(nameof(bettingShop));
+            _cache = cache ??
+                throw new ArgumentNullException(nameof(cache));
+            _logger = logger ??
+                throw new ArgumentNullException(nameof(logger));
+
+            disposed = false;
         }
 
         /// <summary>Places a new bet (ticket).</summary>
@@ -47,20 +62,42 @@ namespace HatTrick.API.Controllers
             [FromBody] TicketRequestModel ticketRequest,
             [FromQuery] DateTime? placedAt = null,
             CancellationToken cancellationToken = default
-        ) =>
-            await InvokeFuncAsync(
-                () => BettingShop.PlaceBetAsync(
+        )
+        {
+            Ticket ticket;
+
+            try
+            {
+                ticket = await _bettingShop.PlaceBetAsync(
                     placedAt.GetValueOrDefault(
-                        GetDefaultTime(HttpContext)
+                        ControllerBaseExtensions.GetDefaultTime(this)
                     ),
                     ticketRequest.UserId,
                     ticketRequest.SelectionIds.ToImmutableArray(),
                     ticketRequest.Amount,
                     cancellationToken
-                ),
-                HttpStatusCode.Created
-            )
-                .ConfigureAwait(false);
+                )
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            return Created($"API/BettingShop/{ticket.Id}", ticket);
+        }
 
         /// <summary>Gets the information about a ticket.</summary>
         /// <param name="ticketId">The ticket id number.</param>
@@ -83,18 +120,41 @@ namespace HatTrick.API.Controllers
             [FromQuery] DateTime? stateAt = null,
             [FromQuery] bool? includeSelections = null,
             CancellationToken cancellationToken = default
-        ) =>
-            await InvokeFuncAsync(
-                () => BettingShop.GetTicketAsync(
+        )
+        {
+            Ticket ticket;
+
+            try
+            {
+                ticket = await _bettingShop.GetTicketAsync(
                     ticketId,
                     stateAt.GetValueOrDefault(
-                        GetDefaultTime(HttpContext)
+                        ControllerBaseExtensions.GetDefaultTime(this)
                     ),
                     includeSelections.GetValueOrDefault(false),
                     cancellationToken
                 )
-            )
-                .ConfigureAwait(false);
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            return Ok(ticket);
+        }
 
         /// <summary>Gets the ticket selections.</summary>
         /// <param name="ticketId">The ticket id number.</param>
@@ -106,30 +166,55 @@ namespace HatTrick.API.Controllers
         /// </remarks>
         /// <response code="200">The ticket selections from the event point of view.</response>
         /// <response code="400">Request failed.</response>
+        /// <response code="404">The ticket was not found.</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [HttpGet("{ticketId}/Selections")]
         public async Task<IActionResult> GetTicketSelectionsAsync(
             int ticketId,
             [FromQuery] DateTime? stateAt = null,
             CancellationToken cancellationToken = default
-        ) =>
-            await InvokeFuncAsync(
-                () => BettingShop.GetTicketSelectionsAsync(
+        )
+        {
+            Event[] events;
+
+            try
+            {
+                events = await _bettingShop.GetTicketSelectionsAsync(
                     ticketId,
                     stateAt.GetValueOrDefault(
-                        GetDefaultTime(HttpContext)
+                        ControllerBaseExtensions.GetDefaultTime(this)
                     ),
                     cancellationToken
                 )
-            )
-                .ConfigureAwait(false);
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
 
-        /// <summary>Gets the (default) manipulative cost rate.</summary>
+            return Ok(events);
+        }
+
+        /// <summary>Gets the manipulative cost rate.</summary>
         /// <returns>The response.</returns>
         /// <response code="200">The manipulative cost rate.</response>
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
-        [HttpGet("DefaultManipulativeCostRate")]
+        [HttpGet("ManipulativeCostRate")]
         public IActionResult GetDefaultManipulativeCostRate() =>
             Ok(Business.ManipulativeCostRate);
 
@@ -152,16 +237,94 @@ namespace HatTrick.API.Controllers
             int ticketId,
             [FromQuery] DateTime? stateAt = null,
             CancellationToken cancellationToken = default
-        ) =>
-            await InvokeFuncAsync(
-                () => BettingShop.CalculateTicketFinancialAmountsAsync(
+        )
+        {
+            TicketFinancialAmounts amounts;
+
+            try
+            {
+                amounts = await _bettingShop.CalculateTicketFinancialAmountsAsync(
                     ticketId,
                     stateAt.GetValueOrDefault(
-                        GetDefaultTime(HttpContext)
+                        ControllerBaseExtensions.GetDefaultTime(this)
                     ),
                     cancellationToken
                 )
-            )
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return NoContent();
+            }
+            catch (InternalNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+            catch (InternalBadInputException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (InternalException)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            return Ok(amounts);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private void Dispose(
+            bool disposing
+        )
+        {
+            if (disposing && !disposed)
+            {
+                if (_disposeMembers)
+                {
+                    _bettingShop.Dispose();
+                }
+            }
+
+            disposed = true;
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private async ValueTask DisposeAsync(
+            bool disposing
+        )
+        {
+            if (disposing && !disposed)
+            {
+                if (_disposeMembers)
+                {
+                    await _bettingShop.DisposeAsync()
+                        .ConfigureAwait(false);
+                }
+            }
+
+            disposed = true;
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true)
                 .ConfigureAwait(false);
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~BettingShopController()
+        {
+            Dispose(false);
+        }
     }
 }

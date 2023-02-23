@@ -6,11 +6,6 @@ namespace HatTrick.BLL.Models
     [DataContract, Serializable]
     public sealed class TicketFinancialAmounts : IExtensibleDataObject
     {
-        public const decimal DefaultManipulativeCostRate = Business.ManipulativeCostRate;
-
-        [DataMember]
-        public decimal ManipulativeCostRate { get; set; } = DefaultManipulativeCostRate;
-
         [DataMember]
         public decimal PayInAmount { get; set; }
 

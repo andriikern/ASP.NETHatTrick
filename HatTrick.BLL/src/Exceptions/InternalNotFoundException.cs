@@ -4,21 +4,21 @@ using System.Runtime.Serialization;
 namespace HatTrick.BLL.Exceptions
 {
     [Serializable]
-    public class InternalException : Exception
+    public sealed class InternalNotFoundException : InternalException
     {
-        public InternalException() :
+        public InternalNotFoundException() :
             base()
         {
         }
 
-        public InternalException(
+        public InternalNotFoundException(
             string? message
         ) :
             base(message)
         {
         }
 
-        public InternalException(
+        public InternalNotFoundException(
             string? message,
             Exception? innerException
         ) :
@@ -26,7 +26,7 @@ namespace HatTrick.BLL.Exceptions
         {
         }
 
-        protected InternalException(
+        private InternalNotFoundException(
             SerializationInfo info,
             StreamingContext context
         ) :

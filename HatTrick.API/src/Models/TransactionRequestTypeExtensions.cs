@@ -13,14 +13,12 @@ namespace HatTrick.API.Models
                 TransactionRequestType.Unspecified =>
                     allowUnspecified ?
                         null :
-                        throw new InternalException(
-                            InternalExceptionReason.BadInput,
+                        throw new InternalBadInputException(
                             "Unspecified transaction type is not allowed."
                         ),
                 TransactionRequestType.Withdrawal => false,
                 TransactionRequestType.Deposit => true,
-                _ => throw new InternalException(
-                    InternalExceptionReason.BadInput,
+                _ => throw new InternalBadInputException(
                     $"Unrecognised transaction type specifier {type}."
                 )
             };

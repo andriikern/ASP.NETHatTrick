@@ -81,7 +81,7 @@
         this.mcrLoading = true
         this.manipulativeCostRate = null
 
-        fetch("/API/BettingShop/DefaultManipulativeCostRate")
+        fetch("/API/BettingShop/ManipulativeCostRate")
           .then(r => r.json())
           .then(json => {
             this.manipulativeCostRate = json as number

@@ -30,25 +30,25 @@
       <tr v-if="!loading">
         <th scope="row">Active amount<sup>*</sup></th>
         <td class="font-monospace">
-          {{ ticketFinAmounts.activeAmount.toFixed(2) }} &euro;
+          {{ ticketFinancialAmounts.activeAmount.toFixed(2) }} &euro;
         </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Gross potential win amount</th>
         <td class="font-monospace">
-          {{ ticketFinAmounts.grossPotentialWinAmount.toFixed(2) }} &euro;
+          {{ ticketFinancialAmounts.grossPotentialWinAmount.toFixed(2) }} &euro;
         </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Tax<sup>**</sup></th>
         <td class="font-monospace">
-          {{ ticketFinAmounts.tax.toFixed(2) }} &euro;
+          {{ ticketFinancialAmounts.tax.toFixed(2) }} &euro;
         </td>
       </tr>
       <tr v-if="!loading">
         <th scope="row">Net potential win amount</th>
         <td class="font-monospace">
-          {{ ticketFinAmounts.netPotentialWinAmount.toFixed(2) }} &euro;
+          {{ ticketFinancialAmounts.netPotentialWinAmount.toFixed(2) }} &euro;
         </td>
       </tr>
       <tr v-if="ticket.isResolved === true">
@@ -75,7 +75,7 @@
   <div v-if="!loading" class="container container-fixed">
     <div>
       <small>
-        <span>*</span> Manipulative cost of {{ (100 * ticketFinAmounts.manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.
+        <span>*</span> Manipulative cost of {{ (100 * manipulativeCostRate).toFixed(2) }} % is deducted from the pay-in amount.
       </small>
     </div>
     <div>
@@ -96,7 +96,8 @@
 
   interface Data {
     now: Date | null,
-    ticketFinAmounts: TicketFinancialAmounts | null,
+    manipulativeCostRate: number | null,
+    ticketFinancialAmounts: TicketFinancialAmounts | null,
     statusClass: string | null,
     loading: boolean
   }
@@ -108,7 +109,8 @@
     data(): Data {
       return {
         now: null,
-        ticketFinAmounts: null,
+        manipulativeCostRate: null,
+        ticketFinancialAmounts: null,
         statusClass: null,
         loading: true
       }
@@ -116,7 +118,8 @@
     created() {
       this.loading = true
       this.now = now
-      this.ticketFinAmounts = null
+      this.manipulativeCostRate = null
+      this.ticketFinancialAmounts = null
       this.statusClass = null
         
       // fetch the data when the view is created and the data is already being
@@ -136,10 +139,15 @@
           stateAt: dateToISOStringWithOffset(this.now) || ''
         })
 
-        fetch("/API/BettingShop/" + this.ticket!.id + "/Amounts?" + searchQuery)
+        let manipulativeCostRate = fetch("/API/BettingShop/ManipulativeCostRate")
           .then(r => r.json())
-          .then(json => {
-            this.ticketFinAmounts = json as TicketFinancialAmounts
+        let ticketFinancialAmounts = fetch("/API/BettingShop/" + this.ticket!.id + "/Amounts?" + searchQuery)
+          .then(r => r.json())
+
+        Promise.all([ manipulativeCostRate, ticketFinancialAmounts ])
+          .then(values => {
+            this.manipulativeCostRate = values[0] as number
+            this.ticketFinancialAmounts = values[1] as TicketFinancialAmounts
             this.loading = false
           })
 
