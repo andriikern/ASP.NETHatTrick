@@ -20,7 +20,7 @@ namespace HatTrick.Models
         [Required, ForeignKey("TypeId"), DataMember]
         public MarketType Type { get; set; } = new MarketType();
 
-        [MaxLength(32), DataMember]
+        [MaxLength(64), DataMember]
         public string? Value { get; set; }
 
         [DataMember]

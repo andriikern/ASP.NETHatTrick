@@ -20,7 +20,7 @@ namespace HatTrick.Models
         [Required, ForeignKey("TypeId"), DataMember]
         public OutcomeType Type { get; set; } = new OutcomeType();
 
-        [DataMember]
+        [MaxLength(64), DataMember]
         public string? Value { get; set; }
 
         [DataMember]

@@ -12,7 +12,7 @@ namespace HatTrick.Models
         [Key, DataMember]
         public int Id { get; set; }
 
-        [MaxLength(32), Required, DataMember]
+        [MaxLength(64), Required, DataMember]
         public string Name { get; set; } = string.Empty;
 
         [Required, ForeignKey("SportId"), DataMember]

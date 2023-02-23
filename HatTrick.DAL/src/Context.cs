@@ -52,6 +52,16 @@ namespace HatTrick.DAL
 
             _logger.LogDebug("Creating database model...");
 
+            modelBuilder.Entity<TaxGrade>()
+                .Property(t => t.LowerBound)
+                .HasPrecision(10, 2);
+            modelBuilder.Entity<TaxGrade>()
+                .Property(t => t.UpperBound)
+                .HasPrecision(10, 2);
+            modelBuilder.Entity<TaxGrade>()
+                .Property(t => t.Rate)
+                .HasPrecision(3, 2);
+
             //modelBuilder.Entity<Sport>()
             //    .HasIndex(s => s.Name)
             //    .IsUnique();
@@ -71,6 +81,10 @@ namespace HatTrick.DAL
             //modelBuilder.Entity<OutcomeType>()
             //    .HasIndex("MarketId", nameof(OutcomeType.Name))
             //    .IsUnique();
+            modelBuilder.Entity<OutcomeType>()
+                .HasOne(o => o.Market)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             //modelBuilder.Entity<TicketStatus>()
             //    .HasIndex(t => t.Name)
@@ -104,6 +118,30 @@ namespace HatTrick.DAL
                 .IsUnique();
             modelBuilder.Entity<User>()
                 .HasAlternateKey(u => u.Username);
+            modelBuilder.Entity<User>()
+                .Property(u => u.Balance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Outcome>()
+                .Property(o => o.Odds)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<Ticket>()
+                .Property(t => t.PayInAmount)
+                .HasPrecision(8, 2);
+            modelBuilder.Entity<Ticket>()
+                .Property(t => t.TotalOdds)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Ticket>()
+                .Property(t => t.CostAmount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Ticket>()
+                .Property(t => t.WinAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Amount)
+                .HasPrecision(8, 2);
 
             modelBuilder.Entity<TicketSelection>()
                 .HasKey("TicketId", "SelectionId");
