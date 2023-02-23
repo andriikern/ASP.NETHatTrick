@@ -82,8 +82,8 @@ namespace HatTrick.API
 
             // DAL
             services.AddDbContext<Context>(
-                //o => o.UseSqlite(Configuration.GetConnectionString("HatTrick_SQLite"))
-                o => o.UseSqlServer(Configuration.GetConnectionString("HatTrick_SQL_Server"))
+                o => o.UseSqlite(Configuration.GetConnectionString("HatTrick_SQLite"))
+                //o => o.UseSqlServer(Configuration.GetConnectionString("HatTrick_SQL_Server"))
             );
 
             // BLL
