@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -408,6 +409,7 @@ namespace HatTrick.BLL
             catch (Exception exception)
                 when (
                     exception is InvalidOperationException ||
+                    exception is DbException ||
                     exception is DbUpdateException ||
                     exception is InternalException
                 )
@@ -512,6 +514,8 @@ namespace HatTrick.BLL
             catch (Exception exception)
                 when (
                     exception is InvalidOperationException ||
+                    exception is DbException ||
+                    exception is DbUpdateException ||
                     exception is InternalException
                 )
             {
@@ -619,6 +623,8 @@ namespace HatTrick.BLL
             catch (Exception exception)
                 when (
                     exception is InvalidOperationException ||
+                    exception is DbException ||
+                    exception is DbUpdateException ||
                     exception is InternalException
                 )
             {
@@ -707,6 +713,8 @@ namespace HatTrick.BLL
             catch (Exception exception)
                 when (
                     exception is InvalidOperationException ||
+                    exception is DbException ||
+                    exception is DbUpdateException ||
                     exception is InternalException
                 )
             {

@@ -4,6 +4,7 @@ using HatTrick.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -209,6 +210,8 @@ namespace HatTrick.BLL
             catch (Exception exception)
                 when (
                     exception is InvalidOperationException ||
+                    exception is DbException ||
+                    exception is DbUpdateException ||
                     exception is InternalException
                 )
             {
