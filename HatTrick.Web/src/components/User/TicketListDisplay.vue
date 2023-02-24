@@ -1,7 +1,7 @@
 <template>
   <h3>Tickets</h3>
 
-  <p v-if="tickets.length === 0"
+  <p v-if="!tickets.length"
      class="text-muted">
       No tickets yet.
   </p>
