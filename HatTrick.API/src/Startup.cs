@@ -1,6 +1,7 @@
 using HatTrick.API.Features;
 using HatTrick.API.Middlewares;
 using HatTrick.BLL;
+using HatTrick.BLL.Exceptions;
 using HatTrick.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -82,8 +83,28 @@ namespace HatTrick.API
 
             // DAL
             services.AddDbContext<Context>(
-                o => o.UseSqlite(Configuration.GetConnectionString("HatTrick_SQLite"))
-                //o => o.UseSqlServer(Configuration.GetConnectionString("HatTrick_SQL_Server"))
+                o =>
+                {
+                    var dbProvider = Configuration.GetValue("DatabaseProvider", "SQLite");
+
+                    switch (dbProvider)
+                    {
+                        case "SQLite":
+                            o.UseSqlite(Configuration.GetConnectionString("HatTrick_SQLite"));
+
+                            break;
+
+                        case "SQL_Server":
+                            o.UseSqlServer(Configuration.GetConnectionString("HatTrick_SQL_Server"));
+
+                            break;
+
+                        default:
+                            throw new InternalException(
+                                $"Database provider '{dbProvider}' is not recognised."
+                            );
+                    }
+                }
             );
 
             // BLL
