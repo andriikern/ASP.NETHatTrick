@@ -89,19 +89,19 @@ namespace HatTrick.API
                         "DatabaseProvider",
                         "SQLite"
                     );
-                    var connectionString = Configuration.GetConnectionString(
+                    var connStr = Configuration.GetConnectionString(
                         $"HatTrick_{dbProvider}"
                     );
 
                     switch (dbProvider)
                     {
                         case "SQLite":
-                            o.UseSqlite(connectionString);
+                            o.UseSqlite(connStr);
 
                             break;
 
                         case "SQL_Server":
-                            o.UseSqlServer(connectionString);
+                            o.UseSqlServer(connStr);
 
                             break;
 
