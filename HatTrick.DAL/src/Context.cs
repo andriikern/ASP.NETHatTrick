@@ -65,6 +65,9 @@ namespace HatTrick.DAL
             //modelBuilder.Entity<Sport>()
             //    .HasIndex(s => s.Name)
             //    .IsUnique();
+            modelBuilder.Entity<Sport>()
+                .Property(s => s.Priority)
+                .HasPrecision(3, 0);
 
             //modelBuilder.Entity<EventStatus>()
             //    .HasIndex(e => e.Name)
@@ -73,10 +76,16 @@ namespace HatTrick.DAL
             //modelBuilder.Entity<FixtureType>()
             //    .HasIndex(f => f.Name)
             //    .IsUnique();
+            modelBuilder.Entity<FixtureType>()
+                .Property(f => f.Priority)
+                .HasPrecision(3, 0);
 
             //modelBuilder.Entity<MarketType>()
             //    .HasIndex(f => f.Name)
             //    .IsUnique();
+            modelBuilder.Entity<MarketType>()
+                .Property(m => m.Priority)
+                .HasPrecision(3, 0);
 
             //modelBuilder.Entity<OutcomeType>()
             //    .HasIndex("MarketId", nameof(OutcomeType.Name))
@@ -85,6 +94,9 @@ namespace HatTrick.DAL
                 .HasOne(o => o.Market)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OutcomeType>()
+                .Property(o => o.Priority)
+                .HasPrecision(3, 0);
 
             //modelBuilder.Entity<TicketStatus>()
             //    .HasIndex(t => t.Name)
@@ -121,6 +133,10 @@ namespace HatTrick.DAL
             modelBuilder.Entity<User>()
                 .Property(u => u.Balance)
                 .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Event>()
+                .Property(e => e.Priority)
+                .HasPrecision(3, 0);
 
             modelBuilder.Entity<Outcome>()
                 .Property(o => o.Odds)

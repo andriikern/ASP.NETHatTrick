@@ -85,17 +85,23 @@ namespace HatTrick.API
             services.AddDbContext<Context>(
                 o =>
                 {
-                    var dbProvider = Configuration.GetValue("DatabaseProvider", "SQLite");
+                    var dbProvider = Configuration.GetValue(
+                        "DatabaseProvider",
+                        "SQLite"
+                    );
+                    var connectionString = Configuration.GetConnectionString(
+                        $"HatTrick_{dbProvider}"
+                    );
 
                     switch (dbProvider)
                     {
                         case "SQLite":
-                            o.UseSqlite(Configuration.GetConnectionString("HatTrick_SQLite"));
+                            o.UseSqlite(connectionString);
 
                             break;
 
                         case "SQL_Server":
-                            o.UseSqlServer(Configuration.GetConnectionString("HatTrick_SQL_Server"));
+                            o.UseSqlServer(connectionString);
 
                             break;
 

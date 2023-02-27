@@ -9,7 +9,7 @@ namespace HatTrick.Models
     [DataContract, Serializable]
     public sealed class Event : IExtensibleDataObject
     {
-        [Key, DataMember]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), DataMember]
         public int Id { get; set; }
 
         [MaxLength(64), Required, DataMember]

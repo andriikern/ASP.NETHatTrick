@@ -10,7 +10,7 @@ namespace HatTrick.Models
     [DataContract, Serializable]
     public sealed class Transaction : IExtensibleDataObject
     {
-        [Key, DataMember]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), DataMember]
         public int Id { get; set; }
 
         [Required, ForeignKey("UserId"), XmlIgnore, JsonIgnore]

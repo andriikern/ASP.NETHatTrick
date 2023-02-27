@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace HatTrick.Models
@@ -8,7 +9,7 @@ namespace HatTrick.Models
     [DataContract, Serializable]
     public sealed class User : IExtensibleDataObject
     {
-        [Key, DataMember]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), DataMember]
         public int Id { get; set; }
 
         [RegularExpression(@"[\-\.\w]+"), MaxLength(32), Required, DataMember]
