@@ -28,10 +28,10 @@ namespace HatTrick.BLL
 
         public const decimal ManipulativeCostRate = 0.05M;
 
-        protected static readonly ImmutableArray<string> _ignoreEventStatuses =
+        protected static readonly ImmutableArray<int> _ignoreEventStatuses =
             ImmutableArray.Create(
-                "Rescheduled",
-                "Cancelled"
+                2,
+                3
             );
 
         protected static decimal Round(

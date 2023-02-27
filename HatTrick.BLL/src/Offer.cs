@@ -122,7 +122,7 @@ namespace HatTrick.BLL
             eventsQuery.Where(
                 e =>
                     (availableAt == null || e.EndsAt > availableAt) &&
-                        !_ignoreEventStatuses.Contains(e.Status.Name) &&
+                        !_ignoreEventStatuses.Contains(e.Status.Id) &&
                         e.Fixtures.Any(
                             f =>
                                 (
