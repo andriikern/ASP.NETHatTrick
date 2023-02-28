@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace HatTrick.API.Models
@@ -12,7 +13,7 @@ namespace HatTrick.API.Models
         [DataMember]
         public TransactionRequestType Type { get; set; }
 
-        [DataMember]
+        [Range(1.00, 250_000.00), DataMember]
         public decimal Amount { get; set; }
 
         ExtensionDataObject? IExtensibleDataObject.ExtensionData { get; set; }
