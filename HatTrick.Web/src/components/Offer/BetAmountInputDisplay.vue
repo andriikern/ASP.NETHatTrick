@@ -12,7 +12,7 @@
           </label>
           <div class="input-group">
             <input type="number"
-                   min="0.10"
+                   min="0.25"
                    max="250_000.00"
                    step="0.01"
                    inputmode="numeric"
