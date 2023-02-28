@@ -20,11 +20,11 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
-
   <ItemGroup>
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
   </ItemGroup>
 
 </Project>
