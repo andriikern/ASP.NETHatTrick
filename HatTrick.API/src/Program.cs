@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace HatTrick.API
@@ -25,7 +26,14 @@ namespace HatTrick.API
                     (hostingContext, services, loggerConfiguration) =>
                         loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration)
                 )
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+                .ConfigureWebHostDefaults(
+                    webBuilder => webBuilder.UseStartup(
+                        c => new Startup(
+                            c.Configuration,
+                            new CultureInfo("en-GB")
+                        )
+                    )
+                );
 
         private static async Task EnsureDatabaseExistsAsync(
             IHost host

@@ -62,10 +62,7 @@ namespace HatTrick.API
             services.AddMemoryCache();
 
             // culture
-            CultureInfo.CurrentCulture = Culture;
-            CultureInfo.CurrentUICulture = Culture;
-            services.AddSingleton(Culture);
-            services.AddSingleton<IFormatProvider, CultureInfo>(_ => Culture);
+            services.AddLocalization();
             services.Configure<RequestLocalizationOptions>(
                 options =>
                 {
